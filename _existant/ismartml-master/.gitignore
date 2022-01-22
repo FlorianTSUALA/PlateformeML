@@ -1,0 +1,16 @@
+tmp/*
+notes.txt
+tmp_runs/*
+notebooks
+model_training
+tmp_file
+*.sock
+*wsgi*
+tmp_files/*
+uploads/*
+*.pyc
+data/*
+*.ini
+adaboost.joblib
+key.py
+static/images/figs

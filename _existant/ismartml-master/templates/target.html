@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}iSmartML{% endblock %}
+{% block head %}
+    	{{ super() }}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script>
+	//clears page cache
+	$(window).bind("pageshow", function() {
+	    var form = $('form'); 
+	    // let the browser natively reset defaults
+	    form[0].reset();
+	}); 
+        </script>
+
+	<script>
+	$(document).ready(function(){
+	    $('input[name=smote]').click(function(){
+	    if ($(this).val() == 'yes')
+	    {
+	       $("#smote_params").slideDown();
+	    }
+	    else
+	    {
+	       $("#smote_params").slideUp();
+	    }
+	    });
+
+	});
+
+	</script>
+
+
+	<script>
+	//toggle all
+	function toggle_est(source) {
+	    var checkboxes = document.querySelectorAll('div.estm input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i] != source)
+		    checkboxes[i].checked = source.checked;
+	    }
+	}
+	</script>
+
+
+	<script>
+	//toggle all
+	function toggle_pre(source) {
+	    var checkboxes = document.querySelectorAll('div.prep input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i] != source)
+		    checkboxes[i].checked = source.checked;
+	    }
+	}
+	</script>
+
+	<script>
+	//toggle all
+	function toggle_features(source) {
+	    var checkboxes = document.querySelectorAll('div.features input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i] != source)
+		    checkboxes[i].checked = source.checked;
+	    }
+	}
+	</script>
+
+
+
+	<script>
+	//checkbox checker, not using now
+	$(document).ready(function(){
+    		var requiredCheckboxes = $('.cl-checkbox :checkbox[required]');
+    		requiredCheckboxes.change(function(){
+        		if(requiredCheckboxes.is(':checked')) {
+            			requiredCheckboxes.removeAttr('required');
+       			 } else {
+            			requiredCheckboxes.attr('required', 'required');
+        		}
+    		});
+	});
+	</script>
+	
+
+	<div id="header_bar">
+	<img id="banner" src ="static/images/status/status3.svg">
+     </div>
+
+
+{% endblock %}
+
+{% block content %}
+<form method="post" action="" enctype="multipart/form-data">
+	    	<div class="row">
+		<div class="col-8" >
+		<div id="cl_div" >
+				
+		<h4><p>Select Metric
+		<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="The metric that the generated models are optimized for.">
+		</i>
+		</p></h4>
+		<p>
+		<div class="form-radio">
+		{% for mt in METRICS %}
+			<nobr>
+			{% if mt==pre_metric %}
+			<input type="radio" name="metric" value="{{mt}}" required checked>
+			<label>{{mt}} &nbsp; &nbsp; </label>
+		 	{% else %}	
+			<input type="radio" name="metric" value="{{mt}}" required>
+			<label>{{mt}} &nbsp; &nbsp; </label>
+			{% endif %}
+			</nobr>
+		{% endfor %}
+		</div>
+		</p>
+
+	
+		{% if TASK=="classification" %}
+		<h4><p>Use SMOTE(for imbalanced dataset)
+		<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="SMOTE is a technique for oversampling(artificially generating more data). It can be used for balancing classes in target feature.">
+		</i>
+		</p></h4>
+		<p>
+		<div class="form-radio">
+			<input type="radio" name="smote" value="yes" required>
+			<label>Yes </label>
+			<input type="radio" name="smote" value="no" required checked>
+			<label>No </label>
+		</div>
+		</p>
+		<div id="smote_params">
+			<p>Majority Class: {{mx_key}}( {{classes[mx_key]}} samples)</p>
+			<h5><p>Enter Smote Ratio(Relative to majority class)</p></h5>
+			{% for cl in classes.keys() %}
+			<nobr>
+		        <div class="form-group w-25">
+			<label> Class: {{cl}}({{classes[cl]}} samples)</label> 
+			<input type="text"class="form-control"  name="smote_ratio[]" value={{classes[cl]/classes[mx_key]}} required>
+			</div>
+			</nobr>
+			{% endfor %}
+
+		</div>
+
+			<p> Imbalanced Dataset: {{ratio|string}}
+			</p>
+		{% endif %}
+			<img class="target_plt"  src="static/images/figs/target.png"><figcaption class="target_cap">Target Class</figcaption>
+    <p>
+		<button type="submit" class="btn btn-primary"  data-toggle="modal" data-target="#exampleModalCenter" >Next</button>
+	</p>
+</form>
+
+{% endblock %}
