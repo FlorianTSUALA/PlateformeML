@@ -23,17 +23,24 @@ classes_og = [
     'sklearn.Perceptron',
     'sklearn.LogisticRegression',
     'sklearn.ComplementNB',
-    'sklearn.SVC']
+    'sklearn.SVC'
+]
 
-classes = ['K Nearest Neighbors',
+classes = [
+           'K Nearest Neighbors',
            'Gaussian Process',
-           'Decision Tree', 'Random Forest',
-           'AdaBoost', 'Gaussian NB',
+           'Decision Tree', 
+           'Random Forest',
+           'AdaBoost', 
+           'Gaussian NB',
            'QDA',
            'Gradient Boosting',
-           'LDA', 'Perceptron',
-           'Logistic Regression', 'Complement NB',
-           'SVC']
+           'LDA', 
+           'Perceptron',
+           'Logistic Regression', 
+           'Complement NB',
+           'SVC'
+]
 
 
 excluded = [

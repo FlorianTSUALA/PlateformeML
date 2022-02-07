@@ -69,9 +69,40 @@ def sgd_cl(params):
     cl=SGDClassifier(**params)
     return cl
 
-res=[0.0, {'balancing:strategy': 'none', 'categorical_encoding:__choice__': 'one_hot_encoding', 'classifier:__choice__': 'xgradient_boosting', 'imputation:strategy': 'mean', 'preprocessor:__choice__': 'no_preprocessing', 'rescaling:__choice__': 'standardize', 'categorical_encoding:one_hot_encoding:use_minimum_fraction': 'True', 'classifier:xgradient_boosting:base_score': 0.5, 'classifier:xgradient_boosting:booster': 'gbtree', 'classifier:xgradient_boosting:colsample_bylevel': 1.0, 'classifier:xgradient_boosting:colsample_bytree': 1.0, 'classifier:xgradient_boosting:gamma': 0, 'classifier:xgradient_boosting:learning_rate': 0.1, 'classifier:xgradient_boosting:max_delta_step': 0, 'classifier:xgradient_boosting:max_depth': 3, 'classifier:xgradient_boosting:min_child_weight': 1, 'classifier:xgradient_boosting:n_estimators': 512, 'classifier:xgradient_boosting:reg_alpha': 1e-10, 'classifier:xgradient_boosting:reg_lambda': 1e-10, 'classifier:xgradient_boosting:scale_pos_weight': 1, 'classifier:xgradient_boosting:subsample': 1.0, 'categorical_encoding:one_hot_encoding:minimum_fraction': 0.01}]
+res=[   0.0, 
+        {
+            'balancing:strategy': 'none', 
+            'categorical_encoding:__choice__': 'one_hot_encoding', 
+            'classifier:__choice__': 'xgradient_boosting', 
+            'imputation:strategy': 'mean', 
+            'preprocessor:__choice__': 'no_preprocessing', 
+            'rescaling:__choice__': 'standardize', 
+            'categorical_encoding:one_hot_encoding:use_minimum_fraction': 'True', 
+            'classifier:xgradient_boosting:base_score': 0.5, 
+            'classifier:xgradient_boosting:booster': 'gbtree', 
+            'classifier:xgradient_boosting:colsample_bylevel': 1.0, 
+            'classifier:xgradient_boosting:colsample_bytree': 1.0, 
+            'classifier:xgradient_boosting:gamma': 0, 
+            'classifier:xgradient_boosting:learning_rate': 0.1, 
+            'classifier:xgradient_boosting:max_delta_step': 0, 
+            'classifier:xgradient_boosting:max_depth': 3, 
+            'classifier:xgradient_boosting:min_child_weight': 1, 
+            'classifier:xgradient_boosting:n_estimators': 512, 
+            'classifier:xgradient_boosting:reg_alpha': 1e-10, 
+            'classifier:xgradient_boosting:reg_lambda': 1e-10, 
+            'classifier:xgradient_boosting:scale_pos_weight': 1, 
+            'classifier:xgradient_boosting:subsample': 1.0, 
+            'categorical_encoding:one_hot_encoding:minimum_fraction': 0.01
+        }
+    ]
 
-a=["adaboost","bernoulli_nb","decision_tree", "extra_trees","gaussian_nb", "gradient_boosting","k_nearest_neighbors", "lda","liblinear_svc","libsvm_svc","multinomial_nb","passive_aggressive","qda","random_forest","sgd","xgradient_boosting"]
+a=[
+    "adaboost",
+    "bernoulli_nb",
+    "decision_tree", "extra_trees","gaussian_nb", "gradient_boosting","k_nearest_neighbors", 
+    "lda","liblinear_svc","libsvm_svc","multinomial_nb",
+    "passive_aggressive","qda","random_forest","sgd","xgradient_boosting"
+]
 
 def build_classifier(param_dict):
     """Build and return classifier on passed parameters"""

@@ -81,10 +81,10 @@ def pca(params):
     return pr
 
 
-def pca(params):
-    params.pop("keep_variance")
-    pr = PCA(**params)
-    return pr
+# def pca(params):
+#     params.pop("keep_variance")
+#     pr = PCA(**params)
+#     return pr
 
 
 def build_preprocessor_cl(param_dict):

@@ -142,7 +142,8 @@ METRICS_RG = [
     metrics.r2,
     metrics.mean_squared_error,
     metrics.mean_absolute_error,
-    metrics.median_absolute_error]
+    metrics.median_absolute_error
+]
 
 METRICS_CL_DISP = ["Accuracy", "F1", "Precision", "Recall", "ROC AUC"]
 

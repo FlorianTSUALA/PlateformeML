@@ -31,8 +31,7 @@ def url_mod(fnc):
 
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit(
-        '.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/about')
 def about():
@@ -90,13 +89,14 @@ def featur_pg():
                         session.get("filename", "not set"))
     data = load_initial(path,sep=values["sep"])
     empty_cols = [col for col in data.columns if data[col].isnull().all()]
-    data.drop(empty_cols,
-        axis=1,
-        inplace=True)
+    
+    data.drop(empty_cols, axis=1, inplace=True)
+
     dropped_msg=""
+
     if empty_cols:
         dropped_msg = "Empty columns detected, dropped columns : "+str(empty_cols) 
-    features= data.columns
+    features = data.columns
     for i in range(len(features)):
         plt.clf()
         data[features[i]].hist()
