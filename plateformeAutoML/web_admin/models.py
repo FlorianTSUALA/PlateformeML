@@ -1,5 +1,5 @@
 from django.db import models
-from .enum import TypeDonne, EtatPublication, TypeValeur
+from .enum import TypeDonnee, EtatPublication, TypeValeur
 
 
 class Compte(models.Model):
@@ -21,7 +21,8 @@ class Projet(models.Model):
     nom =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     metrique =  models.CharField(max_length=254, blank=True,null=True)
-    est_public =models.BooleanField()
+    type = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
+    est_public = models.CharField(max_length=50, choices=EtatPublication.choices(), default=EtatPublication.DECIMAL)
     nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
 
@@ -90,7 +91,7 @@ class Modele(models.Model):
 class Parametre(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    type =  models.TextField(max_length=254, blank=True,null=True)
+    type = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
     modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
 
 class Metrique(models.Model):
@@ -175,7 +176,7 @@ class Colonne(models.Model):
 class HyperParametre(models.Model):
     valeur = models.CharField(max_length=254, blank=True,null=True)
     cle =  models.CharField(max_length=254, blank=True,null=True)
-    #typedonnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    type_donnee = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
     valeurs = models.ManyToManyField(AlgorithmeProjet, through='Valeur')
 
 class Valeur(models.Model):
