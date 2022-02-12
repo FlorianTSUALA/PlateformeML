@@ -1,4 +1,5 @@
 from django.db import models
+from .enum import TypeDonne, EtatPublication, TypeValeur
 
 
 class Compte(models.Model):
@@ -95,8 +96,8 @@ class Parametre(models.Model):
 class Metrique(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    algorithme = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
-    algorithme_projet = models.ManyToManyField(Algorithme,through='MetriqueAlgorithmeProjet')
+    algorithmes = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
+    algorithme_projets = models.ManyToManyField(Algorithme,through='MetriqueAlgorithmeProjet')
 
 class MetriqueAlgorithme(models.Model):
     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
@@ -126,7 +127,7 @@ class TaxionomieTypeDonne(models.Model):
 class Encodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    strategie_encodage = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieEncodage')
+    strategie_encodages = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieEncodage')
 
 
 class StrategieEncodage(models.Model):
@@ -138,7 +139,7 @@ class StrategieEncodage(models.Model):
 class Imputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donne = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieImputation')
+    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieImputation')
 
 class StrategieImputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
@@ -149,7 +150,7 @@ class StrategieImputation(models.Model):
 class MiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donne = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieMiseEchelle')
+    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieMiseEchelle')
 
 
 class StrategieMiseEchelle(models.Model):
@@ -161,7 +162,7 @@ class StrategieMiseEchelle(models.Model):
 
 class Colonne(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
-    type_donnee =  models.CharField(max_length=254, blank=True,null=True)
+    type_donnee = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
     est_categoriel = models.BooleanField()
     est_target  = models.BooleanField()
     est_selectionnee = models.BooleanField()
@@ -175,14 +176,11 @@ class HyperParametre(models.Model):
     valeur = models.CharField(max_length=254, blank=True,null=True)
     cle =  models.CharField(max_length=254, blank=True,null=True)
     #typedonnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
-    valeur = models.ManyToManyField(AlgorithmeProjet, through='Valeur')
+    valeurs = models.ManyToManyField(AlgorithmeProjet, through='Valeur')
 
 class Valeur(models.Model):
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
     hyper_parametre = models.ForeignKey(HyperParametre, on_delete=models.CASCADE)
     contenu = models.TextField(max_length=254, blank=True,null=True)
-
-
-
 
 # Create your models here.
