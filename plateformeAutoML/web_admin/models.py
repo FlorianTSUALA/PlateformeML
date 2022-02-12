@@ -1,4 +1,5 @@
 from django.db import models
+from .enum import TypeDonne, EtatPublication, TypeValeur
 
 class Compte(models.Model):
     login = models.CharField(max_length=254, blank=True,null=True)
@@ -60,7 +61,7 @@ class Modele(models.Model):
 class Parametre(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.CharField(max_length=254, blank=True,null=True)
-    type =  models.TextField(max_length=254, blank=True,null=True)
+    type = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
     modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
 
 
@@ -140,7 +141,7 @@ class StrategieMiseEchelle(models.Model):
 
 class Colonne(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
-    type_donnee =  models.CharField(max_length=254, blank=True,null=True)
+    type_donnee = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
     est_categoriel = models.BooleanField()
     est_target  = models.BooleanField()
     est_selectionnee = models.BooleanField()
