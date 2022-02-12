@@ -1,0 +1,174 @@
+{% load static%}
+
+<aside class="sidebar-wrapper" data-simplebar="true">
+	<div class="sidebar-header">
+	  <div>
+		<img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
+	  </div>
+	  <div>
+		<h4 class="logo-text">&nbsp&nbspLIIAIR &nbsp&nbspAUTO ML</h4>
+	  </div>
+	  <div class="toggle-icon ms-auto"> <i class="bi bi-list"></i>
+	  </div>
+	</div>
+	<!--navigation-->
+	<ul class="metismenu" id="menu">
+	  <li>
+		<a href="javascript:;" class="has-arrow">
+		  <div class="parent-icon"><i class="bi bi-house-fill"></i>
+		  </div>
+		  <div class="menu-title">Mon Espace</div>
+		</a>
+		<ul>
+		  <li> <a href="index.html"><i class="bi bi-circle"></i>Acceuil</a> </li>
+		  <li> <a href="index2.html"><i class="bi bi-circle"></i>Mes favoris</a> </li>
+		</ul>
+	  </li>
+	  <li>
+		<a href="javascript:;" class="">
+		  <div class="parent-icon"><i class="bi bi-grid-fill"></i>
+		  </div>
+		  <div class="menu-title">Explorer projets</div>
+		</a>
+	  </li>
+	  <li>
+		<a href="javascript:;" class="">
+		  <div class="parent-icon"><i class="bi bi-grid-fill"></i>
+		  </div>
+		  <div class="menu-title">Nouveau projets</div>
+		</a>
+	  </li>
+	  <li class="menu-label">Projet courant</li>
+	  <li>
+		<a class="has-arrow" href="javascript:;">
+		  <div class="parent-icon"><i class="bi bi-award-fill"></i>
+		  </div>
+		  <div class="menu-title">
+			<div class="spinner-grow spinner-grow-sm  text-primary" role="status"> <span class="visually-hidden">Loading...</span> </div> En création</div>
+		</a>
+		<ul>
+		  <li> 
+			  <a  class="step-01" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Définissez les informations d'indentifications du projet">
+				  <i class="bi bi-circle"></i>Informations générales
+			  </a> 
+		  </li>
+		  <li> 
+			  <a  class="step-02" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Chargez votre jeu de données et selectionnez les colonnes à prendre en compte.">
+				  <i class="bi bi-circle"></i>Chargement des données
+			  </a> 
+		  </li>
+		  <li> 
+			  <a  class="step-03" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Choisissez la tache de machine learning qui convient au contexte de vos données?">
+				  <i class="bi bi-circle"></i>Choix de la tache
+			  </a> 
+		  </li>
+		  <li> 
+			  <a  class="step-04" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Choisissez les algorithmes à entrainer sur vos données.">
+				  <i class="bi bi-circle"></i>Choix d'algorithme(s)
+			  </a> 
+			</li>
+		  <li> 
+			  <a  class="step-05" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Initialiser la phase d'apprentissage pour la contruction de modeles; A chaque algorithme conviendra un modele prédictif.">
+				  <i class="bi bi-circle"></i>Entrainements
+			  </a> 
+		  </li>
+		  <li> 
+			  <a  class="step-06" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Consultez les performations de vos modeles; télécharger les modeles pour une reutilisation ultériere.">
+				  <i class="bi bi-circle"></i>Evaluation des modeles
+			  </a> 
+		  </li>
+		  <li> 
+			  <a  class="step-07" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Realisez des prédictions sur de nouvelles observations, et observez le comportement de votre modele">
+				  <i class="bi bi-circle"></i>Prédiction d'un modele
+			  </a> 
+		  </li>
+		</ul>
+	  </li>
+	  <li class="menu-label"> Paramétrages </li>
+	  <li>
+		<a class="has-arrow" href="javascript:;">
+		  <div class="parent-icon"><i class="bi bi-file-earmark-break-fill"></i>
+		  </div>
+		  <div class="menu-title">Projets</div>
+		</a>
+		<ul>
+		  <li> <a href="form-elements.html"><i class="bi bi-circle"></i>En attente de publication</a> </li>
+		  <li> <a href="form-input-group.html"><i class="bi bi-circle"></i>Publics</a> </li>
+		  <li> <a href="form-layouts.html"><i class="bi bi-circle"></i>Privés</a> </li>
+		  <li> <a href="form-validations.html"><i class="bi bi-circle"></i>Archivés</a> </li>
+		  <li> <a href="form-wizard.html"><i class="bi bi-circle"></i>Tous les projets</a> </li>
+		</ul>
+	  </li>
+	  <li>
+		<a class="has-arrow" href="javascript:;">
+		  <div class="parent-icon"><i class="bi bi-file-earmark-spreadsheet-fill"></i>
+		  </div>
+		  <div class="menu-title">Systemes</div>
+		</a>
+		<ul>
+		  <li> <a href="table-basic-table.html"><i class="bi bi-circle"></i>Algorithme</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Metrique</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Criteres de compraison</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Package Algo</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Familles Algo</a> </li>
+		  <li> <a href="table-datatable.html"><i class="bi bi-circle"></i>Tache ML</a> </li>
+		  <li> <a href="table-datatable.html"><i class="bi bi-circle"></i>Type Apprentissage</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Taxonomie Type données</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Valeurs Manquantes</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Encodage</a> </li>
+		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Mise à Echelle</a> </li>
+		</ul>
+	  </li>
+	  <li class="menu-label">Utilisateurs</li>
+	  <li>
+		<a class="has-arrow" href="javascript:;">
+		  <div class="parent-icon"><i class="bi bi-lock-fill"></i>
+		  </div>
+		  <div class="menu-title">Comptes utilisateurs</div>
+		</a>
+		<ul>
+		  <li> <a href="authentication-signin.html" target="_blank"><i class="bi bi-circle"></i>Nouveau</a> </li>
+		  <li> <a href="authentication-signin.html" target="_blank"><i class="bi bi-circle"></i>Liste</a> </li>
+		  <li> <a href="authentication-signup.html" target="_blank"><i class="bi bi-circle"></i>Archivés</a> </li>
+		  <li> <a href="authentication-signin-with-header-footer.html" target="_blank"><i class="bi bi-circle"></i>Attente de validations</a> </li>
+		</ul>
+	  </li>
+	  <li>
+		<a href="pages-user-profile.html">
+		  <div class="parent-icon"><i class="bi bi-person-lines-fill"></i>
+		  </div>
+		  <div class="menu-title">Mon Compte</div>
+		</a>
+	  </li>
+	  <li>
+		<a href="{%url 'default' %}">
+		  <div class="parent-icon"><i class="bi bi-collection-play-fill"></i>
+		  </div>
+		  <div class="menu-title">Déconnexion</div>
+		</a>
+	  </li>
+	  <li class="menu-label">Autres</li>
+	  <li>
+		<a href="{%url 'default' %}" target="_blank">
+		  <div class="parent-icon"><i class="bi bi-file-code-fill"></i>
+		  </div>
+		  <div class="menu-title">FAQ</div>
+		</a>
+	  </li>
+	  <li>
+		<a href="https://themeforest.net/user/codervent" target="_blank">
+		  <div class="parent-icon"><i class="bi bi-telephone-fill"></i>
+		  </div>
+		  <div class="menu-title">A Propos</div>
+		</a>
+	  </li>
+	</ul>
+	<!--end navigation-->
+ </aside>

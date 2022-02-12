@@ -1,6 +1,9 @@
 from django.db import models
-from .enum import TypeDonnee, EtatPublication, TypeValeur
+from .enum import ETypeDonnee, EtatPublication, TypeValeur
 
+#todo
+#TextFild Limitation
+#IntegerLimitation
 
 class Compte(models.Model):
     login = models.CharField(max_length=254, blank=True,null=True)
@@ -21,8 +24,8 @@ class Projet(models.Model):
     nom =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     metrique =  models.CharField(max_length=254, blank=True,null=True)
-    type = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
-    est_public = models.CharField(max_length=50, choices=EtatPublication.choices(), default=EtatPublication.DECIMAL)
+    type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
+    est_publique = models.CharField(max_length=50, choices=EtatPublication.choices(), default=EtatPublication.DECIMAL)
     nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
 
@@ -91,7 +94,7 @@ class Modele(models.Model):
 class Parametre(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    type = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
+    type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
 
 class Metrique(models.Model):
@@ -163,7 +166,7 @@ class StrategieMiseEchelle(models.Model):
 
 class Colonne(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
-    type_donnee = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
+    type_donnee = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     est_categoriel = models.BooleanField()
     est_target  = models.BooleanField()
     est_selectionnee = models.BooleanField()
@@ -176,7 +179,7 @@ class Colonne(models.Model):
 class HyperParametre(models.Model):
     valeur = models.CharField(max_length=254, blank=True,null=True)
     cle =  models.CharField(max_length=254, blank=True,null=True)
-    type_donnee = models.CharField(max_length=50, choices=TypeDonnee.choices(), default=TypeDonnee.DECIMAL)
+    type_donnee = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     valeurs = models.ManyToManyField(AlgorithmeProjet, through='Valeur')
 
 class Valeur(models.Model):
