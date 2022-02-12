@@ -18,4 +18,7 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('sysadmin/', include('web_admin.urls'), name = 'web_admin'),
+    path('abonne/', include('web_client.urls'), name = 'web_client'),
+    path('accueil/', include('web_vitrine.urls'), name = 'web_vitrine'),
 ]

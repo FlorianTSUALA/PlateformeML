@@ -1,0 +1,56 @@
+{% if models %}
+<div class="col-12">
+    <div class="box">
+        <div class="box-header">
+            <h4 class="box-title align-items-start flex-column">
+                Inventaires des models du système
+                <small class="subtitle"> (<small class="badge-info-light badge-pill">{{models.count}}</small>) Role(s) existants </small>
+            </h4>
+        </div>
+        
+        <div class="box-body py-0">
+            <div class="table-responsive">
+                <table class="table no-border">
+                    <thead>
+                        <tr class="text-start">
+                            <th class="text-center p-0" style="width: 50px">N°</th>
+                            <th class=" p-0" style="min-width: 200px">label</th>
+                            <th class="p-0" style="min-width: 600px">Description</th>
+                            <th class="text-center p-0" style="min-width: 100px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for model in models %}
+                        <tr>										
+                            <td>
+                                <div class="bg-lightest h-50 w-50 l-h-50 rounded text-center">
+                                      <img src="../images/svg-icon/color-svg/007-color-palette.svg" class="h-30" alt="">
+                                </div>
+                            </td>
+                            <td>
+                                <a href="#" class="text-dark fw-600 hover-primary fs-16">{{model.name}}</a>
+                                <span class="text-fade d-block"> {{model.state}} </span>
+                            </td>
+                            <td class="text-start">{{model.description}}</td>
+                            <td class="text-end">
+                                <a href="#" data-id="{{ model.pk }}" class="waves-effect waves-light btn btn-primary-light btn-circle mx-5"><span class="icon-Write"><span class="path1"></span><span class="path2"></span></span></a>
+                                <a hx-delete="{% url 'delete-model' model.pk %}" hx-target="#list-model" hx-confirm="Voulez vouz supprimer cet élément?" class="waves-effect waves-light btn btn-primary-light btn-circle"><span class="icon-Trash1 fs-18"><span class="path1"></span><span class="path2"></span></span></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        
+    </div>  
+</div>
+{% else %}
+<div class="card box box-inverse box-warning">
+    <div class="card-header">
+      <h4 class="card-title text-center"> Oups  !!!</h4>
+      <h4 class="card-subtitle"> <code>Aucune donnée disponible</code></h4>
+    </div>
+</div>
+{% endif %}

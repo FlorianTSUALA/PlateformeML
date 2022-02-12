@@ -3,10 +3,10 @@ from django.db.models.enums import TextChoices
 
 
 class Compte(models.Model):
-    ligin = models.CharField(max_length=254, blank=True,null=True)
+    login = models.CharField(max_length=254, blank=True,null=True)
     prenom = models.CharField(max_length=254, blank=True,null=True)
     password = models.CharField(max_length=254, blank=True,null=True)
-    estactive = models.IntegerField(max_length=254, blank=True,null=True)
+    est_active = models.BooleanField()
     etat = models.IntegerField(max_length=254, blank=True,null=True)
 
 
@@ -21,8 +21,8 @@ class Projet(models.Model):
     nom =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.CharField(max_length=254, blank=True,null=True)
     metrique =  models.CharField(max_length=254, blank=True,null=True)
-    estPublic = models.CharField(max_length=254, blank=True,null=True)
-    nbremodel = models.IntegerField(max_length=254, blank=True,null=True)
+    est_public =models.BooleanField()
+    nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
 
 
@@ -31,20 +31,20 @@ class JeuDonnees(models.Model):
     fichier =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.CharField(max_length=254, blank=True,null=True)
     source =  models.CharField(max_length=254, blank=True,null=True)
-    pourcentagevalidation = models.IntegerField(max_length=254, blank=True,null=True)
-    pourcentagetest = models.IntegerField(max_length=254, blank=True,null=True)
+    pourcentage_validation = models.IntegerField(max_length=254, blank=True,null=True)
+    pourcentage_test = models.IntegerField(max_length=254, blank=True,null=True)
     taille = models.IntegerField(max_length=254, blank=True,null=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
 
 
-class SymboleValeurManquant(models.Model):
+class SymboleValeurManquante(models.Model):
     symbole =  models.CharField(max_length=254, blank=True,null=True)
 
 
 class AlgorithmeProjet(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.CharField(max_length=254, blank=True,null=True)
-    nbremodele = models.IntegerField(max_length=254, blank=True,null=True)
+    nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
 
 class Metrique(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
@@ -126,7 +126,7 @@ class StrategieImputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.CharField(max_length=254, blank=True,null=True)
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE)
-    taxionomie_type_tonne = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
 
 class MiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
@@ -136,17 +136,17 @@ class MiseEchelle(models.Model):
 class StrategieMiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.CharField(max_length=254, blank=True,null=True)
-    taxionomie_type_tonne = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
     mise_echelle = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE)
     
 
 class Colonne(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
-    typedonnee =  models.CharField(max_length=254, blank=True,null=True)
-    estcategoriel = models.BooleanField()
-    esttaget  = models.BooleanField()
-    estelectionne = models.BooleanField()
-    partten = models.CharField(max_length=254, blank=True,null=True)
+    type_donnee =  models.CharField(max_length=254, blank=True,null=True)
+    est_categoriel = models.BooleanField()
+    est_target  = models.BooleanField()
+    est_selectionnee = models.BooleanField()
+    pattern = models.CharField(max_length=254, blank=True,null=True)
     jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
     strategie_encodage = models.ForeignKey(StrategieEncodage, on_delete=models.CASCADE)
     strategie_imputation = models.ForeignKey(StrategieImputation, on_delete=models.CASCADE)
