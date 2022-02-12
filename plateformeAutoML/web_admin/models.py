@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.enums import TextChoices
+
 
 class Compte(models.Model):
     ligin = models.CharField(max_length=254, blank=True,null=True)
@@ -150,6 +152,9 @@ class Colonne(models.Model):
     strategie_imputation = models.ForeignKey(StrategieImputation, on_delete=models.CASCADE)
     strategie_mise_echelle = models.ForeignKey(StrategieMiseEchelle, on_delete=models.CASCADE)
 
-
+class HyperParametre(models.Model):
+    valeur = models.CharField(max_length=254, blank=True,null=True)
+    cle =  models.CharField(max_length=254, blank=True,null=True)
+    typedonnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
 
 # Create your models here.
