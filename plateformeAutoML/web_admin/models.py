@@ -40,29 +40,6 @@ class SymboleValeurManquante(models.Model):
     symbole =  models.CharField(max_length=254, blank=True,null=True)
 
 
-class AlgorithmeProjet(models.Model):
-    libele =  models.CharField(max_length=254, blank=True,null=True)
-    description =  models.TextField(max_length=254, blank=True,null=True)
-    nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
-
-
-
-class Modele(models.Model):
-    chemin =  models.CharField(max_length=254, blank=True,null=True)
-    precision =  models.CharField(max_length=254, blank=True,null=True)
-    rapport = models.TextField(max_length=254, blank=True,null=True)
-    resume = models.TextField(max_length=254, blank=True,null=True)
-    algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
-
-
-class Parametre(models.Model):
-    libelle = models.CharField(max_length=254, blank=True,null=True)
-    description =  models.TextField(max_length=254, blank=True,null=True)
-    type =  models.TextField(max_length=254, blank=True,null=True)
-    modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
-
-
-
 class CritereComparaison(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
@@ -92,6 +69,28 @@ class Algorithme(models.Model):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     tache = models.ForeignKey(Tache, on_delete=models.CASCADE)
     famille = models.ForeignKey(Famille, on_delete=models.CASCADE)
+    projet = models.ManyToManyField(Projet,through='AlgorithmeProjet')
+
+class AlgorithmeProjet(models.Model):
+    libele =  models.CharField(max_length=254, blank=True,null=True)
+    description =  models.TextField(max_length=254, blank=True,null=True)
+    nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
+    algorthme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
+
+class Modele(models.Model):
+    chemin =  models.CharField(max_length=254, blank=True,null=True)
+    precision =  models.CharField(max_length=254, blank=True,null=True)
+    rapport = models.TextField(max_length=254, blank=True,null=True)
+    resume = models.TextField(max_length=254, blank=True,null=True)
+    algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
+
+
+class Parametre(models.Model):
+    libelle = models.CharField(max_length=254, blank=True,null=True)
+    description =  models.TextField(max_length=254, blank=True,null=True)
+    type =  models.TextField(max_length=254, blank=True,null=True)
+    modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
 
 class Metrique(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
