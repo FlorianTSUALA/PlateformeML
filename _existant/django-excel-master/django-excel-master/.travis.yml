@@ -1,0 +1,68 @@
+sudo: false
+dist: xenial
+language: python
+notifications:
+  email: false
+env:
+  - DJANGO_VERSION=1.8.18
+  - DJANGO_VERSION=1.9.13
+  - DJANGO_VERSION=1.10.8
+  - DJANGO_VERSION=1.11.15
+  - DJANGO_VERSION=2.0.8
+  - DJANGO_VERSION=2.1
+  - DJANGO_VERSION=3.1.2
+python:
+  - 3.6
+  - 3.7
+
+stages:
+  - lint
+  - test
+
+
+.lint: &lint
+  git:
+    submodules: false
+  python: 3.6
+  env:
+    - MINREQ=0
+  stage: lint
+  script: make lint
+
+jobs:
+  include:
+    - *moban
+    - *lint
+  exclude:
+    - python: 3.6
+      env: DJANGO_VERSION=1.9.13
+    - python: 3.6
+      env: DJANGO_VERSION=1.10.8
+    - python: 3.7
+      env: DJANGO_VERSION=1.8.18
+    - python: 3.7
+      env: DJANGO_VERSION=1.9.13
+    - python: 3.7
+      env: DJANGO_VERSION=1.10.8
+    - python: 3.7
+      env: DJANGO_VERSION=1.8.18
+    - python: 3.7
+      env: DJANGO_VERSION=1.11.15
+
+stage: test
+
+before_install:
+  - if [ -n "$DJANGO_VERSION" ]; then
+      pip install Django==$DJANGO_VERSION;
+    fi
+  - if [[ -f min_requirements.txt && "$MINREQ" -eq 1 ]]; then
+      mv min_requirements.txt requirements.txt ;
+    fi
+  - test ! -f rnd_requirements.txt ||
+    pip install --no-deps -r rnd_requirements.txt
+  - test ! -f rnd_requirements.txt || pip install -r rnd_requirements.txt ;
+  - pip install -r tests/requirements.txt
+script:
+  - make test
+after_success:
+  codecov

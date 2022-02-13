@@ -14,25 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include, re_path
+# from .views import ProjetListView, ProjetDetailView
 from web_admin.views import (
-
-    model_create, 
-    model_update, 
-    model_delete, 
-    model,
-
+    AlgorithmeView, 
 )
 
-
+# urlpatterns = [
+#     path('', views.index, name='index'),
+#     path('parametre/algorithmes/', views.AlgorithmeListView.as_view(), name='algorithmes'),
+#     path('parametre/algorithme/<int:pk>', views.AlgorithmeDetailView.as_view(), name='algorithme-detail'),
+# ]
 
 urlpatterns = [
-    #account access
-
-    path('project/',  project, name='project'),
-    path('project/project_create/',  project_create, name='project_create'),
-    path('project/<int:pk>/update/',  project_update, name='project_update'),
-    path('project/<int:pk>/delete/',  project_delete, name='admin_delete'),
-
-    path('login/',  user_login, name='login'),
-
+    path('parametrage/',  AlgorithmeView.as_view(), name='algorithme'),
+    # path('parametrage/algorithme/create/',  views.CreateAlgorithmeView.as_view(), name='algorithme_create'),
+    # path('parametrage/algorithme/update/',  views.UpdateAlgorithmeView.as_view(), name='algorithme_update'),
+    # path('parametrage/algorithme/delete/',  views.DeleteAlgorithmeView.as_view(), name='algorithme_delete'),
 ]
+
+# urlpatterns2 = [
+#     # path('<int:pk>', ProjetDetailView.as_view(), name='projet_detail'),
+#     # path('', ProjetListView.as_view(), name='projet_list'),
+# ]
+
+# urlpatterns += urlpatterns2

@@ -1,0 +1,11 @@
+overrides: "git://github.com/pyexcel/pyexcel-mobans!/mobanfile.yaml"
+configuration:
+  configuration: django_excel.yml
+targets:
+  - README.rst: custom_README.rst.jj2
+  - setup.py: custom_setup.py.jj2
+  - .travis.yml: custom_travis.yml.jj2
+  - MANIFEST.in: MANIFEST.in
+  - "docs/source/index.rst": "docs/source/django-index.rst.jj2"
+  - "tests/requirements.txt": "tests/custom_requirements.txt.jj2"
+  - .gitignore: gitignore.jj2

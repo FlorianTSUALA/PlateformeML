@@ -1,7 +1,7 @@
 from django.db import models
 from enum import Enum
 
-class NoNameChoice(Enum):
+class ENoNameChoice(Enum):
     def __repr__(self):
         return self.value
     
@@ -9,18 +9,18 @@ class NoNameChoice(Enum):
     def choices(cls):
         return [(key.value, key.name) for key in cls]
 
-class TypeDonnee(NoNameChoice):
+class ETypeDonnee(ENoNameChoice):
     ENTIER = 'ENTIER'
     DECIMAL = 'DECIMAL'
     CAHINE_CARACTERE = 'CAHINE_CARACTERE'
     INTERVALLE = 'INTERVALLE'
 
-class EtatPublication(NoNameChoice):
+class EEtatPublication(ENoNameChoice):
     EN_ATTENTE_VALIDATION = 'EN_ATTENTE_VALIDATION'
     PUBLIC = 'PUBLIC'
     PRIVE = 'PRIVE'
 
-class TypeValeur(NoNameChoice):
+class ETypeValeur(ENoNameChoice):
     QUALITATIF = 'QUALITATIF'
     QUANTITATIF = 'QUANTITATIF'
     NUMERIC = 'NUMERIC'

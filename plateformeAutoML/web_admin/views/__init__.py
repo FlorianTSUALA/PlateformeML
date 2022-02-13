@@ -1,1 +1,1 @@
-from .template_view import *
+from .algorithme_view import *

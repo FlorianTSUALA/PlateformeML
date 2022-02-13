@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'web_admin',
+    # 'web_client',
+    # 'web_vitrine',
 ]
 
 MIDDLEWARE = [
@@ -130,7 +133,6 @@ STATIC_URL = '/static/'
 
 # Add these new lines
 STATICFILES_DIRS = [ BASE_DIR / 'static', ]
-    # os.path.join(BASE_DIR, 'static'),
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 

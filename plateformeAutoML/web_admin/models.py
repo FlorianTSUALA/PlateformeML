@@ -1,16 +1,16 @@
 from django.db import models
-from .enum import ETypeDonnee, EtatPublication, TypeValeur
+from .enum import ETypeDonnee, EEtatPublication, ETypeValeur
+from django.urls import reverse
 
 #todo
 #TextFild Limitation
-#IntegerLimitation
 
 class Compte(models.Model):
     login = models.CharField(max_length=254, blank=True,null=True)
     prenom = models.CharField(max_length=254, blank=True,null=True)
     password = models.CharField(max_length=254, blank=True,null=True)
     est_active = models.BooleanField()
-    etat = models.IntegerField(max_length=254, blank=True,null=True)
+    etat = models.IntegerField(default=0, blank=True,null=True)
 
 
 class Utilisateur(models.Model):
@@ -21,23 +21,34 @@ class Utilisateur(models.Model):
     pays = models.CharField(max_length=254, blank=True,null=True)
 
 class Projet(models.Model):
-    nom =  models.CharField(max_length=254, blank=True,null=True)
+    title =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    metrique =  models.CharField(max_length=254, blank=True,null=True)
+    metrique =  models.CharField(max_length=254, blank=True,null=True) #to del
     type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
-    est_publique = models.CharField(max_length=50, choices=EtatPublication.choices(), default=EtatPublication.DECIMAL)
-    nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
+    est_publique = models.CharField(max_length=50, choices=EEtatPublication.choices(), default=EEtatPublication.PRIVE)
+    nombre_modele = models.IntegerField(default=0, blank=True,null=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    
+    slug = models.SlugField(null=True, unique=True)
 
+    def __str__(self):
+        return self.title
 
+    def get_absolute_url(self):
+        return reverse('projet_detail', kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs): # new
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
 class JeuDonnees(models.Model):
     fichier =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     source =  models.CharField(max_length=254, blank=True,null=True)
-    pourcentage_validation = models.IntegerField(max_length=254, blank=True,null=True)
-    pourcentage_test = models.IntegerField(max_length=254, blank=True,null=True)
-    taille = models.IntegerField(max_length=254, blank=True,null=True)
+    pourcentage_validation = models.DecimalField(default=0,  max_digits=3, decimal_places=2, blank=True,null=True)
+    pourcentage_test = models.DecimalField(default=0.3,  max_digits=3, decimal_places=2, blank=True,null=True)
+    taille = models.IntegerField(default=0, blank=True,null=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
 
 
@@ -76,12 +87,20 @@ class Algorithme(models.Model):
     famille = models.ForeignKey(Famille, on_delete=models.CASCADE)
     projet = models.ManyToManyField(Projet,through='AlgorithmeProjet')
 
+
+class Metrique(models.Model):
+    libele =  models.CharField(max_length=254, blank=True,null=True)
+    description =  models.TextField(max_length=254,blank=True,null=True)
+    algorithmes = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
+
+
 class AlgorithmeProjet(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    nombre_modele = models.IntegerField(max_length=254, blank=True,null=True)
+    nombre_modele = models.IntegerField(default=0, blank=True,null=True)
     algorthme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
+    metriques = models.ManyToManyField(Metrique,through='MetriqueAlgorithmeProjet')
 
 class Modele(models.Model):
     chemin =  models.CharField(max_length=254, blank=True,null=True)
@@ -97,12 +116,6 @@ class Parametre(models.Model):
     type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
 
-class Metrique(models.Model):
-    libele =  models.CharField(max_length=254, blank=True,null=True)
-    description =  models.TextField(max_length=254, blank=True,null=True)
-    algorithmes = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
-    algorithme_projets = models.ManyToManyField(Algorithme,through='MetriqueAlgorithmeProjet')
-
 class MetriqueAlgorithme(models.Model):
     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
     algorithme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
@@ -114,9 +127,9 @@ class MetriqueAlgorithmeProjet(models.Model):
 
 
 class CritereComparaisonAlgorithme(models.Model):
-    valeur = models.IntegerField(max_length=254, blank=True,null=True)
-    min = models.IntegerField(max_length=254, blank=True,null=True)
-    max = models.IntegerField(max_length=254, blank=True,null=True)
+    valeur = models.IntegerField(default=0, blank=True,null=True)
+    min = models.IntegerField(default=0, blank=True,null=True)
+    max = models.IntegerField(default=0, blank=True,null=True)
     critere_comparaison = models.ForeignKey(CritereComparaison, on_delete=models.CASCADE)
     algorithme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
 
@@ -177,11 +190,14 @@ class Colonne(models.Model):
     strategie_mise_echelle = models.ForeignKey(StrategieMiseEchelle, on_delete=models.CASCADE)
 
 class HyperParametre(models.Model):
-    valeur = models.CharField(max_length=254, blank=True,null=True)
+    valeur_defaut = models.CharField(max_length=254, blank=True,null=True)
     cle =  models.CharField(max_length=254, blank=True,null=True)
     type_donnee = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     valeurs = models.ManyToManyField(AlgorithmeProjet, through='Valeur')
 
+    def __str__(self):
+        return "{0} : {1}".format(self.cle, self.valeur) 
+        
 class Valeur(models.Model):
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
     hyper_parametre = models.ForeignKey(HyperParametre, on_delete=models.CASCADE)

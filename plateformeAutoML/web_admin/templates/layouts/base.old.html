@@ -1,0 +1,58 @@
+
+
+<body class="hold-transition light-skin sidebar-mini theme-primary fixed">
+	
+<div class="wrapper">
+	<div id="loader"></div>
+
+	{% comment %} header {% endcomment %}
+    {% include "layouts/header.html" %}
+  
+  <!-- Left side column. contains the logo and sidebar -->
+	{% comment %} main-sidebar {% endcomment %}
+    {% include "layouts/main-sidebar.html" %}
+  
+
+  
+  <!-- Content Wrapper. Contains page content -->
+        {% block content %} {% endblock %}
+  <!-- /.content-wrapper -->
+
+ 	{% comment %} footer {% endcomment %}
+    {% include "layouts/footer.html" %}
+  
+
+    {% comment %} control-sidebar {% endcomment %}
+    {% include "layouts/control-sidebar.html" %}
+  
+</div>
+<!-- ./wrapper -->
+	
+	<!-- ./side demo panel -->
+	{% comment %} sticky-toolbar {% endcomment %}
+    {% if sidebar %}
+        {% include "includes/sticky-toolbar.html" %}
+    {% endif %}
+	<!-- Sidebar -->
+	
+
+	{% comment %} chat-box-body {% endcomment %}
+    {% comment %} {% include "includes/chat-box-body.html" %} {% endcomment %}
+  	{% block floating-button %} {% endblock %}
+	<!-- Page Content overlay -->
+	
+
+	{% block page_scripts %} 
+        {% include "layouts/footer-script.html" %}
+    {% endblock %}
+    <script src="{% static 'template/assets/vendor_components/sweetalert2/sweetalert2.min.js' %}"></script>
+	<script src="{% static 'template/js/htmx.min.js' %}"></script>
+
+    
+    
+    
+	{% block javascript %} {% endblock %}
+	
+
+</body>
+</html>

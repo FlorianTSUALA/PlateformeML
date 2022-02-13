@@ -63,7 +63,7 @@ def home_model(request):
 
     # request.user.model.add(model)
     models = Model.objects.all()
-    return render(request, 'partials/model/list.html',{models: models})
+    return render(request, 'partials/model/list.html', {models: models})
 
 @login_required
 @require_http_methods(['POST'])
@@ -84,7 +84,7 @@ def add_model(request):
 
     # return template fragment with all the user's models
     models = Model.objects.all()
-    return render(request, 'partials/model/list.html',{models: models})
+    return render(request, 'partials/model/list.html', {models: models})
 
 
 def check_libelle(request):
@@ -101,7 +101,7 @@ def update_model(request):
 
     # request.user.model.add(model)
     models = Model.objects.all()
-    return render(request, 'partials/model/list.html',{models: models})
+    return render(request, 'partials/model/list.html', {models: models})
 
 @login_required
 @require_http_methods(['DELETE'])
@@ -109,6 +109,6 @@ def delete_model(request, pk):
     request.user.models.remove(pk)
 
     models = Model.objects.all()
-    return render(request, 'partials/model/list.html',{models: models})
+    return render(request, 'partials/model/list.html', {models: models})
 
 
