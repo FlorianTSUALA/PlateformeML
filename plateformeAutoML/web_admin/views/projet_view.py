@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView
 
-from .models import Projet
+from web_admin.models import Projet
 
 class ProjetListView(ListView):
     model = Projet

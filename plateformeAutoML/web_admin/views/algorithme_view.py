@@ -15,36 +15,38 @@ class AlgorithmeListView(ListView):
 
 
 class AlgorithmeView(TemplateView):
-    template_name = 'algorithme/index.html'
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['users'] = Algorithme.objects.all()
-    #     return context
+    template_name = 'model_form_right.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_title'] = 'Parametrage'
+        context['section_item_title'] = 'Algorithme'
+        return context
 
 
 class CreateAlgorithmeView(View):
     def  get(self, request):
-        name1 = request.GET.get('name', None)
-        address1 = request.GET.get('address', None)
+        libelle = request.GET.get('libelle', None)
+        description = request.GET.get('description', None)
         age1 = request.GET.get('age', None)
 
         obj = Algorithme.objects.create(
-            name = name1,
-            address = address1,
+            name = libelle,
+            address = description,
             age = age1
         )
 
-        user = {'id':obj.id,'name':obj.name,'address':obj.address,'age':obj.age}
+        data = Algorithme.objects.all()
 
         data = {
-            'user': user
+            'data': data
         }
         return JsonResponse(data)
 
 class DeleteAlgorithmeView(View):
     def  get(self, request):
-        id1 = request.GET.get('id', None)
-        Algorithme.objects.get(id=id1).delete()
+        id = request.GET.get('id', None)
+        Algorithme.objects.get(id=id).delete()
         data = {
             'deleted': True
         }
@@ -53,14 +55,14 @@ class DeleteAlgorithmeView(View):
 
 class UpdateAlgorithmeView(View):
     def  get(self, request):
-        id1 = request.GET.get('id', None)
-        name1 = request.GET.get('name', None)
-        address1 = request.GET.get('address', None)
+        id = request.GET.get('id', None)
+        libelle = request.GET.get('name', None)
+        description = request.GET.get('address', None)
         age1 = request.GET.get('age', None)
 
-        obj = Algorithme.objects.get(id=id1)
-        obj.name = name1
-        obj.address = address1
+        obj = Algorithme.objects.get(id=id)
+        obj.name = libelle
+        obj.address = description
         obj.age = age1
         obj.save()
 

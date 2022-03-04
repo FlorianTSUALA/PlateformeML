@@ -3,10 +3,10 @@
 <aside class="sidebar-wrapper" data-simplebar="true">
 	<div class="sidebar-header">
 	  <div>
-		<img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
+		<img src="{% static 'template/assets/images/logo-icon.png' %}" class="logo-icon" alt="logo icon">
 	  </div>
 	  <div>
-		<h4 class="logo-text">&nbsp&nbspLIIAIR &nbsp&nbspAUTO ML</h4>
+		<h4 class="logo-text">&nbsp&nbsp LAIMA &nbsp&nbsp AUTO ML</h4>
 	  </div>
 	  <div class="toggle-icon ms-auto"> <i class="bi bi-list"></i>
 	  </div>
@@ -20,8 +20,8 @@
 		  <div class="menu-title">Mon Espace</div>
 		</a>
 		<ul>
-		  <li> <a href="index.html"><i class="bi bi-circle"></i>Acceuil</a> </li>
-		  <li> <a href="index2.html"><i class="bi bi-circle"></i>Mes favoris</a> </li>
+		  <li> <a href="{% url 'template' %}"><i class="bi bi-circle"></i>Accueil</a> </li>
+		  <li> <a href="{% url 'template' %}"><i class="bi bi-circle"></i>Mes favoris</a> </li>
 		</ul>
 	  </li>
 	  <li>
@@ -99,11 +99,11 @@
 		  <div class="menu-title">Projets</div>
 		</a>
 		<ul>
-		  <li> <a href="form-elements.html"><i class="bi bi-circle"></i>En attente de publication</a> </li>
-		  <li> <a href="form-input-group.html"><i class="bi bi-circle"></i>Publics</a> </li>
-		  <li> <a href="form-layouts.html"><i class="bi bi-circle"></i>Privés</a> </li>
-		  <li> <a href="form-validations.html"><i class="bi bi-circle"></i>Archivés</a> </li>
-		  <li> <a href="form-wizard.html"><i class="bi bi-circle"></i>Tous les projets</a> </li>
+		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>En attente de publication</a> </li>
+		  <li> <a href="form-input-{% url 'template' %}"><i class="bi bi-circle"></i>Publics</a> </li>
+		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>Privés</a> </li>
+		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>Archivés</a> </li>
+		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>Tous les projets</a> </li>
 		</ul>
 	  </li>
 	  <li>
@@ -113,17 +113,17 @@
 		  <div class="menu-title">Systemes</div>
 		</a>
 		<ul>
-		  <li> <a href="table-basic-table.html"><i class="bi bi-circle"></i>Algorithme</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Metrique</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Criteres de compraison</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Package Algo</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Familles Algo</a> </li>
-		  <li> <a href="table-datatable.html"><i class="bi bi-circle"></i>Tache ML</a> </li>
-		  <li> <a href="table-datatable.html"><i class="bi bi-circle"></i>Type Apprentissage</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Taxonomie Type données</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Valeurs Manquantes</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Encodage</a> </li>
-		  <li> <a href="table-advance-tables.html"><i class="bi bi-circle"></i>Mise à Echelle</a> </li>
+		  <li> <a href="table-basic-{% url 'template' %}"><i class="bi bi-circle"></i>Algorithme</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Metrique</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Criteres de compraison</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Package Algo</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Familles Algo</a> </li>
+		  <li> <a href="table-{% url 'template' %}"><i class="bi bi-circle"></i>Tache ML</a> </li>
+		  <li> <a href="table-{% url 'template' %}"><i class="bi bi-circle"></i>Type Apprentissage</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Taxonomie Type données</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Valeurs Manquantes</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Encodage</a> </li>
+		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Mise à Echelle</a> </li>
 		</ul>
 	  </li>
 	  <li class="menu-label">Utilisateurs</li>
@@ -156,7 +156,7 @@
 	  </li>
 	  <li class="menu-label">Autres</li>
 	  <li>
-		<a href="{%url 'default' %}" target="_blank">
+		<a href="{%url 'template' %}" target="_blank">
 		  <div class="parent-icon"><i class="bi bi-file-code-fill"></i>
 		  </div>
 		  <div class="menu-title">FAQ</div>

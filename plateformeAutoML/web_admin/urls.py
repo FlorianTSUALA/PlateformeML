@@ -17,6 +17,13 @@ from django.urls import path, include, re_path
 # from .views import ProjetListView, ProjetDetailView
 from web_admin.views import (
     AlgorithmeView, 
+    ProjetListView, 
+    AccueilView, 
+    #FAMILLE
+    ListFamilleView,
+    CreateFamilleView,
+    UpdateFamilleView,
+    DeleteFamilleView,
 )
 
 # urlpatterns = [
@@ -26,10 +33,17 @@ from web_admin.views import (
 # ]
 
 urlpatterns = [
-    path('parametrage/',  AlgorithmeView.as_view(), name='algorithme'),
-    # path('parametrage/algorithme/create/',  views.CreateAlgorithmeView.as_view(), name='algorithme_create'),
-    # path('parametrage/algorithme/update/',  views.UpdateAlgorithmeView.as_view(), name='algorithme_update'),
-    # path('parametrage/algorithme/delete/',  views.DeleteAlgorithmeView.as_view(), name='algorithme_delete'),
+    path('',  AccueilView.as_view(), name='accueil'),
+    path('projet/',  ProjetListView.as_view(), name='projet'),
+    path('parametrage/algorithme',  AlgorithmeView.as_view(), name='algorithme'),
+    path('template/',  AlgorithmeView.as_view(), name='template'),
+    path('default/',  AlgorithmeView.as_view(), name='default'),
+    
+    #FAMILLE
+    path('parametrage/famille',  ListFamilleView.as_view(), name='famille_list'),
+    path('parametrage/famille/create/',  CreateFamilleView.as_view(), name='famille_create'),
+    path('parametrage/famille/update/',  UpdateFamilleView.as_view(), name='famille_update'),
+    path('parametrage/famille/delete/',  DeleteFamilleView.as_view(), name='famille_delete'),
 ]
 
 # urlpatterns2 = [
