@@ -5,7 +5,6 @@ from django.views.generic import TemplateView, View, DeleteView, ListView, Updat
 from django.core import serializers
 from django.http import JsonResponse
 
-
 class AlgorithmeListView(ListView):
     model = Algorithme
     template_name = 'algorithme/index.html'  # Default: <app_label>/<model_name>_list.html

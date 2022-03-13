@@ -6,7 +6,7 @@ from django.core import serializers
 from django.http import JsonResponse
 
 
-class AlgorithmeListView(ListView):
+class AlgorithmeView(ListView):
     model = Algorithme
     template_name = 'algorithme/index.html'  # Default: <app_label>/<model_name>_list.html
     context_object_name = 'algorithmes'  # Default: object_list
@@ -14,7 +14,7 @@ class AlgorithmeListView(ListView):
     queryset = Algorithme.objects.all()  # Default: Model.objects.all()
 
 
-class AlgorithmeView(TemplateView):
+class ListalgorithmeView(TemplateView):
     template_name = 'model_form_right.html'
 
     def get_context_data(self, **kwargs):
@@ -73,12 +73,13 @@ class UpdateAlgorithmeView(View):
         }
         return JsonResponse(data)
 
-class IncidentEdit(UpdateView):
+class AlgorithmeEdit(UpdateView):
 
+    
     def form_valid(self, form):
         if form.cleaned_data['email'] in \
-        [i.email for i in Incident.objects.exclude(id=get_object().id)]:
+        [i.email for i in Algorithme.objects.exclude(id=get_object().id)]:
             # Assume incident have email and it should be unique !!
-            form.add_error('email', 'Incident with this email already exist')
+            form.add_error('email', 'Cet alogirthme existe déjà !!! ')
             return self.form_invalid(form)
-        return super(IncidentEdit, self).form_valid(form)
+        return super(AlgorithmeEdit, self).form_valid(form)

@@ -1,0 +1,62 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+
+  {% include "layouts/head.html" %}
+  <title> {% block title %} LAIMA AutoML - Plateforme de Machine Learning Automaisé {% endblock %} </title>
+  <meta name="description" content="Panneau d'administration de LAIMA AUTOML" />
+  
+  {% block custom_style %} {% endblock %}
+
+</head>
+
+
+
+<body>
+
+
+  <!--start wrapper-->
+  <div class="wrapper">
+    <!--start top header-->
+    {% include "layouts/header_vitrine.html" %}
+     <!--end top header-->
+
+    <!--start sidebar -->
+    {% comment %} {% include "layouts/sidebar.html" %} {% endcomment %}
+    <!--end sidebar -->
+
+    <!--start content-->
+    {% comment %} <main class="page-content"> {% endcomment %}
+
+    {% comment %} <div class=""> {% endcomment %}
+      {% block content %} {% endblock %}
+    {% comment %} </div> {% endcomment %}
+  {% comment %} </main> {% endcomment %}
+    <!--end page main-->
+
+
+       <!--start overlay-->
+        <div class="overlay nav-toggle-icon"></div>
+       <!--end overlay-->
+
+        <!--Start Back To Top Button-->
+        <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+        <!--End Back To Top Button-->
+        
+        <!--start switcher-->
+        {% include "includes/switcher.html" %}
+       <!--end switcher-->
+
+  </div>
+  <!--end wrapper-->
+ 	 {% block page_scripts %} 
+		{% include "layouts/footer-script.html" %}
+	{% endblock %}
+
+	{% block custom_javascript %} {% endblock %}
+	
+</body>
+
+</html>

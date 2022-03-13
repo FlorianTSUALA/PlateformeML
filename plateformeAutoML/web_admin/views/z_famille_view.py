@@ -14,8 +14,19 @@ from django.http import JsonResponse
 #     queryset = Famille.objects.all()  # Default: Model.objects.all()
 
 
-class ListFamilleView(TemplateView):
-    template_name = 'parametrage/famille.html' 
+class ListFamilleView(ListView):
+    model = Famille
+    template_name = 'pages/parametrage/famille.html'
+    context_object_name = 'items'
+    paginate_by = 10
+	ordering = ['-created']
+
+    def get_queryset(self):
+        return Book.objects.filter(created_by=self.request.user)
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        return model.objects.filter(title=q)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -23,6 +34,8 @@ class ListFamilleView(TemplateView):
         context['section_item_title'] = 'Famille'
         return context
 
+    def get_queryset(self):
+        return Book.objects.filter(created_by=self.request.user)
 
 class CreateFamilleView(View):
     def  get(self, request):
