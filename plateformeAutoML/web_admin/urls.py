@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from web_admin.views import (
     #Authentification
     login,
+    connexion,
 
 
     #Accueil
@@ -71,9 +72,8 @@ from web_admin.views import (
 
 urlpatterns = [
     #Authentification
-    path('login',  VitrineView.as_view(), name='vitrine'),
-
-
+    path('login',  login, name='login'),
+    path('connexion',  connexion, name='connexion'),
 
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),

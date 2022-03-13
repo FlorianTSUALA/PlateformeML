@@ -1,33 +1,38 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from web_admin.models import Algorithme
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
 from django.http import JsonResponse
 
-class VitrineView(TemplateView):
-    template_name = 'pages/vitrine.html'
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.models import User,Group
+from django.views.generic import TemplateView
+from django.http import HttpResponse
+from django.core.files.storage import FileSystemStorage
 
-class AccueilView(TemplateView):
-    template_name = 'pages/accueil.html'
-
-class FAQView(TemplateView):
-    template_name = 'pages/faq.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['section_title'] = 'Autres'
-        context['section_item_title'] = 'FAQ'
-        return context
-
-
-class AProposView(TemplateView):
-    template_name = 'pages/apropos.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['section_title'] = 'Autres'
-        context['section_item_title'] = 'A Propos'
-        return context
+def login(request):
+    return render(request, 'pages/authentification/login.html')
 
 
+def connexion(request):
+    if request.method == "POST":
+        username = request.POST['login']
+        pwd = request.POST['password']
+        print('le nom est :',username)
+        user = authenticate(username=username,password= pwd)
+        if user is not None:
+            print("utilisateur existant")
+            return redirect('vitrine')
+        else:
+            messages.error(request, "erreur t'authentification")
+            return render(request, 'users/login.html')
+    else:
+        return render(request, 'users/login.html')
+    return render(request,'users/login.html')
