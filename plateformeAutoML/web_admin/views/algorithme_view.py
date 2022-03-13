@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from web_admin.models import Algorithme
+from web_admin.models import Algorithme, TypeApprentissage
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
 from django.http import JsonResponse
@@ -82,3 +82,13 @@ class IncidentEdit(UpdateView):
             form.add_error('email', 'Incident with this email already exist')
             return self.form_invalid(form)
         return super(IncidentEdit, self).form_valid(form)
+
+
+def add_type(request):
+    if request.method == "POST":
+        libelle = request.POST['libelle']
+        description = request.POST['description']
+
+        type = TypeApprentissage(libelle= libelle, description = description)
+        type.save()
+        return

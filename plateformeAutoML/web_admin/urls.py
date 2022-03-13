@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include, re_path
+from web_admin import views
 # from .views import ProjetListView, ProjetDetailView
 from web_admin.views import (
     AlgorithmeView, 
@@ -24,6 +25,7 @@ from web_admin.views import (
     CreateFamilleView,
     UpdateFamilleView,
     DeleteFamilleView,
+   
 )
 
 # urlpatterns = [
@@ -38,6 +40,7 @@ urlpatterns = [
     path('parametrage/algorithme',  AlgorithmeView.as_view(), name='algorithme'),
     path('template/',  AlgorithmeView.as_view(), name='template'),
     path('default/',  AlgorithmeView.as_view(), name='default'),
+    path('add_type',views.add_type, name='add_type'),
     
     #FAMILLE
     path('parametrage/famille',  ListFamilleView.as_view(), name='famille_list'),
