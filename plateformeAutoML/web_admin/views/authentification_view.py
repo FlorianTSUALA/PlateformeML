@@ -36,3 +36,6 @@ def connexion(request):
     else:
         return render(request, 'users/login.html')
     return render(request,'users/login.html')
+
+def register(request):
+    pass
