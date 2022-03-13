@@ -16,6 +16,9 @@ Including another URLconf
 from django.urls import path, include, re_path
 # from .views import ProjetListView, ProjetDetailView
 from web_admin.views import (
+    #Authentification
+    login,
+
 
     #Accueil
     VitrineView,
@@ -67,6 +70,11 @@ from web_admin.views import (
 # ]
 
 urlpatterns = [
+    #Authentification
+    path('login',  VitrineView.as_view(), name='vitrine'),
+
+
+
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),
 
