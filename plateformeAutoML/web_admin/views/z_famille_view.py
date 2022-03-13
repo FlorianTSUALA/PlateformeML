@@ -19,7 +19,7 @@ class ListFamilleView(ListView):
     template_name = 'pages/parametrage/famille.html'
     context_object_name = 'items'
     paginate_by = 10
-	ordering = ['-created']
+	# ordering = ['-created']
 
     def get_queryset(self):
         return Book.objects.filter(created_by=self.request.user)
