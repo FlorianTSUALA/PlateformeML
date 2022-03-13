@@ -17,6 +17,9 @@ from django.urls import path, include, re_path
 # from .views import ProjetListView, ProjetDetailView
 from web_admin.views import (
     #Authentification
+    login,
+    connexion,
+
 
     #Accueil
     VitrineView,
@@ -69,8 +72,8 @@ from web_admin.views import (
 
 urlpatterns = [
     #Authentification
-
-
+    path('login',  login, name='login'),
+    path('connexion',  connexion, name='connexion'),
 
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),
@@ -167,5 +170,4 @@ urlpatterns = [
     path('parametrage/mise_echelle/create/',  CreateFamilleView.as_view(), name='mise_echelle_create'),
     path('parametrage/mise_echelle/update/',  UpdateFamilleView.as_view(), name='mise_echelle_update'),
     path('parametrage/mise_echelle/delete/',  DeleteFamilleView.as_view(), name='mise_echelle_delete'),
-    
 ]
