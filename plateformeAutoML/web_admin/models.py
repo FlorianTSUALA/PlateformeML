@@ -1,9 +1,29 @@
 from django.db import models
 from .enum import ETypeDonnee, EEtatPublication, ETypeValeur
 from django.urls import reverse
+from .managers import CompteManager
 
 #todo
 #TextFild Limitation
+
+# class Compte(AbstractBaseUser, PermissionsMixin):
+#     email = models.EmailField(_('email address'), unique=True)
+#     name = models.CharField(max_length=70)
+#     username = models.CharField(max_length=70, unique=True)
+#     telephone = models.CharField(max_length=10, unique=True)
+#     password = models.CharField(max_length=250, unique=True)
+#     is_staff = models.BooleanField(default=False)
+#     is_active = models.BooleanField(default=True)
+#     date_joined = models.DateTimeField(default=timezone.now)
+
+#     USERNAME_FIELD = 'username'
+#     EMAIL_FIELD = 'email'
+#     REQUIRED_FIELDS = ['email','telephone']
+
+#     objects = CompteManager()
+
+#     def __str__(self):
+#         return self.username
 
 class Compte(models.Model):
     login = models.CharField(max_length=254, blank=True,null=True)
