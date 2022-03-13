@@ -33,11 +33,13 @@ def tache(request):
     
     items = Tache.objects.all()
     
-    html_data = tache_metadata()
-    html_data['data'] = items
-    html_data['url_create_full'] = reverse(html_data['url_create'])
+    context = tache_metadata()
+    context['data'] = items
+    context['section_title'] = 'Parametrage'
+    context['section_item_title'] = 'Taches de Machine Learning'
+    context['url_create_full'] = reverse(context['url_create'])
     
-    return render(request, 'tache.html', html_data)
+    return render(request, 'pages/parametrage/tache.html', context)
 
 
 def save_tache_form(request, form, template_name, template_data=None):
