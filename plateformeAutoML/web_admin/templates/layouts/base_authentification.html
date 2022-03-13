@@ -1,0 +1,37 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+
+  {% include "layouts/head.html" %}
+  <title> {% block title %} LAIMA AutoML - Plateforme de Machine Learning Automaisé {% endblock %} </title>
+  <meta name="description" content="Panneau d'administration de LAIMA AUTOML" />
+  
+  {% block custom_style %} {% endblock %}
+
+</head>
+
+
+
+<body>
+
+
+  <!--start wrapper-->
+  <div class="wrapper">
+      {% block content %} {% endblock %}
+  </div>
+  <!--end wrapper-->
+  {% block page_scripts %} 
+      <!--plugins-->
+    <script src="{% static 'template/assets/js/jquery.min.js' %}"></script>
+    <script src="{% static 'template/assets/js/pace.min.js' %}"></script>
+    <script src="{% static 'template/assets/plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+
+  {% endblock %}
+
+	{% block custom_javascript %} {% endblock %}
+	
+</body>
+
+</html>
