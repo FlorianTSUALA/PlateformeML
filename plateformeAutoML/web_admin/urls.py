@@ -19,6 +19,8 @@ from web_admin.views import (
     #Authentification
     login,
     connexion,
+    registers,
+    register,
 
 
     #Accueil
@@ -74,6 +76,8 @@ urlpatterns = [
     #Authentification
     path('login',  login, name='login'),
     path('connexion',  connexion, name='connexion'),
+    path('registers',  registers, name='registers'),
+    path('register',  register, name='register'),
 
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),
