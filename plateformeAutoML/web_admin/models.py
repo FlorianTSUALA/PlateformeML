@@ -119,6 +119,9 @@ class Tache(models.Model):
     def __str__(self):
         return self.libelle
 
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in Tache._meta.fields]
+
 
 class Algorithme(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
@@ -192,7 +195,7 @@ class CritereComparaisonAlgorithme(models.Model):
 # à revoir 
 
 
-class TaxionomieTypeDonne(models.Model):
+class TaxonomieTypeDonnee(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
 
@@ -202,7 +205,7 @@ class TaxionomieTypeDonne(models.Model):
 class Encodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    strategie_encodages = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieEncodage')
+    strategie_encodages = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieEncodage')
 
     def __str__(self):
         return self.libelle
@@ -211,7 +214,7 @@ class StrategieEncodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE)
-    taxionomie_type_donne = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donne = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.libelle
@@ -219,7 +222,7 @@ class StrategieEncodage(models.Model):
 class Imputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieImputation')
+    taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieImputation')
 
     def __str__(self):
         return self.libelle
@@ -228,7 +231,7 @@ class StrategieImputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE)
-    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.libelle
@@ -236,7 +239,7 @@ class StrategieImputation(models.Model):
 class MiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieMiseEchelle')
+    taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieMiseEchelle')
 
     def __str__(self):
         return self.libelle
@@ -244,7 +247,7 @@ class MiseEchelle(models.Model):
 class StrategieMiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
     mise_echelle = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE)
     
     def __str__(self):

@@ -32,15 +32,10 @@ from web_admin.views import (
     ModifierProjetView, 
     ListeProjetView, 
 
-    tache,
-    tache_create,
-    tache_update,
-    tache_delete,
 
-    AlgorithmeView, 
     # ProjetListView, 
 
-    #Autres
+    #AUTRES
     FAQView, 
     AProposView, 
     
@@ -51,17 +46,48 @@ from web_admin.views import (
     CreateUtilisateurView,
 
 
-    #FAMILLE
-    ListFamilleView,
-    CreateFamilleView,
-    UpdateFamilleView,
-    DeleteFamilleView,
-
     #ALGORITHME
-    ListalgorithmeView,
-    CreateAlgorithmeView,
-    UpdateAlgorithmeView,
-    DeleteAlgorithmeView,
+    algorithme,
+    algorithme_create,
+    algorithme_update,
+    algorithme_delete,
+
+    #CRITERE_COMPARAISON
+    critere_comparaison,
+    critere_comparaison_create,
+    critere_comparaison_update,
+    critere_comparaison_delete,
+
+    #FAMILLE
+    famille,
+    famille_create,
+    famille_update,
+    famille_delete,
+
+    #PACKAGE
+    package,
+    package_create,
+    package_update,
+    package_delete,
+
+    #TACHE
+    tache,
+    tache_create,
+    tache_update,
+    tache_delete,
+
+    #TAXONOMIE TYPE DE DONNES
+    taxonomie_type_donnee, 
+    taxonomie_type_donnee_create,  
+    taxonomie_type_donnee_update,  
+    taxonomie_type_donnee_delete,
+
+    #TYPE APPRENTISSAGE
+    type_apprentissage, 
+    type_apprentissage_create,  
+    type_apprentissage_update,  
+    type_apprentissage_delete,
+
 )
 
 # urlpatterns = [
@@ -100,71 +126,74 @@ urlpatterns = [
 
     #Paramtrage
     # path('projet/',  ProjetListView.as_view(), name='projet'),
-    path('parametrage/algorithme',  AlgorithmeView.as_view(), name='algorithme'),
-    path('template/',  AlgorithmeView.as_view(), name='template'),
-    path('default/',  AlgorithmeView.as_view(), name='default'),
     
     # #famille
-    # path('parametrage/famille',  ListFamilleView.as_view(), name='famille_list'),
-    # path('parametrage/famille/create/',  CreateFamilleView.as_view(), name='famille_create'),
-    # path('parametrage/famille/update/',  UpdateFamilleView.as_view(), name='famille_update'),
-    # path('parametrage/famille/delete/',  DeleteFamilleView.as_view(), name='famille_delete'),
+    # path('parametrage/famille',  famille, name='famille_list'),
+    # path('parametrage/famille/create/',  famille_create, name='famille_create'),
+    # path('parametrage/famille/update/',  famille_update, name='famille_update'),
+    # path('parametrage/famille/delete/',  famille_delete, name='famille_delete'),
 
     # #algorithme
-    path('parametrage/algorithme',  ListalgorithmeView.as_view(), name='algorithme'),
-    path('parametrage/algorithme/create/',  CreateAlgorithmeView.as_view(), name='algorithme_create'),
-    path('parametrage/algorithme/update/',  UpdateAlgorithmeView.as_view(), name='algorithme_update'),
-    path('parametrage/algorithme/delete/',  DeleteAlgorithmeView.as_view(), name='algorithme_delete'),
+    path('parametrage/algorithme',  algorithme, name='algorithme'),
+    path('parametrage/algorithme/create/',  algorithme_create, name='algorithme_create'),
+    path('parametrage/algorithme/update/',  algorithme_update, name='algorithme_update'),
+    path('parametrage/algorithme/delete/',  algorithme_delete, name='algorithme_delete'),
+
     #Metrique
-    path('parametrage/metrique',  ListFamilleView.as_view(), name='metrique'),
-    path('parametrage/metrique/create/',  CreateFamilleView.as_view(), name='metrique_create'),
-    path('parametrage/metrique/update/',  UpdateFamilleView.as_view(), name='metrique_update'),
-    path('parametrage/metrique/delete/',  DeleteFamilleView.as_view(), name='metrique_delete'),
+    path('parametrage/metrique',  famille, name='metrique'),
+    path('parametrage/metrique/create/',  famille_create, name='metrique_create'),
+    path('parametrage/metrique/update/',  famille_update, name='metrique_update'),
+    path('parametrage/metrique/delete/',  famille_delete, name='metrique_delete'),
+
     #CritereCompraison
-    path('parametrage/critere_compraison',  ListFamilleView.as_view(), name='critere_comparaison'),
-    path('parametrage/critere_compraison/create/',  CreateFamilleView.as_view(), name='critere_comparaison_create'),
-    path('parametrage/critere_compraison/update/',  UpdateFamilleView.as_view(), name='critere_comparaison_update'),
-    path('parametrage/critere_compraison/delete/',  DeleteFamilleView.as_view(), name='critere_comparaison_delete'),
+    path('parametrage/critere_comparaison/',  critere_comparaison, name='critere_comparaison'),
+    path('parametrage/critere_comparaison/create/',  critere_comparaison_create, name='critere_comparaison_create'),
+    path('parametrage/critere_comparaison/<int:pk>/update/',  critere_comparaison_update, name='critere_comparaison_update'),
+    path('parametrage/critere_comparaison/<int:pk>/delete/',  critere_comparaison_delete, name='critere_comparaison_delete'),
+
     #Package Alogorithme
-    path('parametrage/package_algorithme',  ListFamilleView.as_view(), name='package_algorithme'),
-    path('parametrage/package_algorithme/create/',  CreateFamilleView.as_view(), name='package_algorithme_create'),
-    path('parametrage/package_algorithme/update/',  UpdateFamilleView.as_view(), name='package_algorithme_update'),
-    path('parametrage/package_algorithme/delete/',  DeleteFamilleView.as_view(), name='package_algorithme_delete'),
+    path('parametrage/package/',  package, name='package'),
+    path('parametrage/package/create/',  package_create, name='package_create'),
+    path('parametrage/package/<int:pk>/update/',  package_update, name='package_update'),
+    path('parametrage/package/<int:pk>/delete/',  package_delete, name='package_delete'),
+
     #FAMILLE
-    path('parametrage/famille_algorithme',  ListFamilleView.as_view(), name='famille_algorithme'),
-    path('parametrage/famille_algorithme/create/',  CreateFamilleView.as_view(), name='famille_algorithme_create'),
-    path('parametrage/famille_algorithme/update/',  UpdateFamilleView.as_view(), name='famille_algorithme_update'),
-    path('parametrage/famille_algorithme/delete/',  DeleteFamilleView.as_view(), name='famille_algorithme_delete'),
+    path('parametrage/famille/',  famille, name='famille'),
+    path('parametrage/famille/create/',  famille_create, name='famille_create'),
+    path('parametrage/famille/<int:pk>/update/',  famille_update, name='famille_update'),
+    path('parametrage/famille/<int:pk>/delete/',  famille_delete, name='famille_delete'),
+
     #Tache ML
-    # path('parametrage/tache', tache, name='tache'),
     path('parametrage/tache/',  tache, name='tache'),
     path('parametrage/tache/create/',  tache_create, name='tache_create'),
     path('parametrage/tache/<int:pk>/update/',  tache_update, name='tache_update'),
     path('parametrage/tache/<int:pk>/delete/',  tache_delete, name='tache_delete'),
 
     #Type Apprentissage
-    path('parametrage/type_apprentissage',  ListFamilleView.as_view(), name='type_apprentissage'),
-    path('parametrage/type_apprentissage/create/',  CreateFamilleView.as_view(), name='type_apprentissage_create'),
-    path('parametrage/type_apprentissage/update/',  UpdateFamilleView.as_view(), name='type_apprentissage_update'),
-    path('parametrage/type_apprentissage/delete/',  DeleteFamilleView.as_view(), name='type_apprentissage_delete'),
+    path('parametrage/type_apprentissage/',  type_apprentissage, name='type_apprentissage'),
+    path('parametrage/type_apprentissage/create/',  type_apprentissage_create, name='type_apprentissage_create'),
+    path('parametrage/type_apprentissage/<int:pk>/update/',  type_apprentissage_update, name='type_apprentissage_update'),
+    path('parametrage/type_apprentissage/<int:pk>/delete/',  type_apprentissage_delete, name='type_apprentissage_delete'),
+
     #Taxonomie Type Données
-    path('parametrage/taxonomie_type_donnee',  ListFamilleView.as_view(), name='taxonomie_type_donnee'),
-    path('parametrage/taxonomie_type_donnee/create/',  CreateFamilleView.as_view(), name='taxonomie_type_donnee_create'),
-    path('parametrage/taxonomie_type_donnee/update/',  UpdateFamilleView.as_view(), name='taxonomie_type_donnee_update'),
-    path('parametrage/taxonomie_type_donnee/delete/',  DeleteFamilleView.as_view(), name='taxonomie_type_donnee_delete'),
+    path('parametrage/taxonomie_type_donnee/',  taxonomie_type_donnee, name='taxonomie_type_donnee'),
+    path('parametrage/taxonomie_type_donnee/create/',  taxonomie_type_donnee_create, name='taxonomie_type_donnee_create'),
+    path('parametrage/taxonomie_type_donnee/<int:pk>/update/',  taxonomie_type_donnee_update, name='taxonomie_type_donnee_update'),
+    path('parametrage/taxonomie_type_donnee/<int:pk>/delete/',  taxonomie_type_donnee_delete, name='taxonomie_type_donnee_delete'),
+
     #Valeurs Manquante
-    path('parametrage/valeur_manquante',  ListFamilleView.as_view(), name='valeur_manquante'),
-    path('parametrage/valeur_manquante/create/',  CreateFamilleView.as_view(), name='valeur_manquante_create'),
-    path('parametrage/valeur_manquante/update/',  UpdateFamilleView.as_view(), name='valeur_manquante_update'),
-    path('parametrage/valeur_manquante/delete/',  DeleteFamilleView.as_view(), name='valeur_manquante_delete'),
+    path('parametrage/valeur_manquante',  famille, name='valeur_manquante'),
+    path('parametrage/valeur_manquante/create/',  famille_create, name='valeur_manquante_create'),
+    path('parametrage/valeur_manquante/update/',  famille_update, name='valeur_manquante_update'),
+    path('parametrage/valeur_manquante/delete/',  famille_delete, name='valeur_manquante_delete'),
     #Encodage
-    path('parametrage/encodage',  ListFamilleView.as_view(), name='encodage'),
-    path('parametrage/encodage/create/',  CreateFamilleView.as_view(), name='encodage_create'),
-    path('parametrage/encodage/update/',  UpdateFamilleView.as_view(), name='encodage_update'),
-    path('parametrage/encodage/delete/',  DeleteFamilleView.as_view(), name='encodage_delete'),
+    path('parametrage/encodage',  famille, name='encodage'),
+    path('parametrage/encodage/create/',  famille_create, name='encodage_create'),
+    path('parametrage/encodage/update/',  famille_update, name='encodage_update'),
+    path('parametrage/encodage/delete/',  famille_delete, name='encodage_delete'),
     #Mise Echelle
-    path('parametrage/mise_echelle',  ListFamilleView.as_view(), name='mise_echelle'),
-    path('parametrage/mise_echelle/create/',  CreateFamilleView.as_view(), name='mise_echelle_create'),
-    path('parametrage/mise_echelle/update/',  UpdateFamilleView.as_view(), name='mise_echelle_update'),
-    path('parametrage/mise_echelle/delete/',  DeleteFamilleView.as_view(), name='mise_echelle_delete'),
+    path('parametrage/mise_echelle',  famille, name='mise_echelle'),
+    path('parametrage/mise_echelle/create/',  famille_create, name='mise_echelle_create'),
+    path('parametrage/mise_echelle/update/',  famille_update, name='mise_echelle_update'),
+    path('parametrage/mise_echelle/delete/',  famille_delete, name='mise_echelle_delete'),
 ]

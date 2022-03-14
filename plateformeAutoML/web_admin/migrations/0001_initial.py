@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='TaxionomieTypeDonne',
+            name='TaxonomieTypeDonne',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('libelle', models.CharField(blank=True, max_length=254, null=True)),
@@ -177,7 +177,7 @@ class Migration(migrations.Migration):
                 ('libelle', models.CharField(blank=True, max_length=254, null=True)),
                 ('description', models.TextField(blank=True, max_length=254, null=True)),
                 ('mise_echelle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.miseechelle')),
-                ('taxionomie_type_donnee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.taxionomietypedonne')),
+                ('taxionomie_type_donnee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.TaxonomieTypeDonne')),
             ],
         ),
         migrations.CreateModel(
@@ -187,7 +187,7 @@ class Migration(migrations.Migration):
                 ('libelle', models.CharField(blank=True, max_length=254, null=True)),
                 ('description', models.TextField(blank=True, max_length=254, null=True)),
                 ('imputation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.imputation')),
-                ('taxionomie_type_donnee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.taxionomietypedonne')),
+                ('taxionomie_type_donnee', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.TaxonomieTypeDonne')),
             ],
         ),
         migrations.CreateModel(
@@ -197,7 +197,7 @@ class Migration(migrations.Migration):
                 ('libelle', models.CharField(blank=True, max_length=254, null=True)),
                 ('description', models.TextField(blank=True, max_length=254, null=True)),
                 ('encodage', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.encodage')),
-                ('taxionomie_type_donne', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.taxionomietypedonne')),
+                ('taxionomie_type_donne', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='web_admin.TaxonomieTypeDonne')),
             ],
         ),
         migrations.CreateModel(
@@ -227,7 +227,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='miseechelle',
             name='taxionomie_type_donnes',
-            field=models.ManyToManyField(through='web_admin.StrategieMiseEchelle', to='web_admin.TaxionomieTypeDonne'),
+            field=models.ManyToManyField(through='web_admin.StrategieMiseEchelle', to='web_admin.TaxonomieTypeDonne'),
         ),
         migrations.CreateModel(
             name='MetriqueAlgorithmeProjet',
@@ -266,7 +266,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='imputation',
             name='taxionomie_type_donnes',
-            field=models.ManyToManyField(through='web_admin.StrategieImputation', to='web_admin.TaxionomieTypeDonne'),
+            field=models.ManyToManyField(through='web_admin.StrategieImputation', to='web_admin.TaxonomieTypeDonne'),
         ),
         migrations.AddField(
             model_name='hyperparametre',
@@ -276,7 +276,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='encodage',
             name='strategie_encodages',
-            field=models.ManyToManyField(through='web_admin.StrategieEncodage', to='web_admin.TaxionomieTypeDonne'),
+            field=models.ManyToManyField(through='web_admin.StrategieEncodage', to='web_admin.TaxonomieTypeDonne'),
         ),
         migrations.CreateModel(
             name='CritereComparaisonAlgorithme',
