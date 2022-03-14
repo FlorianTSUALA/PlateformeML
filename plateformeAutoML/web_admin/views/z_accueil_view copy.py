@@ -50,7 +50,7 @@ def profile(request):
 
 
 
-def save_profile_form(request, form, template_name, template_data=None):
+def save_profile_form(request, form, template_name, template_data={}):
     data = profile_metadata()
     if request.method == 'POST':
         if form.is_valid():

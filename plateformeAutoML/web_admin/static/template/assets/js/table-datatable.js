@@ -2,7 +2,14 @@ $(function() {
 	"use strict";
 
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#example').DataTable(
+            { 
+                autoWidth: false,
+                lengthChange: false,
+                "bPaginate": false,
+                language: { search: "",searchPlaceholder: "Search" }
+            }
+        );
       } );
 
 

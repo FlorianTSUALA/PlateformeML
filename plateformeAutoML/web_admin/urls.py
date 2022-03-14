@@ -146,9 +146,6 @@ urlpatterns = [
     path('parametrage/tache/<int:pk>/update/',  tache_update, name='tache_update'),
     path('parametrage/tache/<int:pk>/delete/',  tache_delete, name='tache_delete'),
 
-    # path('parametrage/tache/create/',  CreateFamilleView.as_view(), name='tache_create'),
-    # path('parametrage/tache/update/',  UpdateFamilleView.as_view(), name='tache_update'),
-    # path('parametrage/tache/delete/',  DeleteFamilleView.as_view(), name='tache_delete'),
     #Type Apprentissage
     path('parametrage/type_apprentissage',  ListFamilleView.as_view(), name='type_apprentissage'),
     path('parametrage/type_apprentissage/create/',  CreateFamilleView.as_view(), name='type_apprentissage_create'),

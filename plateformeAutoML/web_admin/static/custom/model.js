@@ -1,7 +1,7 @@
-import { lang_fr } from './lang.js'
+import { lang_fr } from './js/lang.js'
 
 
-var BASE_URL = "http://prosygma.pallitracks.com/gs/gestionstock/api/magasins/"
+var BASE_URL = ""
 
 $(document).ready(function(){	
 
