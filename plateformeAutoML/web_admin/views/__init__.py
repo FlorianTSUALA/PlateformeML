@@ -4,5 +4,5 @@ from .utilisateur_view import *
 from .authentification_view import *
 
 from .z_famille_view import *
-from .z_algorithme_view import *
+from .y_algorithme_view import *
 from .z_tache import *

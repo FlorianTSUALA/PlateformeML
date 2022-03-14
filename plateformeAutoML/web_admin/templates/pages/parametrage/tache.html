@@ -3,7 +3,9 @@
 
 {% block title %} AutoML - Plateforme de Machine Learning Automaisé {% endblock %}
 
-{% block custom_style %} {% endblock %} 
+{% block custom_style %} 
+  <link href="{% static 'template/assets/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+{% endblock %} 
 
 {% block content %} 
 
@@ -11,7 +13,7 @@
   <div class="card-body">
     <div class="row align-items-center">
       <div class="col-lg-3 col-xl-2">
-        <a href="javascript:;" class="btn btn-primary mb-3 mb-lg-0"><i class="bi bi-plus-square-fill"></i> &nbsp &nbsp &nbsp Ajouter une tâche</a>
+        <a href="javascript:;" class="btn btn-primary mb-3 mb-lg-0 js-create-entity" data-url="{% url url_create %}" ><i class="bi bi-plus-square-fill"></i>&nbsp &nbsp Ajouter une tâche</a>
       </div>
       <div class="col-lg-9 col-xl-10">
         <form class="float-lg-end">
@@ -37,22 +39,24 @@
       <hr/>
       <div class="card-body">
         <div class="table-responsive">
-          <table id="example" class="table table-striped table-bordered" style="width:100%">
+          <table id="entity-table" class="table table-striped table-bordered" style="width:100%">
             <thead>
               <tr>
                 <th>#ID</th>
-                <th>libelle</th>
+                <th>Type Apprentissage</th>
+                <th>Libelle</th>
                 <th>Description</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {% include 'partials/tache/table_body.html' %}
+              {% include 'partials/table_body/tache.html' %}
             </tbody>
             <tfoot>
               <tr>
                 <th>#ID</th>
-                <th>libelle</th>
+                <th>Type Apprentissage</th>
+                <th>Libelle</th>
                 <th>Description</th>
                 <th>Action</th>
               </tr>
@@ -64,10 +68,22 @@
     </div>
 </div>
 
+
+ <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-entity" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+      
+      </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block custom_javascript %} 
   <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}" ></script>
   <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}" ></script>
   <script src="{% static 'template/assets/js/table-datatable.js' %}" ></script>
+  <script src="{% static 'custom/js/lang.js' %}"></script>
+  <script src="{% static 'custom/js/entity.js' %}"></script>
+
 {% endblock %}

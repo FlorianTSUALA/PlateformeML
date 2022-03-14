@@ -1,0 +1,16 @@
+{% load widget_tweaks %}
+
+<form method="post" action="{% url url_create %}" class="js-entity-create-form">
+  {% csrf_token %}
+  <div class="modal-header">
+      <h5 class="modal-title"> {{title_modal_create}} </h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    {% include 'partials/entity_form/common/form_body.html' %}
+  </div>
+  <div class="col-12 modal-footer modal-footer-uniform">
+    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Annuler</button>
+    <button type="submit" class="btn btn-primary float-end" style="float: right">Enregistrer</button>
+  </div>
+</form>
