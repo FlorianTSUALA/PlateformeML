@@ -2,17 +2,19 @@
 {% load static%}
 
 <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-    <div class="breadcrumb-title pe-3">{{ section_title }} </div>
+    <div class="breadcrumb-title pe-3 {% if has_white_text %}  text-white {% endif %}">{{ section_title }} </div>
     <div class="ps-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 p-0">
-                <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt {% if has_white_text %}  text-white {% endif %}"></i></a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">{{ section_item_title }} </li>
+                <li class="breadcrumb-item active {% if has_white_text %}  text-white {% endif %}" aria-current="page">{{ section_item_title }} </li>
             </ol>
         </nav>
     </div>
     <div class="ms-auto">
-            {% include "includes/setting.html" %}		
+            {% if has_config %}
+                {% include "includes/setting.html" %}		
+            {% endif %}
     </div>
 </div>

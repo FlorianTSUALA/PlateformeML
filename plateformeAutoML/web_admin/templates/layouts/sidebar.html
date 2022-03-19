@@ -20,26 +20,28 @@
 		  <div class="menu-title">Mon Espace</div>
 		</a>
 		<ul>
-		  <li> <a href="{% url 'template' %}"><i class="bi bi-circle"></i>Accueil</a> </li>
-		  <li> <a href="{% url 'template' %}"><i class="bi bi-circle"></i>Mes favoris</a> </li>
+		  <li> <a href="{% url 'accueil' %}"><i class="bi bi-circle"></i>Accueil</a> </li>
+		  <li> <a href="{% url 'mes_favoris' %}"><i class="bi bi-circle"></i>Mes favoris</a> </li>
+		  <li> <a href="{% url 'mes_projets' %}"><i class="bi bi-circle"></i>Mes projets</a> </li>
 		</ul>
 	  </li>
 	  <li>
-		<a href="javascript:;" class="">
+		<a href="{% url 'projets_publics' %}" class="">
 		  <div class="parent-icon"><i class="bi bi-grid-fill"></i>
 		  </div>
 		  <div class="menu-title">Explorer projets</div>
 		</a>
 	  </li>
 	  <li>
-		<a href="javascript:;" class="">
+		<a href="{% url 'nouveau_projet' %}" class="">
 		  <div class="parent-icon"><i class="bi bi-grid-fill"></i>
 		  </div>
 		  <div class="menu-title">Nouveau projets</div>
 		</a>
 	  </li>
+	{% if projet_active %}
 	  <li class="menu-label">Projet courant</li>
-	  <li>
+	  <li class="inner-scrool-section">
 		<a class="has-arrow" href="javascript:;">
 		  <div class="parent-icon"><i class="bi bi-award-fill"></i>
 		  </div>
@@ -48,49 +50,50 @@
 		</a>
 		<ul>
 		  <li> 
-			  <a  class="step-01" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+			  <a  class="step-01" href="#step-01" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
 				  data-bs-original-title="Définissez les informations d'indentifications du projet">
 				  <i class="bi bi-circle"></i>Informations générales
 			  </a> 
 		  </li>
 		  <li> 
-			  <a  class="step-02" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+			  <a  class="step-02" href="#step-02" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
 				  data-bs-original-title="Chargez votre jeu de données et selectionnez les colonnes à prendre en compte.">
 				  <i class="bi bi-circle"></i>Chargement des données
 			  </a> 
 		  </li>
 		  <li> 
-			  <a  class="step-03" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
-				  data-bs-original-title="Choisissez la tache de machine learning qui convient au contexte de vos données?">
+			  <a  class="step-03" href="#step-03" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+				  data-bs-original-title="Choisissez la tache du Machine Learning', qui convient au contexte de vos données?">
 				  <i class="bi bi-circle"></i>Choix de la tache
 			  </a> 
 		  </li>
 		  <li> 
-			  <a  class="step-04" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+			  <a  class="step-04" href="#step-04" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
 				  data-bs-original-title="Choisissez les algorithmes à entrainer sur vos données.">
 				  <i class="bi bi-circle"></i>Choix d'algorithme(s)
 			  </a> 
 			</li>
 		  <li> 
-			  <a  class="step-05" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+			  <a  class="step-05" href="#step-05" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
 				  data-bs-original-title="Initialiser la phase d'apprentissage pour la contruction de modeles; A chaque algorithme conviendra un modele prédictif.">
 				  <i class="bi bi-circle"></i>Entrainements
 			  </a> 
 		  </li>
 		  <li> 
-			  <a  class="step-06" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+			  <a  class="step-06" href="#step-06" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
 				  data-bs-original-title="Consultez les performations de vos modeles; télécharger les modeles pour une reutilisation ultériere.">
 				  <i class="bi bi-circle"></i>Evaluation des modeles
 			  </a> 
 		  </li>
 		  <li> 
-			  <a  class="step-07" href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
+			  <a  class="step-07" href="#step-07" data-bs-toggle="tooltip" data-bs-placement="right" title="" 
 				  data-bs-original-title="Realisez des prédictions sur de nouvelles observations, et observez le comportement de votre modele">
 				  <i class="bi bi-circle"></i>Prédiction d'un modele
 			  </a> 
 		  </li>
 		</ul>
 	  </li>
+	{% endif %}
 	  <li class="menu-label"> Paramétrages </li>
 	  <li>
 		<a class="has-arrow" href="javascript:;">
@@ -99,11 +102,11 @@
 		  <div class="menu-title">Projets</div>
 		</a>
 		<ul>
-		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>En attente de publication</a> </li>
-		  <li> <a href="form-input-{% url 'template' %}"><i class="bi bi-circle"></i>Publics</a> </li>
-		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>Privés</a> </li>
-		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>Archivés</a> </li>
-		  <li> <a href="form-{% url 'template' %}"><i class="bi bi-circle"></i>Tous les projets</a> </li>
+		  <li> <a href="{% url 'liste_projet' filter='attente_validation' %}"><i class="bi bi-circle"></i>En attente de publication</a> </li>
+		  <li> <a href="{% url 'liste_projet' filter='public' %}"><i class="bi bi-circle"></i>Publics</a> </li>
+		  <li> <a href="{% url 'liste_projet' filter='prive' %}"><i class="bi bi-circle"></i>Privés</a> </li>
+		  <li> <a href="{% url 'liste_projet' filter='archive' %}"><i class="bi bi-circle"></i>Archivés</a> </li>
+		  <li> <a href="{% url 'liste_projet' filter='tous' %}"><i class="bi bi-circle"></i>Tous les projets</a> </li>
 		</ul>
 	  </li>
 	  <li>
@@ -113,17 +116,17 @@
 		  <div class="menu-title">Systemes</div>
 		</a>
 		<ul>
-		  <li> <a href="table-basic-{% url 'template' %}"><i class="bi bi-circle"></i>Algorithme</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Metrique</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Criteres de compraison</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Package Algo</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Familles Algo</a> </li>
-		  <li> <a href="table-{% url 'template' %}"><i class="bi bi-circle"></i>Tache ML</a> </li>
-		  <li> <a href="table-{% url 'template' %}"><i class="bi bi-circle"></i>Type Apprentissage</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Taxonomie Type données</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Valeurs Manquantes</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Encodage</a> </li>
-		  <li> <a href="table-advance-{% url 'template' %}"><i class="bi bi-circle"></i>Mise à Echelle</a> </li>
+		  <li> <a href="{% url 'algorithme' %}"><i class="bi bi-circle"></i>Algorithme</a> </li>
+		  <li> <a href="{% url 'metrique' %}"><i class="bi bi-circle"></i>Metrique</a> </li>
+		  <li> <a href="{% url 'critere_comparaison' %}"><i class="bi bi-circle"></i>Criteres de compraison</a> </li>
+		  <li> <a href="{% url 'package' %}"><i class="bi bi-circle"></i>Package Algo</a> </li>
+		  <li> <a href="{% url 'famille' %}"><i class="bi bi-circle"></i>Famille Algo</a> </li>
+		  <li> <a href="{% url 'tache' %}"><i class="bi bi-circle"></i>Tache ML</a> </li>
+		  <li> <a href="{% url 'type_apprentissage' %}"><i class="bi bi-circle"></i>Type Apprentissage</a> </li>
+		  <li> <a href="{% url 'taxonomie_type_donnee' %}"><i class="bi bi-circle"></i>Taxonomie Type données</a> </li>
+		  <li> <a href="{% url 'valeur_manquante' %}"><i class="bi bi-circle"></i>Valeurs Manquantes</a> </li>
+		  <li> <a href="{% url 'encodage' %}"><i class="bi bi-circle"></i>Encodage</a> </li>
+		  <li> <a href="{% url 'mise_echelle' %}"><i class="bi bi-circle"></i>Mise à Echelle</a> </li>
 		</ul>
 	  </li>
 	  <li class="menu-label">Utilisateurs</li>
@@ -134,21 +137,21 @@
 		  <div class="menu-title">Comptes utilisateurs</div>
 		</a>
 		<ul>
-		  <li> <a href="authentication-signin.html" target="_blank"><i class="bi bi-circle"></i>Nouveau</a> </li>
-		  <li> <a href="authentication-signin.html" target="_blank"><i class="bi bi-circle"></i>Liste</a> </li>
-		  <li> <a href="authentication-signup.html" target="_blank"><i class="bi bi-circle"></i>Archivés</a> </li>
-		  <li> <a href="authentication-signin-with-header-footer.html" target="_blank"><i class="bi bi-circle"></i>Attente de validations</a> </li>
+		  <li> <a href="{% url 'utilisateur_create' %}" ><i class="bi bi-circle"></i>Nouveau</a> </li>
+		  <li> <a href="{% url 'utilisateur_list' %}" ><i class="bi bi-circle"></i>Liste</a> </li>
+		  <li> <a href="{% url 'utilisateur_list_archives' %}" ><i class="bi bi-circle"></i>Archivés</a> </li>
+		  <li> <a href="{% url 'utilisateur_list_attente_validation' %}" ><i class="bi bi-circle"></i>Attente de validations</a> </li>
 		</ul>
 	  </li>
 	  <li>
-		<a href="pages-user-profile.html">
+		<a href="{%url 'mon_compte' %}">
 		  <div class="parent-icon"><i class="bi bi-person-lines-fill"></i>
 		  </div>
 		  <div class="menu-title">Mon Compte</div>
 		</a>
 	  </li>
 	  <li>
-		<a href="{%url 'default' %}">
+		<a href="{%url 'vitrine' %}">
 		  <div class="parent-icon"><i class="bi bi-collection-play-fill"></i>
 		  </div>
 		  <div class="menu-title">Déconnexion</div>
@@ -156,14 +159,14 @@
 	  </li>
 	  <li class="menu-label">Autres</li>
 	  <li>
-		<a href="{%url 'template' %}" target="_blank">
+		<a href="{%url 'faq' %}">
 		  <div class="parent-icon"><i class="bi bi-file-code-fill"></i>
 		  </div>
 		  <div class="menu-title">FAQ</div>
 		</a>
 	  </li>
 	  <li>
-		<a href="https://themeforest.net/user/codervent" target="_blank">
+		<a href="{%url 'apropos' %}">
 		  <div class="parent-icon"><i class="bi bi-telephone-fill"></i>
 		  </div>
 		  <div class="menu-title">A Propos</div>

@@ -1,0 +1,16 @@
+<form method="post" action="{% url url_delete entity.id %}" class="js-entity-delete-form">
+  {% csrf_token %}
+    <div class="modal-header">
+      <h5 class="modal-title">Suppression de {{model}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p class="lead">Etes vous sure de vouloir supprimer {% if genre == 'F' %} la {% else %} le {% endif %} {{model}} : <strong>{{entity_name}} </strong>?</p>
+      {% comment %} <strong>{{ entity.title }}</strong> {% endcomment %}
+  </div>
+  <div class="col-12 modal-footer modal-footer-uniform">
+    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Annuler</button>
+    <button type="submit" class="btn btn-danger">Supprimer</strong> </button>
+    {% comment %} <button type="submit" class="btn btn-danger">Supprimer {% if genre == 'F' %} cette {% else %} ce {% endif %} {{model}}</button> {% endcomment %}
+  </div>
+</form>

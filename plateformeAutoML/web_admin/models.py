@@ -1,9 +1,29 @@
 from django.db import models
 from .enum import ETypeDonnee, EEtatPublication, ETypeValeur
 from django.urls import reverse
+from web_admin.managers import CompteManager
 
 #todo
 #TextFild Limitation
+
+# class Compte(AbstractBaseUser, PermissionsMixin):
+#     email = models.EmailField(_('email address'), unique=True)
+#     name = models.CharField(max_length=70)
+#     username = models.CharField(max_length=70, unique=True)
+#     telephone = models.CharField(max_length=10, unique=True)
+#     password = models.CharField(max_length=250, unique=True)
+#     is_staff = models.BooleanField(default=False)
+#     is_active = models.BooleanField(default=True)
+#     date_joined = models.DateTimeField(default=timezone.now)
+
+#     USERNAME_FIELD = 'username'
+#     EMAIL_FIELD = 'email'
+#     REQUIRED_FIELDS = ['email','telephone']
+
+#     objects = CompteManager()
+
+#     def __str__(self):
+#         return self.username
 
 class Compte(models.Model):
     login = models.CharField(max_length=254, blank=True,null=True)
@@ -51,32 +71,56 @@ class JeuDonnees(models.Model):
     taille = models.IntegerField(default=0, blank=True,null=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.fichier
+
 
 class SymboleValeurManquante(models.Model):
     symbole =  models.CharField(max_length=254, blank=True,null=True)
+
+    def __str__(self):
+        return self.symbole
 
 
 class CritereComparaison(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
 
+    def __str__(self):
+        return self.libelle
+
 
 class Package(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
 
+    def __str__(self):
+        return self.libelle
+
 class Famille(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
+
+    def __str__(self):
+        return self.libelle
 
 class TypeApprentissage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
 
+    def __str__(self):
+        return self.libelle
+
 class Tache(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     type_apprentissage = models.ForeignKey(TypeApprentissage, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.libelle
+
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in Tache._meta.fields]
 
 
 class Algorithme(models.Model):
@@ -87,12 +131,16 @@ class Algorithme(models.Model):
     famille = models.ForeignKey(Famille, on_delete=models.CASCADE)
     projet = models.ManyToManyField(Projet,through='AlgorithmeProjet')
 
+    def __str__(self):
+        return self.libelle
 
 class Metrique(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254,blank=True,null=True)
     algorithmes = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
 
+    def __str__(self):
+        return self.libelle
 
 class AlgorithmeProjet(models.Model):
     libele =  models.CharField(max_length=254, blank=True,null=True)
@@ -102,6 +150,9 @@ class AlgorithmeProjet(models.Model):
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
     metriques = models.ManyToManyField(Metrique,through='MetriqueAlgorithmeProjet')
 
+    def __str__(self):
+        return self.libelle
+
 class Modele(models.Model):
     chemin =  models.CharField(max_length=254, blank=True,null=True)
     precision =  models.CharField(max_length=254, blank=True,null=True)
@@ -109,12 +160,17 @@ class Modele(models.Model):
     resume = models.TextField(max_length=254, blank=True,null=True)
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.resume
 
 class Parametre(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     modele = models.ForeignKey(Modele, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.libelle
 
 class MetriqueAlgorithme(models.Model):
     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
@@ -133,49 +189,69 @@ class CritereComparaisonAlgorithme(models.Model):
     critere_comparaison = models.ForeignKey(CritereComparaison, on_delete=models.CASCADE)
     algorithme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'{self.libelle} : [{self.min}, {self.max}]'
+
 # à revoir 
 
 
-class TaxionomieTypeDonne(models.Model):
+class TaxonomieTypeDonnee(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
 
+    def __str__(self):
+        return self.libelle
 
 class Encodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    strategie_encodages = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieEncodage')
+    strategie_encodages = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieEncodage')
 
+    def __str__(self):
+        return self.libelle
 
 class StrategieEncodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE)
-    taxionomie_type_donne = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donne = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.libelle
 
 class Imputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieImputation')
+    taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieImputation')
+
+    def __str__(self):
+        return self.libelle
 
 class StrategieImputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE)
-    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.libelle
 
 class MiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieMiseEchelle')
+    taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieMiseEchelle')
 
+    def __str__(self):
+        return self.libelle
 
 class StrategieMiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
     mise_echelle = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.libelle
 
 class Colonne(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
@@ -188,6 +264,9 @@ class Colonne(models.Model):
     strategie_encodage = models.ForeignKey(StrategieEncodage, on_delete=models.CASCADE)
     strategie_imputation = models.ForeignKey(StrategieImputation, on_delete=models.CASCADE)
     strategie_mise_echelle = models.ForeignKey(StrategieMiseEchelle, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.libelle
 
 class HyperParametre(models.Model):
     valeur_defaut = models.CharField(max_length=254, blank=True,null=True)
@@ -202,5 +281,8 @@ class Valeur(models.Model):
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
     hyper_parametre = models.ForeignKey(HyperParametre, on_delete=models.CASCADE)
     contenu = models.TextField(max_length=254, blank=True,null=True)
+
+    def __str__(self):
+        return self.contenu
 
 # Create your models here.

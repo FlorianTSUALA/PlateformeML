@@ -1,0 +1,14 @@
+<form method="post" action="{% url url_update form.instance.pk %}" class="js-entity-update-form">
+  {% csrf_token %}
+  <div class="modal-header">
+      <h5 class="modal-title">Mise à jour de la {{model}}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    {% include 'partials/entity_form/common/form_body.html' %}
+  </div>
+  <div class="col-12 modal-footer modal-footer-uniform">
+    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Annuler</button>
+    <button type="submit" class="btn btn-primary float-end" style="float: right">Enregistrer les modifications</button>
+  </div>
+</form>

@@ -1,0 +1,77 @@
+{% extends 'layouts/base_with_breadcrumb.html' %}
+{% load static %}
+
+{% block title %} {{page_title}} {% endblock %}
+
+{% block custom_style %} 
+  <link href="{% static 'template/assets/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+{% endblock %} 
+
+{% block content %} 
+
+<div class="card">
+  <div class="card-body">
+    <div class="row align-items-center">
+      <div class="col-lg-3 col-xl-2">
+        <a href="javascript:;" class="btn btn-primary mb-3 mb-lg-0 js-create-entity" data-url="{% url url_create %}" ><i class="bi bi-plus-square-fill"></i>&nbsp &nbsp Ajouter  {% if genre == 'F' %} une {% else %} un {% endif %}  {{model}}</a>
+      </div>
+      <div class="col-lg-9 col-xl-10">
+        <form class="float-lg-end">
+          <div class="row row-cols-lg-auto g-2">
+            <div class="col-12">
+              <a href="javascript:;" class="btn btn-light mb-3 mb-lg-0"><i class="bi bi-download"></i>&nbsp &nbsp Exporter</a>
+            </div>
+            <div class="col-12">
+              <a href="javascript:;" class="btn btn-light mb-3 mb-lg-0"><i class="bi bi-upload"></i>&nbsp &nbsp Importer</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+
+    <div class="card-body">
+      <!--end breadcrumb-->
+      <h6 class="mb-0 text-uppercase">{{table_title}}</h6>
+      <hr/>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="entity-table" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+              {{ table_header | safe }}
+            </thead>
+            <tbody>
+              {% include path_table_body %}
+            </tbody>
+            <tfoot>
+              {{ table_header | safe }}
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+    </div>
+</div>
+
+
+ <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-entity" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+      
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block custom_javascript %} 
+  <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}" ></script>
+  <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}" ></script>
+  <script src="{% static 'template/assets/js/table-datatable.js' %}" ></script>
+  <script src="{% static 'custom/js/lang.js' %}"></script>
+  <script src="{% static 'custom/js/entity.js' %}"></script>
+
+{% endblock %}
