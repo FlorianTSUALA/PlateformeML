@@ -6,32 +6,22 @@ from web_admin.managers import CompteManager
 #todo
 #TextFild Limitation
 
-# class Compte(AbstractBaseUser, PermissionsMixin):
-#     email = models.EmailField(_('email address'), unique=True)
-#     name = models.CharField(max_length=70)
-#     username = models.CharField(max_length=70, unique=True)
-#     telephone = models.CharField(max_length=10, unique=True)
-#     password = models.CharField(max_length=250, unique=True)
-#     is_staff = models.BooleanField(default=False)
-#     is_active = models.BooleanField(default=True)
-#     date_joined = models.DateTimeField(default=timezone.now)
+class Compte(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(_('email address'), unique=True)
+    login = models.CharField(max_length=70, unique=True)
+    password = models.CharField(max_length=250, unique=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
-#     USERNAME_FIELD = 'username'
-#     EMAIL_FIELD = 'email'
-#     REQUIRED_FIELDS = ['email','telephone']
+    USERNAME_FIELD = 'login'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['email','telephone']
 
-#     objects = CompteManager()
+    objects = CompteManager()
 
-#     def __str__(self):
-#         return self.username
-
-class Compte(models.Model):
-    login = models.CharField(max_length=254, blank=True,null=True)
-    prenom = models.CharField(max_length=254, blank=True,null=True)
-    password = models.CharField(max_length=254, blank=True,null=True)
-    est_active = models.BooleanField()
-    etat = models.IntegerField(default=0, blank=True,null=True)
-
+    def __str__(self):
+        return self.login
 
 class Utilisateur(models.Model):
     nom = models.CharField(max_length=254, blank=True,null=True)
@@ -40,6 +30,11 @@ class Utilisateur(models.Model):
     email = models.EmailField(max_length=254, blank=True,null=True)
     pays = models.CharField(max_length=254, blank=True,null=True)
 
+    compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return "%s %s"%(self.prenom, self.nom)
+        
 class Projet(models.Model):
     title =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)

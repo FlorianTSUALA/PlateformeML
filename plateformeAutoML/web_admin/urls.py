@@ -21,6 +21,7 @@ from web_admin.views import (
     connexion,
     registers,
     register,
+    liste_user,
 
 
     #Accueil
@@ -78,12 +79,13 @@ urlpatterns = [
     path('connexion',  connexion, name='connexion'),
     path('registers',  registers, name='registers'),
     path('register',  register, name='register'),
+    path('liste_user',  liste_user, name='liste_user'),
 
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),
 
     #Accueil
-    path('',  AccueilView.as_view(), name='accueil'),
+    path('',  AccueilView.as_view(), name='home'),
     path('mes-favoris',  MesFavorisView.as_view(), name='mes_favoris'),
     path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
     path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),

@@ -18,10 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 #Authentification
-# LOGIN_URL = reverse_lazy("login")
-# LOGIN_REDIRECT_URL = reverse_lazy("home-model")
-# LOGOUT_REDIRECT_URL = reverse_lazy("login")
-# USE_REMEMBER_ME = False
+LOGIN_URL = reverse_lazy("login")
+LOGIN_REDIRECT_URL = reverse_lazy("home")
+LOGOUT_REDIRECT_URL = reverse_lazy("login")
+USE_REMEMBER_ME = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -122,7 +122,7 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = True  
 
 USE_TZ = True
 
