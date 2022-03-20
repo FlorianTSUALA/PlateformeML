@@ -1,9 +1,7 @@
 {% for item in data %}
     <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ item.type_apprentissage }}</td>
-        <td>{{ item.libelle }}</td>
-        <td>{{ item.description }}</td>
+        {% include path_table_body_fragment %}}
         <td>
             <button type="button"
                     class="btn btn-warning btn-sm js-update-entity" data-url="{% url url_update item.id %}" title="Modifier" data-bs-toggle="tooltip" title="Modifier">

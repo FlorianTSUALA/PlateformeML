@@ -62,14 +62,6 @@ def register(request):
     return render(request,'auth/auth_register.html')
 
 
-def check_username(request):
-    print('Request check')
-    username = request.POST.get('username', None)
-    if get_user_model().objects.filter(username=username).exists():
-        return HttpResponse("<span id='username-error' class='help-block text-warning'>This username already exists</span>")
-    else:
-        return HttpResponse("<span id='username-error' class='help-block text-success'>This username is available</span>")
-
 def user_login(request):
     redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME, reverse('gestionnaire')))
 
@@ -114,3 +106,13 @@ def user_logout(request):
     if not request.user.is_authenticated:
         logout(request)
     return redirect(settings.LOGIN_URL)
+
+
+
+def check_username(request):
+    print('Request check')
+    username = request.POST.get('username', None)
+    if get_user_model().objects.filter(username=username).exists():
+        return HttpResponse("<span id='username-error' class='help-block text-warning'>This username already exists</span>")
+    else:
+        return HttpResponse("<span id='username-error' class='help-block text-success'>This username is available</span>")

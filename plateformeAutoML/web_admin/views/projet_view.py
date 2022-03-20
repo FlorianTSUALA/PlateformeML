@@ -1,10 +1,63 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from web_admin.models import Algorithme
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
 from django.http import JsonResponse
+from web_admin.models import Algorithme
 
+from web_admin.models import Fichier
+
+from django.http import JsonResponse
+# Create your views here.
+
+def file_upload(request):
+    if request.method == 'POST':  
+        fichier = request.FILES['fichier'].read()
+        nom_fichier= request.POST['nom_fichier']
+        chemin = request.POST['chemin']
+        end = request.POST['end']
+        nextSlice = request.POST['nextSlice']
+
+        if fichier=="" or nom_fichier=="" or chemin=="" or end=="" or nextSlice=="":
+            res = JsonResponse({'data':'Requete invalide'})
+            return res
+        else:
+            if chemin == 'null':
+                path = 'media/' + nom_fichier
+                with open(path, 'wb+') as destination: 
+                    destination.write(fichier)
+                FileFolder = File()
+                FileFolder.chemin = nom_fichier
+                FileFolder.eof = end
+                FileFolder.name = nom_fichier
+                FileFolder.save()
+                if int(end):
+                    res = JsonResponse({'data':'Chargment effectué avec success','chemin': nom_fichier})
+                else:
+                    res = JsonResponse({'chemin': nom_fichier})
+                return res
+
+            else:
+                path = 'media/' + chemin
+                model_id = File.objects.get(chemin=chemin)
+                if model_id.name == nom_fichier:
+                    if not model_id.eof:
+                        with open(path, 'ab+') as destination: 
+                            destination.write(fichier)
+                        if int(end):
+                            model_id.eof = int(end)
+                            model_id.save()
+                            res = JsonResponse({'data':'Uploaded Successfully','chemin':model_id.chemin})
+                        else:
+                            res = JsonResponse({'chemin':model_id.chemin})    
+                        return res
+                    else:
+                        res = JsonResponse({'data':'EOF found. Invalid request'})
+                        return res
+                else:
+                    res = JsonResponse({'data':'No such fichier exists in the chemin'})
+                    return res
+    return render(request, 'index.html')
 
 class MesFavorisView(TemplateView):
     template_name = 'pages/projets/mes_favoris.html'

@@ -2,17 +2,18 @@ from django.db import models
 from .enum import ETypeDonnee, EEtatPublication, ETypeValeur
 from django.urls import reverse
 from web_admin.managers import CompteManager
-
-#todo
-#TextFild Limitation
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
 
 class Compte(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True)
     login = models.CharField(max_length=70, unique=True)
-    password = models.CharField(max_length=250, unique=True)
+    email = models.EmailField(_('email address'), unique=True)
+    password = models.CharField(max_length=250)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(default=timezone.now)
+    date_adhesion = models.DateTimeField(default=now)
+    etat = models.IntegerField(default=0, blank=True,null=True) #Enumeration attente_validation,...
 
     USERNAME_FIELD = 'login'
     EMAIL_FIELD = 'email'
@@ -20,21 +21,19 @@ class Compte(AbstractBaseUser, PermissionsMixin):
 
     objects = CompteManager()
 
-    def __str__(self):
-        return self.login
+    # def __str__(self):
+    #     return self.login
 
 class Utilisateur(models.Model):
-    nom = models.CharField(max_length=254, blank=True,null=True)
-    prenom = models.CharField(max_length=254, blank=True,null=True)
+    nom = models.CharField(max_length=70, blank=True,null=True)
+    prenom = models.CharField(max_length=70, blank=True,null=True)
     telephone = models.CharField(max_length=254, blank=True,null=True)
-    email = models.EmailField(max_length=254, blank=True,null=True)
     pays = models.CharField(max_length=254, blank=True,null=True)
+    compte = models.OneToOneField( Compte, on_delete=models.CASCADE, primary_key=True,)
 
-    compte = models.OneToOneField(Compte, on_delete=models.CASCADE)
+    def __str__(self):
+        return "%s  %s" % (self.prenom, self.nom)
 
-    def __str__(self) -> str:
-        return "%s %s"%(self.prenom, self.nom)
-        
 class Projet(models.Model):
     title =  models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
@@ -114,6 +113,9 @@ class Tache(models.Model):
     def __str__(self):
         return self.libelle
 
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in Tache._meta.fields]
+
 
 class Algorithme(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
@@ -187,7 +189,7 @@ class CritereComparaisonAlgorithme(models.Model):
 # à revoir 
 
 
-class TaxionomieTypeDonne(models.Model):
+class TaxonomieTypeDonnee(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
 
@@ -197,7 +199,7 @@ class TaxionomieTypeDonne(models.Model):
 class Encodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    strategie_encodages = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieEncodage')
+    strategie_encodages = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieEncodage')
 
     def __str__(self):
         return self.libelle
@@ -206,7 +208,7 @@ class StrategieEncodage(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE)
-    taxionomie_type_donne = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donne = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.libelle
@@ -214,7 +216,7 @@ class StrategieEncodage(models.Model):
 class Imputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieImputation')
+    taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieImputation')
 
     def __str__(self):
         return self.libelle
@@ -223,7 +225,7 @@ class StrategieImputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE)
-    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.libelle
@@ -231,7 +233,7 @@ class StrategieImputation(models.Model):
 class MiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnes = models.ManyToManyField(TaxionomieTypeDonne, through='StrategieMiseEchelle')
+    taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieMiseEchelle')
 
     def __str__(self):
         return self.libelle
@@ -239,7 +241,7 @@ class MiseEchelle(models.Model):
 class StrategieMiseEchelle(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description =  models.TextField(max_length=254, blank=True,null=True)
-    taxionomie_type_donnee = models.ForeignKey(TaxionomieTypeDonne, on_delete=models.CASCADE)
+    taxionomie_type_donnee = models.ForeignKey(TaxonomieTypeDonnee, on_delete=models.CASCADE)
     mise_echelle = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE)
     
     def __str__(self):
@@ -276,5 +278,12 @@ class Valeur(models.Model):
 
     def __str__(self):
         return self.contenu
+
+
+
+class Fichier(models.Model):
+    chemin = models.CharField(unique=True, max_length=100)
+    nom = models.CharField(max_length=50)
+    eof = models.BooleanField()
 
 # Create your models here.
