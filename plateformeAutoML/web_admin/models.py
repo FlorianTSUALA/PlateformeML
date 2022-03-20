@@ -2,43 +2,37 @@ from django.db import models
 from .enum import ETypeDonnee, EEtatPublication, ETypeValeur
 from django.urls import reverse
 from web_admin.managers import CompteManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
 
-#todo
-#TextFild Limitation
+class Compte(AbstractBaseUser, PermissionsMixin):
+    login = models.CharField(max_length=70, unique=True)
+    email = models.EmailField(_('email address'), unique=True)
+    password = models.CharField(max_length=250)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_adhesion = models.DateTimeField(default=now)
+    etat = models.IntegerField(default=0, blank=True,null=True) #Enumeration attente_validation,...
 
-# class Compte(AbstractBaseUser, PermissionsMixin):
-#     email = models.EmailField(_('email address'), unique=True)
-#     name = models.CharField(max_length=70)
-#     username = models.CharField(max_length=70, unique=True)
-#     telephone = models.CharField(max_length=10, unique=True)
-#     password = models.CharField(max_length=250, unique=True)
-#     is_staff = models.BooleanField(default=False)
-#     is_active = models.BooleanField(default=True)
-#     date_joined = models.DateTimeField(default=timezone.now)
+    USERNAME_FIELD = 'login'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['email','telephone']
 
-#     USERNAME_FIELD = 'username'
-#     EMAIL_FIELD = 'email'
-#     REQUIRED_FIELDS = ['email','telephone']
+    objects = CompteManager()
 
-#     objects = CompteManager()
-
-#     def __str__(self):
-#         return self.username
-
-class Compte(models.Model):
-    login = models.CharField(max_length=254, blank=True,null=True)
-    prenom = models.CharField(max_length=254, blank=True,null=True)
-    password = models.CharField(max_length=254, blank=True,null=True)
-    est_active = models.BooleanField()
-    etat = models.IntegerField(default=0, blank=True,null=True)
-
+    # def __str__(self):
+    #     return self.login
 
 class Utilisateur(models.Model):
-    nom = models.CharField(max_length=254, blank=True,null=True)
-    prenom = models.CharField(max_length=254, blank=True,null=True)
+    nom = models.CharField(max_length=70, blank=True,null=True)
+    prenom = models.CharField(max_length=70, blank=True,null=True)
     telephone = models.CharField(max_length=254, blank=True,null=True)
-    email = models.EmailField(max_length=254, blank=True,null=True)
     pays = models.CharField(max_length=254, blank=True,null=True)
+    compte = models.OneToOneField( Compte, on_delete=models.CASCADE, primary_key=True,)
+
+    def __str__(self):
+        return "%s  %s" % (self.prenom, self.nom)
 
 class Projet(models.Model):
     title =  models.CharField(max_length=254, blank=True,null=True)
@@ -284,5 +278,12 @@ class Valeur(models.Model):
 
     def __str__(self):
         return self.contenu
+
+
+
+class Fichier(models.Model):
+    chemin = models.CharField(unique=True, max_length=100)
+    nom = models.CharField(max_length=50)
+    eof = models.BooleanField()
 
 # Create your models here.
