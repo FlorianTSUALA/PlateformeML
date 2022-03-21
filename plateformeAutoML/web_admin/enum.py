@@ -24,3 +24,8 @@ class ETypeValeur(ENoNameChoice):
     QUALITATIF = 'QUALITATIF'
     QUANTITATIF = 'QUANTITATIF'
     NUMERIC = 'NUMERIC'
+
+class EEtatCompte(ENoNameChoice):
+    ARCHIVE = 'ARCHIVE'
+    EN_ATTENTE_VALIDATION = 'EN_ATTENTE_VALIDATION'
+    ACTIF = 'ACTIF'

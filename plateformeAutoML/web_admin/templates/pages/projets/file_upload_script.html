@@ -1,5 +1,5 @@
 
-
+{% comment %} load settinf constant in template max_length {% endcomment %}
 <script>
 	class FileUpload {
 		constructor(input) {
@@ -16,15 +16,6 @@
 			this.file = this.input.files[0];
 			this.upload_file(0, null);
 		}
-		
-		(function ($) {
-			$('#submit').on('click', (event) => {
-				event.preventDefault();
-				var uploader = new FileUpload(document.querySelector('#fileupload'))
-				uploader.upload();
-			});
-		})(jQuery);
-
 
 		upload_file(start, path) {
 			var end;
@@ -93,7 +84,6 @@
 			});
 		};
 
-
 		create_progress_bar() {
 			var progress = `<div class="file-icon">
 								<i class="fa fa-file-o" aria-hidden="true"></i>
@@ -110,5 +100,12 @@
 		}
 	
 	}
-
+		
+	(function ($) {
+		$('#submit_upload_file').on('click', (event) => {
+			event.preventDefault();
+			var uploader = new FileUpload(document.querySelector('#file2upload'))
+			uploader.upload();
+		});
+	})(jQuery);
 </script>

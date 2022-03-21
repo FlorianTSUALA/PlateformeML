@@ -1,5 +1,5 @@
 from django.db import models
-from .enum import ETypeDonnee, EEtatPublication, ETypeValeur
+from .enum import ETypeDonnee, EEtatPublication, ETypeValeur, EEtatCompte
 from django.urls import reverse
 from web_admin.managers import CompteManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -13,7 +13,7 @@ class Compte(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_adhesion = models.DateTimeField(default=now)
-    etat = models.IntegerField(default=0, blank=True,null=True) #Enumeration attente_validation,...
+    etat = models.CharField(max_length=50, choices=EEtatCompte.choices(), default=EEtatCompte.ACTIF)
 
     USERNAME_FIELD = 'login'
     EMAIL_FIELD = 'email'
@@ -43,7 +43,7 @@ class Projet(models.Model):
     nombre_modele = models.IntegerField(default=0, blank=True,null=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     
-    slug = models.SlugField(null=True, unique=True)
+    slug = models.SlugField(null=True, unique=True) #slud automatic
 
     def __str__(self):
         return self.title

@@ -14,6 +14,7 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.models import User,Group
 from django.views.generic import TemplateView
@@ -22,16 +23,7 @@ from django.core.files.storage import FileSystemStorage
 from web_admin.models import Compte, Utilisateur
 from django.conf import settings
 
-
-
 def login(request):
-    return render(request, 'pages/authentification/login.html')
-
-
-def registers(request):
-    return render(request, 'pages/authentification/register.html')
-
-def connexion(request):
     redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME, reverse('home')))
     print(redirect_to)
     if request.user.is_authenticated:
@@ -71,25 +63,12 @@ def connexion(request):
     else:
         return render(request, 'pages/authentification/login.html')
 
-def loginPage(request):
-    if request.method == 'POST':
-        login=request.POST.get('login')
-        password=request.POST.get('password') 
-        print(login)
-        print(password)
-        
-        user = authenticate(request,login=login,password=password)
-        print(user)
-        if user is not None:
-            login(request,user)
-            return redirect('dashboard')
-        else:
-            messages.info(request, 'Username or password is not correct')    
+
     return render(request, 'login.html')
 
-def logoutUser(request):
+def logout(request):
     if not request.user.is_authenticated:
-        logout(request)
+        auth_logout(request)
     return redirect(settings.LOGIN_URL)
 
 
