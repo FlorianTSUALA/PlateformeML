@@ -29,7 +29,9 @@ class Utilisateur(models.Model):
     prenom = models.CharField(max_length=70, blank=True,null=True)
     telephone = models.CharField(max_length=254, blank=True,null=True)
     pays = models.CharField(max_length=254, blank=True,null=True)
+    ville = models.CharField(max_length=254, blank=True,null=True)
     compte = models.OneToOneField( Compte, on_delete=models.CASCADE, primary_key=True,)
+    decription = models.TextField(blank=True,null=True)
 
     def __str__(self):
         return "%s  %s" % (self.prenom, self.nom)
