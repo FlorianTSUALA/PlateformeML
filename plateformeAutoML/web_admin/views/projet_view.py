@@ -17,7 +17,6 @@ def allowed_file(filename):
 
 def clean_session_project_creation(request):
     pass
-from .models import File
 
 def index(request):
     if request.method == 'POST':  

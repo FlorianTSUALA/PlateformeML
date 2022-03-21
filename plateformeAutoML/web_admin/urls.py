@@ -32,7 +32,8 @@ from web_admin.views import (
     
     NouveauProjetView, 
     save_info_projet,
-    upload_dataset,
+    # upload_dataset,
+    # clean_session_project_creation,
 
     ConsulterProjetView, 
     ModifierProjetView, 
@@ -118,8 +119,8 @@ urlpatterns = [
     path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
     
     path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
-    path('clean_session_project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
-    path('upload_dataset',  upload_dataset, name='upload_dataset'),
+    # path('clean_session_project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
+    # path('upload_dataset',  upload_dataset, name='upload_dataset'),
     
     path('consulter-projet',  ConsulterProjetView.as_view(), name='consulter_projet'),
     path('modifier-projet',  ModifierProjetView.as_view(), name='modifier_projet'),
