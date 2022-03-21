@@ -143,6 +143,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+UPLOAD_FOLDER = '/media/datasets'
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+SEND_FILE_MAX_AGE_DEFAULT = 0
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 

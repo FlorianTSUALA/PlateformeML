@@ -19,8 +19,7 @@ from django.conf.urls.static import static
 from web_admin.views import (
     #Authentification
     login,
-    connexion,
-    registers,
+    logout,
     register,
 
 
@@ -30,7 +29,11 @@ from web_admin.views import (
     MesFavorisView, 
     MesProjetsView, 
     ProjetsPublicsView, 
+    
     NouveauProjetView, 
+    save_info_projet,
+    upload_dataset,
+
     ConsulterProjetView, 
     ModifierProjetView, 
     ListeProjetView, 
@@ -102,7 +105,6 @@ from web_admin.views import (
 urlpatterns = [
     #Authentification
     path('login',  login, name='login'),
-    path('connexion',  connexion, name='connexion'),
     path('register',  register, name='register'),
 
     #Vitrine
@@ -114,7 +116,11 @@ urlpatterns = [
     path('mes-favoris',  MesFavorisView.as_view(), name='mes_favoris'),
     path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
     path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
+    
     path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
+    path('clean_session_project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
+    path('upload_dataset',  upload_dataset, name='upload_dataset'),
+    
     path('consulter-projet',  ConsulterProjetView.as_view(), name='consulter_projet'),
     path('modifier-projet',  ModifierProjetView.as_view(), name='modifier_projet'),
     path('liste-projet/<str:filter>',  ListeProjetView.as_view(), name='liste_projet'),

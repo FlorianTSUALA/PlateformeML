@@ -116,7 +116,7 @@ class ListUtilisateurView(TemplateView):
 
 
 
-def loginPage(request):
+def login_page(request):
     if request.method == 'POST':
         username=request.POST.get('username')
         password=request.POST.get('password') 
@@ -132,7 +132,7 @@ def loginPage(request):
             messages.info(request, 'Username or password is not correct')    
     return render(request, 'login.html')
 
-def logoutUser(request):
+def user_logout(request):
     logout(request)
     return redirect('dashbord')
 
