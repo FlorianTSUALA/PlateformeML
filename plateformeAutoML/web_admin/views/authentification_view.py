@@ -72,7 +72,7 @@ def logout(request):
     return redirect(settings.LOGIN_URL)
 
 
-def register(request):
+def registers(request):
     print('registration')
     if request.method == "POST":
         login = request.POST.get('login')

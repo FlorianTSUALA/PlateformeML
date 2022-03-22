@@ -70,7 +70,7 @@ def register(request):
 
         if pwd1 !=pwd2:
             message = 'Les mots de passes ne sont pas identiques'
-            return render(request,'pages/authentification/register.html',{'message':message})
+            return render(request, 'pages/utilisateurs/create_utilisateur.html')
         else:
            dk = hashlib.pbkdf2_hmac('sha256', str.encode(pwd1), b'salt', 10000)
            password = binascii.hexlify(dk)
@@ -80,7 +80,6 @@ def register(request):
                             password = password
                         )
            compte.save()
-
            utilisateur = Utilisateur(
                             nom = nom,
                             prenom = prenom,
@@ -92,17 +91,19 @@ def register(request):
                         )
            utilisateur.save()
 
-           return redirect(settings.LOGIN_URL)
+           return redirect(liste)
 
             # messages.error(request, 'creation de compte échouée')
             # render(request,'users/register.html',{'form':form})
     else:
-        return render(request, 'pages/utilisateur/create_utilisateur.html')
+        return render(request, 'pages/utilisateurs/create_utilisateur.html')
         
-    return render(request,'pages/utilisateur/create_utilisateur.html')
+    return render(request,'pages/utilisateurs/create_utilisateur.html')
 
 
-
+def liste(request):
+    utilisateur = Utilisateur.objects.all()
+    return render(request, 'pages/utilisateurs/list_utilisateur.html', {'utilisateur':utilisateur})
 
 
 class ListUtilisateurView(TemplateView):
@@ -137,23 +138,23 @@ def user_logout(request):
     return redirect('dashbord')
 
 
-def register(request):
-    form = CreateUser()
-    if request.method == 'POST':
-        user = User()
-        form = CreateUser(request.POST)
-        username = request.POST.get('username')
-        print(form)
-        if form.is_valid():
-            form.save()
-            user=form.cleaned_data.get('username')
-            messages.success(request, 'Votre compte a été creer.' + user)
-            return redirect('login')
-            print('ok')
-        else:
-            print('invalide data')
-           # form = CreateUser()
+# def register(request):
+#     form = CreateUser()
+#     if request.method == 'POST':
+#         user = User()
+#         form = CreateUser(request.POST)
+#         username = request.POST.get('username')
+#         print(form)
+#         if form.is_valid():
+#             form.save()
+#             user=form.cleaned_data.get('username')
+#             messages.success(request, 'Votre compte a été creer.' + user)
+#             return redirect('login')
+#             print('ok')
+#         else:
+#             print('invalide data')
+#            # form = CreateUser()
 
-    context = {'form': form}
-    return render(request, 'register.html',context)
+#     context = {'form': form}
+#     return render(request, 'register.html',context)
 

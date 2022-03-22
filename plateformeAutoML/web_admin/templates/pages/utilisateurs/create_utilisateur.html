@@ -17,6 +17,7 @@
     <div class="card shadow-sm border-0">
       
       <form method="post" action="{% url 'register' %}" class="card-body">
+        {% csrf_token %}
         <h5 class="mb-0">My Account</h5>
         <hr>
         <div class="card shadow-none border">
@@ -31,7 +32,7 @@
               </div>
               <div class="col-6">
                 <label for="email" class="form-label">Email </label>
-                <input type="email" class="form-control" placeholder="Email" name="mail">
+                <input type="email" class="form-control" placeholder="Email" name="email">
               </div>
               <div class="col-6">
                 <label class="form-label" for="pwd1">Mot de passe</label>
@@ -56,8 +57,8 @@
                   <input type="text" class="form-control" value="47-A, city name, United States">
                  </div> -->
               <div class="col-6">
-                <label for="ville" class="form-label">Pays </label>
-                <select id="ville" name="ville" class="form-select">
+                <label for="pays" class="form-label">Pays </label>
+                <select id="pays" name="pays" class="form-select">
                   <option value="Afghanistan">Afghanistan</option>
                   <option value="Åland Islands">Åland Islands</option>
                   <option value="Albania">Albania</option>
@@ -307,8 +308,8 @@
                 </select>
               </div>
               <div class="col-6">
-                <label for="telephone" class="form-label">Ville </label>
-                <select id="pays" name="pays" class="form-select">
+                <label for="ville" class="form-label">Ville </label>
+                <select id="ville" name="ville" class="form-select">
                   <option value="Afghanistan">Afghanistan</option>
                   <option value="Åland Islands">Åland Islands</option>
                   <option value="Albania">Albania</option>
@@ -566,14 +567,14 @@
                 <input type="text" id="prenom" class="form-control" name="prenom" placeholder="Prénom">
               </div>
               <div class="col-12">
-                <label class="form-label">Appropos de Moi</label>
-                <textarea class="form-control" rows="4" cols="4" placeholder="Describe yourself..."></textarea>
+                <label for="description" class="form-label">Appropos de Moi</label>
+                <textarea class="form-control" id="description" rows="4" cols="4" placeholder="Describe yourself..." name="description"></textarea>
               </div>
             </div>
           </div>
         </div>
         <div class="text-start">
-          <button type="button" class="btn btn-primary px-4">Save Changes</button>
+          <button type="submit" class="btn btn-primary px-4">Save Changes</button>
         </div>
 
       </form>
