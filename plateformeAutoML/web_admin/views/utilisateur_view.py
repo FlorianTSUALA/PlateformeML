@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse_lazy
 from web_admin.models import Algorithme
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
@@ -70,7 +70,7 @@ def register(request):
 
         if pwd1 !=pwd2:
             message = 'Les mots de passes ne sont pas identiques'
-            return render(request,'pages/authentification/register.html',{'message':message})
+            return render(request, 'pages/utilisateurs/create_utilisateur.html')
         else:
            dk = hashlib.pbkdf2_hmac('sha256', str.encode(pwd1), b'salt', 10000)
            password = binascii.hexlify(dk)
@@ -80,7 +80,6 @@ def register(request):
                             password = password
                         )
            compte.save()
-
            utilisateur = Utilisateur(
                             nom = nom,
                             prenom = prenom,
@@ -92,18 +91,61 @@ def register(request):
                         )
            utilisateur.save()
 
-           return redirect(settings.LOGIN_URL)
+           return redirect(liste)
 
             # messages.error(request, 'creation de compte échouée')
             # render(request,'users/register.html',{'form':form})
     else:
-        return render(request, 'pages/utilisateur/create_utilisateur.html')
+        return render(request, 'pages/utilisateurs/create_utilisateur.html')
         
-    return render(request,'pages/utilisateur/create_utilisateur.html')
+    return render(request,'pages/utilisateurs/create_utilisateur.html')
 
 
+def liste(request):
+    utilisateur = Utilisateur.objects.all()
+    for u in utilisateur:
+        print(u.nom)
+    return render(request, 'pages/utilisateurs/list_utilisateur.html', {'utilisateur':utilisateur})
 
+def update_user(request,pk):
+    utilisateur = Utilisateur.objects.get(nom = pk)
+    return render(request,'pages/utilisateurs/update_utilisateur.html', {'utilisateur':utilisateur})
 
+def update_utilisateur(request):
+    if request.method == "POST":
+        id_compte = request.POST.get('id_compte')
+        login = request.POST.get('login')
+        email = request.POST.get('email')
+        nom = request.POST.get('nom')
+        prenom = request.POST.get('prenom')
+        telephone = request.POST.get('telephone')
+        pays = request.POST.get('pays')
+        ville = request.POST.get('ville')
+        # description = request.POST.get('description')
+        compte = Compte.objects.get(id = id_compte)
+        utilisateur = Utilisateur.objects.get(compte_id = id_compte)
+        compte.login = login
+        compte.email = email
+        utilisateur.nom = nom
+        utilisateur.prenom = prenom
+        utilisateur.telephone = telephone
+        utilisateur.pays = pays
+        utilisateur.ville = ville
+
+        print("-----------------------------------------------------------")
+        print(compte)
+        print(utilisateur)
+        print("-----------------------------------------------------------")
+        compte.save(update_fields=['login','email'])
+        utilisateur.save(update_fields=['nom','prenom','telephone','pays','ville'])
+
+    return redirect(liste)
+
+def delete_utilisateur(request,pk):
+    utilisateur = get_object_or_404(Utilisateur, compte_id=pk)
+    # update_bc = Calcul_Avoirs.objects.get(code_banque = alerte_bc.code_banque)
+    utilisateur.delete()
+    return redirect(liste)
 
 class ListUtilisateurView(TemplateView):
     template_name = 'pages/utilisateurs/list_utilisateur.html'
@@ -137,23 +179,23 @@ def user_logout(request):
     return redirect('dashbord')
 
 
-def register(request):
-    form = CreateUser()
-    if request.method == 'POST':
-        user = User()
-        form = CreateUser(request.POST)
-        username = request.POST.get('username')
-        print(form)
-        if form.is_valid():
-            form.save()
-            user=form.cleaned_data.get('username')
-            messages.success(request, 'Votre compte a été creer.' + user)
-            return redirect('login')
-            print('ok')
-        else:
-            print('invalide data')
-           # form = CreateUser()
+# def register(request):
+#     form = CreateUser()
+#     if request.method == 'POST':
+#         user = User()
+#         form = CreateUser(request.POST)
+#         username = request.POST.get('username')
+#         print(form)
+#         if form.is_valid():
+#             form.save()
+#             user=form.cleaned_data.get('username')
+#             messages.success(request, 'Votre compte a été creer.' + user)
+#             return redirect('login')
+#             print('ok')
+#         else:
+#             print('invalide data')
+#            # form = CreateUser()
 
-    context = {'form': form}
-    return render(request, 'register.html',context)
+#     context = {'form': form}
+#     return render(request, 'register.html',context)
 

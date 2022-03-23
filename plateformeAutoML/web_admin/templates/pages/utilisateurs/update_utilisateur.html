@@ -16,7 +16,7 @@
   <div class="col-12 col-lg-8">
     <div class="card shadow-sm border-0">
       
-      <form method="post" action="{% url 'register' %}" class="card-body">
+      <form method="post" action="{% url 'enregistrement_update' %}" class="card-body">
         {% csrf_token %}
         <h5 class="mb-0">My Account</h5>
         <hr>
@@ -26,23 +26,17 @@
           </div>
           <div class="card-body">
             <div class="row g-3">
+              
+                <input type="text" hidden class="form-control"  name="id_compte" value="{{utilisateur.compte.id}}">
+              
               <div class="col-6">
                 <label for="login" class="form-label">Login</label>
-                <input type="text" class="form-control" placeholder="Login" name="login">
+                <input type="text" class="form-control"  name="login" value="{{utilisateur.compte.login}}">
               </div>
               <div class="col-6">
                 <label for="email" class="form-label">Email </label>
-                <input type="email" class="form-control" placeholder="Email" name="email">
+                <input type="email" class="form-control" value="{{utilisateur.compte.email}}" name="email">
               </div>
-              <div class="col-6">
-                <label class="form-label" for="pwd1">Mot de passe</label>
-                <input type="password" name="pwd1" class="form-control" placeholder="password">
-              </div>
-              <div class="col-6">
-                <label class="form-label" for="pwd2">Confirmer le Mot de passe</label>
-                <input type="password" name="pwd2" class="form-control" placeholder="confirmer le password">
-              </div>
-
             </div>
           </div>
         </div>
@@ -560,23 +554,15 @@
               </div>
               <div class="col-6">
                 <label for="nom" class="form-label">Nom </label>
-                <input type="text" id="nom" class="form-control" name="nom" placeholder="Nom">
+                <input type="text" id="nom" class="form-control" name="nom" value="{{utilisateur.nom}}">
               </div>
               <div class="col-6">
                 <label for="prenom" class="form-label">Prénom </label>
-                <input type="text" id="prenom" class="form-control" name="prenom" placeholder="Prénom">
-              </div>
-              <div class="col-6">
-                <label for="telephone" class="form-label">Téléphone </label>
-                <input type="text" id="telephone" class="form-control" name="telephone" placeholder="Téléphone">
-              </div>
-              <div class="col-6">
-                <label for="adresse" class="form-label">Adresse </label>
-                <input type="text" id="adresse" class="form-control" name="adresse" placeholder="Adresse">
+                <input type="text" id="prenom" class="form-control" name="prenom" value="{{utilisateur.prenom}}">
               </div>
               <div class="col-12">
                 <label for="description" class="form-label">Appropos de Moi</label>
-                <textarea class="form-control" id="description" rows="4" cols="4" placeholder="Describe yourself..." name="description"></textarea>
+                <textarea class="form-control" id="description" rows="4" cols="4" value="{{utilisateur.description}}" name="description"></textarea>
               </div>
             </div>
           </div>
