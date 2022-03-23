@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse_lazy
 from web_admin.models import Algorithme
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
@@ -103,8 +103,49 @@ def register(request):
 
 def liste(request):
     utilisateur = Utilisateur.objects.all()
+    for u in utilisateur:
+        print(u.nom)
     return render(request, 'pages/utilisateurs/list_utilisateur.html', {'utilisateur':utilisateur})
 
+def update_user(request,pk):
+    utilisateur = Utilisateur.objects.get(nom = pk)
+    return render(request,'pages/utilisateurs/update_utilisateur.html', {'utilisateur':utilisateur})
+
+def update_utilisateur(request):
+    if request.method == "POST":
+        id_compte = request.POST.get('id_compte')
+        login = request.POST.get('login')
+        email = request.POST.get('email')
+        nom = request.POST.get('nom')
+        prenom = request.POST.get('prenom')
+        telephone = request.POST.get('telephone')
+        pays = request.POST.get('pays')
+        ville = request.POST.get('ville')
+        # description = request.POST.get('description')
+        compte = Compte.objects.get(id = id_compte)
+        utilisateur = Utilisateur.objects.get(compte_id = id_compte)
+        compte.login = login
+        compte.email = email
+        utilisateur.nom = nom
+        utilisateur.prenom = prenom
+        utilisateur.telephone = telephone
+        utilisateur.pays = pays
+        utilisateur.ville = ville
+
+        print("-----------------------------------------------------------")
+        print(compte)
+        print(utilisateur)
+        print("-----------------------------------------------------------")
+        compte.save(update_fields=['login','email'])
+        utilisateur.save(update_fields=['nom','prenom','telephone','pays','ville'])
+
+    return redirect(liste)
+
+def delete_utilisateur(request,pk):
+    utilisateur = get_object_or_404(Utilisateur, compte_id=pk)
+    # update_bc = Calcul_Avoirs.objects.get(code_banque = alerte_bc.code_banque)
+    utilisateur.delete()
+    return redirect(liste)
 
 class ListUtilisateurView(TemplateView):
     template_name = 'pages/utilisateurs/list_utilisateur.html'

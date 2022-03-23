@@ -22,6 +22,9 @@ from web_admin.views import (
     logout,
     register,
     liste,
+    update_user,
+    update_utilisateur,
+    delete_utilisateur,
 
 
     #Accueil
@@ -136,7 +139,9 @@ urlpatterns = [
     path('utilisateur/list/archives',  ListUtilisateurView.as_view(), name='utilisateur_list_archives'),
     path('utilisateur/list/attente_validation',  ListUtilisateurView.as_view(), name='utilisateur_list_attente_validation'),
     path('utilisateur/create',  register, name='utilisateur_create'),
-    # path('utilisateur/create',  CreateUtilisateurView.as_view(), name='utilisateur_create'),
+    path('utilisateur/enregistrement_update',  update_utilisateur, name='enregistrement_update'),
+    path('utilisateur_update/<str:pk>', update_user, name='utilisateur_update'),
+    path('utilisateur_delete/<int:pk>', delete_utilisateur, name='utilisateur_delete'),
 
     #Paramtrage
     # path('projet/',  ProjetListView.as_view(), name='projet'),

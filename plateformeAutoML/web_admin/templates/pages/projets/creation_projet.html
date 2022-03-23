@@ -21,7 +21,7 @@
 	<div class="">
 		<div id="step-01" class="page-section-stepper container py-2">
 			<h2 class="font-weight-light text-center text-muted py-3">Informations générales</h2>
-			<!-- timeline item 1 -->
+			
 			<div class="row">
 				<div class="col-lg-12 mx-auto">
 					<div class="card">
@@ -44,25 +44,16 @@
 									<label class="form-label">Titre</label>
 									<input type="text" class="form-control" name="titre" placeholder="titre du projet">
 									</div>
-									<div class="col-12 col-lg-4">
-									<label class="form-label">SKU</label>
-									<input type="text" class="form-control" placeholder="SKU">
-									</div>
-									<div class="col-12 col-lg-4">
-									<label class="form-label">Color</label>
-									<input type="text" class="form-control" placeholder="Color">
-									</div>
-									<div class="col-12 col-lg-4">
-									<label class="form-label">Size</label>
-									<input type="text" class="form-control" placeholder="Size">
+									<div class="col-12">
+										<label class="form-label">Mots clés</label>
+										<input type="text" class="form-control" placeholder="Tags">
 									</div>
 									<div class="col-12">
-									<label class="form-label">Brand</label>
-									<input type="text" class="form-control" placeholder="Brand">
-									</div>
-									<div class="col-12">
-									<label class="form-label">Image d'intenfication</label>
-									<input class="form-control" name="image" type="file">
+										<div class="d-flex align-items-center gap-2">
+										<a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">Regression <i class="bi bi-x"></i></a>
+										<a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">School <i class="bi bi-x"></i></a>
+										<a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">Furniture <i class="bi bi-x"></i></a>
+										</div>
 									</div>
 									<div class="col-12">
 									<label class="form-label">Description </label>
@@ -77,71 +68,21 @@
 							<div class="card shadow-none bg-light border">
 								<div class="card-body">
 									<div class="row g-3">
-									<div class="col-12">
-										<label class="form-label">Price</label>
-										<input type="text" class="form-control" placeholder="Price">
-									</div>
-									<div class="col-12">
-										<label class="form-label">Status</label>
-										<select class="form-select">
-										<option>Published</option>
-										<option>Draft</option>
-										</select>
-									</div>
-									<div class="col-12">
-										<label class="form-label">Tags</label>
-										<input type="text" class="form-control" placeholder="Tags">
-									</div>
-									<div class="col-12">
-										<div class="d-flex align-items-center gap-2">
-										<a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">Woman <i class="bi bi-x"></i></a>
-										<a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">Fashion <i class="bi bi-x"></i></a>
-										<a href="javascript:;" class="btn btn-sm btn-light border shadow-sm bg-white">Furniture <i class="bi bi-x"></i></a>
+										<div class="col-12">
+											<label class="form-label">Status</label>
+											<select class="form-select">
+												<option>Privé</option>
+												<option>Published</option>
+												<option>En echauche</option>
+											</select>
 										</div>
-									</div>
-									<div class="col-12">
-										<h5>Categories</h5>
-										<div class="category-list">
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="" id="Jeans">
-											<label class="form-check-label" for="Jeans">
-											Jeans
-											</label>
+										<div class="col-12">
+											<label class="form-label">Image d'intenfication</label>
+											<input class="form-control" name="image" type="file">
 										</div>
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="" id="FormalShirts">
-											<label class="form-check-label" for="FormalShirts">
-											Formal Shirts
-											</label>
+										<div class="col-12"  style="text-align: center;">
+											<img src="{% static 'template/assets/images/products/01.png' %}" class="img-fluid mb-3" style="max-width:250px" alt="">
 										</div>
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="" id="WomenShirts">
-											<label class="form-check-label" for="WomenShirts">
-											Women Shirts
-											</label>
-										</div>
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="" id="Electronics">
-											<label class="form-check-label" for="Electronics">
-											Electronics
-											</label>
-										</div>
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="" id="SportsShoes">
-											<label class="form-check-label" for="SportsShoes">
-											Sports Shoes
-											</label>
-										</div>
-										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="" id="Mobiles">
-											<label class="form-check-label" for="Mobiles">
-											Mobiles
-											</label>
-										</div>
-										</div>
-									
-									</div>
-
 									</div><!--end row-->
 								</div>
 							</div>  
@@ -155,7 +96,8 @@
 		</div>
 		<div id="step-02" class="page-section-stepper container py-2">
 			<h2 class="font-weight-light text-center text-muted py-3">Chargement des données</h2>
-			<!-- timeline item 1 -->
+			<h4 class="font-weight-light text-center text-muted py-3">Acquisition de données et Stratégies de pretraitement</h4>
+			
 			<div class="row">
 				<div class="col-lg-12 mx-auto">
 					<div class="card">
@@ -163,70 +105,25 @@
 						<div class="d-sm-flex align-items-center">
 						<h5 class="mb-2 mb-sm-0">Chargement des données</h5>
 						<div class="ms-auto">
-							<button type="button" class="btn btn-secondary">Enregistrez</button>
-							<button type="button" class="btn btn-primary">Publiez</button>
+							<button type="button" class="btn btn-secondary">Annuler</button>
+							<button type="button" class="btn btn-primary">Enregistrez</button>
 						</div>
 						</div>
 					</div>
 					<div class="card-body">
 						<div class="row g-3">
-						<div class="col-12 col-lg-8">
-							<div class="card shadow-none bg-light border">
-								<div class="card-body">
-								<form class="row g-3">
-									<div class="col-12">
-									<label class="form-label">Chargez votre jeu de données</label>
-									<input class="form-control" name="image" type="file">
-									</div>
-								</form>
+							<form class="form" enctype="multipart/form-data" method="POST" action="">
+								{% csrf_token %}
+								<label class="form-label" for="file2upload">selectionnez un fichier (xls, xlsx, csv, npy)</label>
+								<div class="input-group">
+									<input type="file" class="form-control" id="file2upload" placeholder="Choisir un jeu de données." aria-describedby="file2upload" aria-label="Upload">
+									<button class="btn btn-success" type="submit" id="submit_upload_file">Uploadez</button>
 								</div>
-							</div>
-						</div>
-
-						<div class="col-12 col-lg-4">
-							<div class="card shadow-none bg-light border">
-								<div class="card-body">
-									<div class="row g-3">
-									<div class="col-12">
-										<label class="form-label">Variable cible</label>
-										<select class="form-select">
-										<option>-------</option>
-										<option>-------</option>
-										</select>
-									</div>
-									
-									<div class="col-12">
-										<h5>Varaibles à </h5>
-										<div class="category-list">
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="" id="Jeans">
-												<label class="form-check-label" for="Jeans">
-												Jeans
-												</label>
-											</div>
-										</div>
-									
-									</div>
-
-									</div><!--end row-->
-								</div>
-							</div>  
-						</div>
-
-
-						<form enctype="multipart/form-data" method="POST" action="">
-							{% csrf_token %}
-							<div class="form-group">
-								<label>Choisir un jeu de données.</label>
-								<input type="file" class="form-control" id="file2upload" placeholder="selectionnez un fichier (xls, xlsx, csv, npy)">
-							</div>
-							<input type="submit" value="upload_file" id="submit_upload_file" class="btn btn-success">     
-						</form>
-						<div id="uploaded_files"></div>
-
-
+							</form>
+							<div id="uploaded_files"></div>
 						</div><!--end row-->
 						<hr>
+						<br>
 						<div class="card-body">
 							<div class="table-responsive">
 								<table id="dataset" class="table table-striped table-bordered" style="width:100%">
@@ -267,237 +164,99 @@
 					</div>
 				</div>
 			</div>
+
+			<h4 class="font-weight-light text-center text-muted py-3">Visualisation et corelation entre les variables</h4>
+			
+			<div class="row">
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+					<div class="card-body">
+						<hr>
+						<br>
+						<div class="card-body">
+							
+						</div>
+					</div>
+					</div>
+				</div>
+			</div>
+
+			<h4 class="font-weight-light text-center text-muted py-3">Choix/Selection des varaibles</h4>
+			
+			<div class="row">
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+					<div class="card-body">
+						<hr>
+						<br>
+						<div class="card-body">
+							
+						</div>
+					</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
-		<div id="step-03" class="page-section-stepper container py-2">
-			<h2 class="font-weight-light text-center text-muted py-3">Timeline Example 1</h2>
-			<!-- timeline item 1 -->
+		{% comment %} <div id="step-03" class="page-section-stepper container py-2">
+			<h2 class="font-weight-light text-center text-muted py-3">Choix/Selection de la tache</h2>
+			
 			<div class="row">
-				<!-- timeline item 1 left dot -->
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<!-- timeline item 1 event content -->
-				<div class="col py-2">
-					<div class="card radius-15">
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+					<div class="card-body">
+						<hr>
+						<br>
 						<div class="card-body">
-							<div class="float-end text-muted">Mon, Jan 9th 2020 7:00 AM</div>
-							<h4 class="card-title text-muted">Day 1 Orientation</h4>
-							<p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
+							
 						</div>
+					</div>
 					</div>
 				</div>
 			</div>
-			<!--/row-->
-			<!-- timeline item 2 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-primary">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card border-primary shadow radius-15">
-						<div class="card-body">
-							<div class="float-end text-primary">Tue, Jan 10th 2019 8:30 AM</div>
-							<h4 class="card-title text-primary">Day 2 Sessions</h4>
-							<p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-							<button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t2_details" data-bs-toggle="collapse">Show Details ▼</button>
-							<div class="collapse border" id="t2_details">
-								<div class="p-2 text-monospace">
-									<div>08:30 - 09:00 Breakfast in CR 2A</div>
-									<div>09:00 - 10:30 Live sessions in CR 3</div>
-									<div>10:30 - 10:45 Break</div>
-									<div>10:45 - 12:00 Live sessions in CR 3</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 3 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Wed, Jan 11th 2019 8:30 AM</div>
-							<h4 class="card-title">Day 3 Sessions</h4>
-							<p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before they sold out gastropub taxidermy Vice.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 4 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Thu, Jan 12th 2019 11:30 AM</div>
-							<h4 class="card-title">Day 4 Wrap-up</h4>
-							<p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-		</div>
+
+		</div> {% endcomment %}
 		<div id="step-04" class="page-section-stepper container py-2">
-			<h2 class="font-weight-light text-center text-muted py-3">Timeline Example 1</h2>
-			<!-- timeline item 1 -->
+			<h2 class="font-weight-light text-center text-muted py-3">Choix des alorithmes</h2>
 			<div class="row">
-				<!-- timeline item 1 left dot -->
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<!-- timeline item 1 event content -->
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Mon, Jan 9th 2020 7:00 AM</div>
-							<h4 class="card-title text-muted">Day 1 Orientation</h4>
-							<p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 2 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-primary">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card border-primary shadow radius-15">
-						<div class="card-body">
-							<div class="float-end text-primary">Tue, Jan 10th 2019 8:30 AM</div>
-							<h4 class="card-title text-primary">Day 2 Sessions</h4>
-							<p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-							<button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t2_details" data-bs-toggle="collapse">Show Details ▼</button>
-							<div class="collapse border" id="t2_details">
-								<div class="p-2 text-monospace">
-									<div>08:30 - 09:00 Breakfast in CR 2A</div>
-									<div>09:00 - 10:30 Live sessions in CR 3</div>
-									<div>10:30 - 10:45 Break</div>
-									<div>10:45 - 12:00 Live sessions in CR 3</div>
-								</div>
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+						<div class="card-header py-3 bg-transparent"> 
+							<div class="d-sm-flex align-items-center">
+							<h5 class="mb-2 mb-sm-0">Progression</h5>
+							<div class="ms-auto">
+								<button type="button" class="btn btn-secondary">Annuller</button>
+								<button type="button" class="btn btn-primary">Enregistrer</button>
+							</div>
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 3 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
 						<div class="card-body">
-							<div class="float-end text-muted">Wed, Jan 11th 2019 8:30 AM</div>
-							<h4 class="card-title">Day 3 Sessions</h4>
-							<p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before they sold out gastropub taxidermy Vice.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 4 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Thu, Jan 12th 2019 11:30 AM</div>
-							<h4 class="card-title">Day 4 Wrap-up</h4>
-							<p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
+							<div class="p-4  rounded">
+								<form class="row g-3 needs-validation" novalidate="">
+									<div class="col-md-3">
+										<label for="validationCustom04" class="form-label">Modele</label>
+										<select class="form-select" id="validationCustom04" required="">
+											<option selected="" disabled="" value="">regression...</option>
+											<option>...</option>
+											<option>...</option>
+											<option>...</option>
+											<option>...</option>
+										</select>
+										<div class="invalid-feedback">Selectionnez un algorothme.</div>
+									</div>
+									<div class="col-md-6">
+										<label for="validationCustom03" class="form-label">Valeur</label>
+										<input type="text" class="form-control" id="validationCustom03" required="">
+										<div class="invalid-feedback">Définissez une valeur.</div>
+									</div>
+									
+									<div class="col-md-3">
+										<label for="validationCustom03" class="form-label">&nbsp;&nbsp;&nbsp;</label>
+										<input type="submit" class="form-control btn btn-primary" value="Prédiction" id="validationCustom03" >
+									</div>
+								
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -505,353 +264,191 @@
 			<!--/row-->
 		</div>
 		<div id="step-05" class="page-section-stepper container py-2">
-			<h2 class="font-weight-light text-center text-muted py-3">Timeline Example 1</h2>
-			<!-- timeline item 1 -->
+			<h2 class="font-weight-light text-center text-muted py-3">Entrainement</h2>
+			
 			<div class="row">
-				<!-- timeline item 1 left dot -->
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<!-- timeline item 1 event content -->
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Mon, Jan 9th 2020 7:00 AM</div>
-							<h4 class="card-title text-muted">Day 1 Orientation</h4>
-							<p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+					<div class="card-header py-3 bg-transparent"> 
+						<div class="d-sm-flex align-items-center">
+						<h5 class="mb-2 mb-sm-0">Progression</h5>
+						<div class="ms-auto">
+							<button type="button" class="btn btn-secondary">Annuler</button>
+							<button type="button" class="btn btn-primary">Demarrer</button>
+						</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 2 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-primary">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card border-primary shadow radius-15">
-						<div class="card-body">
-							<div class="float-end text-primary">Tue, Jan 10th 2019 8:30 AM</div>
-							<h4 class="card-title text-primary">Day 2 Sessions</h4>
-							<p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-							<button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t2_details" data-bs-toggle="collapse">Show Details ▼</button>
-							<div class="collapse border" id="t2_details">
-								<div class="p-2 text-monospace">
-									<div>08:30 - 09:00 Breakfast in CR 2A</div>
-									<div>09:00 - 10:30 Live sessions in CR 3</div>
-									<div>10:30 - 10:45 Break</div>
-									<div>10:45 - 12:00 Live sessions in CR 3</div>
+					<div class="card-body">
+						<div class="p-4  rounded">
+							<form class="row g-3 needs-validation" novalidate="">
+								<div class="col-12 col-lg-4">
+									<label class="form-label">% données de test</label>
+									<input type="number" class="form-control" placeholder="% ensemble de test">
 								</div>
-							</div>
+								<div class="col-12 col-lg-4">
+									<label class="form-label">% données d'entrainemnt</label>
+									<input type="number" class="form-control" placeholder="% ensemble d'entrainemnt">
+								</div>
+								<div class="col-12 col-lg-4">
+									<label class="form-label">% données de validation</label>
+									<input type="number" class="form-control" placeholder="% ensemble de validation">
+								</div>
+								
+							</form>
 						</div>
+						<div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
 					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 3 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Wed, Jan 11th 2019 8:30 AM</div>
-							<h4 class="card-title">Day 3 Sessions</h4>
-							<p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before they sold out gastropub taxidermy Vice.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 4 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Thu, Jan 12th 2019 11:30 AM</div>
-							<h4 class="card-title">Day 4 Wrap-up</h4>
-							<p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
-						</div>
 					</div>
 				</div>
 			</div>
 			<!--/row-->
 		</div>
 		<div id="step-06" class="page-section-stepper container py-2">
-			<h2 class="font-weight-light text-center text-muted py-3">Timeline Example 1</h2>
-			<!-- timeline item 1 -->
-			<div class="row">
-				<!-- timeline item 1 left dot -->
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
+			<h2 class="font-weight-light text-center text-muted py-3">Resultats d'entrainements </h2>
+			<div class="col-lg-12 mx-auto">
+				<div class="card">
+					<div class="card-header py-3 bg-transparent"> 
+						<div class="d-sm-flex align-items-center">
 					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<!-- timeline item 1 event content -->
-				<div class="col py-2">
-					<div class="card radius-15">
+					<div class="card row">
 						<div class="card-body">
-							<div class="float-end text-muted">Mon, Jan 9th 2020 7:00 AM</div>
-							<h4 class="card-title text-muted">Day 1 Orientation</h4>
-							<p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 2 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-primary">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card border-primary shadow radius-15">
-						<div class="card-body">
-							<div class="float-end text-primary">Tue, Jan 10th 2019 8:30 AM</div>
-							<h4 class="card-title text-primary">Day 2 Sessions</h4>
-							<p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-							<button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t2_details" data-bs-toggle="collapse">Show Details ▼</button>
-							<div class="collapse border" id="t2_details">
-								<div class="p-2 text-monospace">
-									<div>08:30 - 09:00 Breakfast in CR 2A</div>
-									<div>09:00 - 10:30 Live sessions in CR 3</div>
-									<div>10:30 - 10:45 Break</div>
-									<div>10:45 - 12:00 Live sessions in CR 3</div>
-								</div>
+							<div class="d-flex align-items-center">
+							   <h5 class="mb-0">Resumé de l'entrainement</h5>
+								<form class="ms-auto position-relative">
+								  <div class="position-absolute top-50 translate-middle-y search-icon px-3"><i class="bi bi-search"></i></div>
+								  <input class="form-control ps-5" type="text" placeholder="search">
+								</form>
 							</div>
-						</div>
+							<div class="table-responsive mt-3">
+							  <table class="table align-middle mb-0">
+								<thead class="table-light">
+								 <tr>
+								   <th>Product</th>
+								   <th>Photo</th>
+								   <th>Product ID</th>
+								   <th>Status</th>
+								   <th>Amount</th>
+								   <th>Date</th>
+								   <th>Shipping</th>
+								 </tr>
+								 </thead>
+								 <tbody><tr>
+								  <td>Sport Shoes</td>
+								  <td><img src="assets/images/products/01.png" class="product-img-2" alt="product img"></td>
+								  <td>#9405822</td>
+								  <td><span class="badge bg-light-success text-success w-100">Paid</span></td>
+								  <td>$1250.00</td>
+								  <td>03 Feb 2020</td>
+								  <td><div class="progress" style="height: 5px;">
+									<div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+									</div>
+								  </td>
+								 </tr>
+						
+								 <tr>
+								  <td>Man Headcap</td>
+								  <td><img src="assets/images/products/02.png" class="product-img-2" alt="product img"></td>
+								  <td>#8304620</td>
+								  <td><span class="badge bg-light-warning text-warning w-100">Pending</span></td>
+								  <td>$1500.00</td>
+								  <td>05 Feb 2020</td>
+								  <td><div class="progress" style="height: 5px;">
+									<div class="progress-bar bg-warning" role="progressbar" style="width: 60%"></div>
+									</div></td>
+								 </tr>
+						
+								 <tr>
+								  <td>Sunglass</td>
+								  <td><img src="assets/images/products/03.png" class="product-img-2" alt="product img"></td>
+								  <td>#4736890</td>
+								  <td><span class="badge bg-light-danger text-danger w-100">Failed</span></td>
+								  <td>$1400.00</td>
+								  <td>06 Feb 2020</td>
+								  <td><div class="progress" style="height: 5px;">
+									<div class="progress-bar bg-danger" role="progressbar" style="width: 70%"></div>
+									</div></td>
+								 </tr>
+						
+								 <tr>
+								  <td>Shirt Formal</td>
+								  <td><img src="assets/images/products/04.png" class="product-img-2" alt="product img"></td>
+								  <td>#8543765</td>
+								  <td><span class="badge bg-light-success text-success w-100">Paid</span></td>
+								  <td>$1200.00</td>
+								  <td>14 Feb 2020</td>
+								  <td><div class="progress" style="height: 5px;">
+									<div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+									</div></td>
+								 </tr>
+								 <tr>
+								  <td>Black Coat Pant</td>
+								  <td><img src="assets/images/products/06.png" class="product-img-2" alt="product img"></td>
+								  <td>#9629240</td>
+								  <td><span class="badge bg-light-warning text-warning w-100">Pending</span></td>
+								  <td>$1500.00</td>
+								  <td>18 Feb 2020</td>
+								  <td><div class="progress" style="height: 5px;">
+									<div class="progress-bar bg-warning" role="progressbar" style="width: 60%"></div>
+									</div></td>
+								 </tr>
+								 <tr>
+								  <td>Heals</td>
+								  <td><img src="assets/images/products/05.png" class="product-img-2" alt="product img"></td>
+								  <td>#8506790</td>
+								  <td><span class="badge bg-light-danger text-danger w-100">Failed</span></td>
+								  <td>$1800.00</td>
+								  <td>21 Feb 2020</td>
+								  <td><div class="progress" style="height: 5px;">
+									<div class="progress-bar bg-danger" role="progressbar" style="width: 40%"></div>
+									</div></td>
+								 </tr>
+								  </tbody>
+								</table>
+							</div>
+						  </div>
 					</div>
 				</div>
 			</div>
-			<!--/row-->
-			<!-- timeline item 3 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Wed, Jan 11th 2019 8:30 AM</div>
-							<h4 class="card-title">Day 3 Sessions</h4>
-							<p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before they sold out gastropub taxidermy Vice.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 4 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Thu, Jan 12th 2019 11:30 AM</div>
-							<h4 class="card-title">Day 4 Wrap-up</h4>
-							<p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
-						</div>
-					</div>
-				</div>
-			</div>
+			
 			<!--/row-->
 		</div>
 		<div id="step-07" class="page-section-stepper container py-2">
-			<h2 class="font-weight-light text-center text-muted py-3">Timeline Example 1</h2>
-			<!-- timeline item 1 -->
+			<h2 class="font-weight-light text-center text-muted py-3">Prédiction d'un modele</h2>
+			
 			<div class="row">
-				<!-- timeline item 1 left dot -->
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<!-- timeline item 1 event content -->
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Mon, Jan 9th 2020 7:00 AM</div>
-							<h4 class="card-title text-muted">Day 1 Orientation</h4>
-							<p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+						<div class="card-header py-3 bg-transparent"> 
+							<div class="d-sm-flex align-items-center">
+							<h5 class="mb-2 mb-sm-0">Evaluation d'un modele</h5>
 						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 2 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-primary">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card border-primary shadow radius-15">
 						<div class="card-body">
-							<div class="float-end text-primary">Tue, Jan 10th 2019 8:30 AM</div>
-							<h4 class="card-title text-primary">Day 2 Sessions</h4>
-							<p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
-							<button class="btn btn-sm btn-outline-secondary" type="button" data-bs-target="#t2_details" data-bs-toggle="collapse">Show Details ▼</button>
-							<div class="collapse border" id="t2_details">
-								<div class="p-2 text-monospace">
-									<div>08:30 - 09:00 Breakfast in CR 2A</div>
-									<div>09:00 - 10:30 Live sessions in CR 3</div>
-									<div>10:30 - 10:45 Break</div>
-									<div>10:45 - 12:00 Live sessions in CR 3</div>
-								</div>
+							<div class="p-4 border rounded">
+								<form class="row g-3 needs-validation" novalidate="">
+									<div class="col-md-3">
+										<label for="validationCustom04" class="form-label">Modele</label>
+										<select class="form-select" id="validationCustom04" required="">
+											<option selected="" disabled="" value="">regression...</option>
+											<option>...</option>
+											<option>...</option>
+											<option>...</option>
+											<option>...</option>
+										</select>
+										<div class="invalid-feedback">Selectionnez un algorothme.</div>
+									</div>
+									<div class="col-md-6">
+										<label for="validationCustom03" class="form-label">Valeur</label>
+										<input type="text" class="form-control" id="validationCustom03" required="">
+										<div class="invalid-feedback">Définissez une valeur.</div>
+									</div>
+									
+									<div class="col-md-3">
+										<label for="validationCustom03" class="form-label">&nbsp;&nbsp;&nbsp;</label>
+										<input type="submit" class="form-control btn btn-primary" value="Prédiction" id="validationCustom03" >
+									</div>
+								
+								</form>
 							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 3 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Wed, Jan 11th 2019 8:30 AM</div>
-							<h4 class="card-title">Day 3 Sessions</h4>
-							<p>Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before they sold out gastropub taxidermy Vice.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--/row-->
-			<!-- timeline item 4 -->
-			<div class="row">
-				<div class="col-auto text-center flex-column d-none d-sm-flex">
-					<div class="row h-50">
-						<div class="col border-end">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-					<h5 class="m-2">
-					<span class="badge rounded-pill bg-light border">&nbsp;</span>
-				</h5>
-					<div class="row h-50">
-						<div class="col">&nbsp;</div>
-						<div class="col">&nbsp;</div>
-					</div>
-				</div>
-				<div class="col py-2">
-					<div class="card radius-15">
-						<div class="card-body">
-							<div class="float-end text-muted">Thu, Jan 12th 2019 11:30 AM</div>
-							<h4 class="card-title">Day 4 Wrap-up</h4>
-							<p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
 						</div>
 					</div>
 				</div>
@@ -919,6 +516,7 @@
 </script>
 
 <script>
+	//space count max and strip space
 	$('#dataset').DataTable({
 		responsive: true,
 		ordering: false,
@@ -954,11 +552,53 @@
 				$(select).append('<option value="String">Discret</option>')
 
 			});
+			this.api().columns().every(function () {
+				var column = this;
+
+				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+					.appendTo($("#filters").find("th").eq(column.index()))
+					.on('change', function () {
+					var val = $.fn.dataTable.util.escapeRegex(
+					$(this).val());                                     
+				});
+
+				$(select).append('<option value="Entier">SimpleImputer</option>')
+				$(select).append('<option value="String">KNNImputer</option>')
+
+			});
+			this.api().columns().every(function () {
+				var column = this;
+
+				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+					.appendTo($("#filters").find("th").eq(column.index()))
+					.on('change', function () {
+					var val = $.fn.dataTable.util.escapeRegex(
+					$(this).val());                                     
+				});
+
+				$(select).append('<option value="Standard Scaller">Standard Scalle</option>')
+				$(select).append('<option value="String">Robust Scaller</option>')
+
+			});
+			this.api().columns().every(function () {
+				var column = this;
+
+				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+					.appendTo($("#filters").find("th").eq(column.index()))
+					.on('change', function () {
+					var val = $.fn.dataTable.util.escapeRegex(
+					$(this).val());                                     
+				});
+
+				$(select).append('<option value="Entier">Label Encoding</option>')
+				$(select).append('<option value="String">Ordinal Encoding</option>')
+
+			});
 		}
 	});
 </script>
 
-{% include 'file_upload_script.html' %}
+	{% include 'pages/projets/file_upload_script.html' %}
 
 {% endblock %}
 

@@ -66,8 +66,7 @@ def index(request):
                     res = JsonResponse({'data':'No such file exists in the existingPath'})
                     return res
     return render(request, 'index.html')
-
-    
+ 
 def save_info_projet(request):
     if request.method == "POST":
         title = request.POST.get('title')
@@ -177,6 +176,7 @@ def file_upload(request):
                     res = JsonResponse({'data':'No such fichier exists in the chemin'})
                     return res
     return render(request, 'index.html')
+
 
 class MesFavorisView(TemplateView):
     template_name = 'pages/projets/mes_favoris.html'
