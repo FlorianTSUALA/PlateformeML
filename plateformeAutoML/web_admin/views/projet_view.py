@@ -178,6 +178,44 @@ def file_upload(request):
                     return res
     return render(request, 'index.html')
 
+
+#FONCTION EXTRACTION DES CARACTERISQUE D'UNE COLONNE
+def infos_dataset(dataframe):
+
+    columns = dataframe.columns
+    liste_col = {}
+    for col in columns:
+        macolonne = {}
+        macolonne["type"] = dataframe[col].dtype
+        macolonne["data"] = list(dataframe[col])
+
+        if (dataframe[col].dtype == "int64" or dataframe[col].dtype == "int32"):
+            macolonne["scaler"] = "Standard_Scaler"
+            macolonne["imputer"] = "Mean"
+            macolonne["encoder"] = "None"
+            if dataframe[col].count() < 10:
+                macolonne["nature"] = "discret"
+            else:
+                macolonne["nature"] = "continue"
+
+        elif (dataframe[col].dtype == "bool"):
+            macolonne["scaler"] = "None"
+            macolonne["imputer"] = "Most_frequent"
+            macolonne["encoder"] = "OneHot_Encoder"
+
+            macolonne["nature"] = "discret"
+        else:
+            macolonne["scaler"] = "None"
+            macolonne["imputer"] = "Most_frequent"
+            macolonne["encoder"] = "OneHot_Encoder"
+
+            macolonne["nature"] = "categoriel"
+
+        liste_col[col] = macolonne
+
+    return liste_col
+
+
 class MesFavorisView(TemplateView):
     template_name = 'pages/projets/mes_favoris.html'
 

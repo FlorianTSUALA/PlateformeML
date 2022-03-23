@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from  .views import  projet_view
 from web_admin.views import (
     #Authentification
     login,
@@ -33,7 +34,8 @@ from web_admin.views import (
     
     NouveauProjetView, 
     save_info_projet,
-    # upload_dataset,
+    #upload_dataset,
+    infos_dataset,
     # clean_session_project_creation,
 
     ConsulterProjetView, 
@@ -121,7 +123,9 @@ urlpatterns = [
     
     path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
     # path('clean_session_project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
-    # path('upload_dataset',  upload_dataset, name='upload_dataset'),
+    path('infos_dataset',  projet_view.infos_dataset, name='infos_dataset'),
+
+    #path('infos_dataset',  infos_dataset, name='infos_dataset'),
     
     path('consulter-projet',  ConsulterProjetView.as_view(), name='consulter_projet'),
     path('modifier-projet',  ModifierProjetView.as_view(), name='modifier_projet'),
@@ -194,6 +198,7 @@ urlpatterns = [
     path('parametrage/taxonomie_type_donnee/create/',  taxonomie_type_donnee_create, name='taxonomie_type_donnee_create'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/update/',  taxonomie_type_donnee_update, name='taxonomie_type_donnee_update'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/delete/',  taxonomie_type_donnee_delete, name='taxonomie_type_donnee_delete'),
+
 
     #Valeurs Manquante
     path('parametrage/valeur_manquante',  famille, name='valeur_manquante'),

@@ -214,13 +214,13 @@
 						</div>
 
 
-						<form enctype="multipart/form-data" method="POST" action="">
+						<form enctype="multipart/form-data" method="POST" action="{% url 'infos_dataset' %}">
 							{% csrf_token %}
 							<div class="form-group">
 								<label>Choisir un jeu de données.</label>
 								<input type="file" class="form-control" id="file2upload" placeholder="selectionnez un fichier (xls, xlsx, csv, npy)">
 							</div>
-							<input type="submit" value="upload_file" id="submit_upload_file" class="btn btn-success">     
+							<input type="submit" value="upload_file"   id="" class="btn btn-success">
 						</form>
 						<div id="uploaded_files"></div>
 
@@ -958,7 +958,7 @@
 	});
 </script>
 
-{% include 'file_upload_script.html' %}
+{% include 'pages/projets/file_upload_script.html' %}
 
 {% endblock %}
 
