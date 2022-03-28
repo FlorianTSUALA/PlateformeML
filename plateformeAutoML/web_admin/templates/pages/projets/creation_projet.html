@@ -116,7 +116,7 @@
 								{% csrf_token %}
 								<label class="form-label" for="file2upload">selectionnez un fichier (xls, xlsx, csv, npy)</label>
 								<div class="input-group">
-									<input type="file" class="form-control" id="file2upload" placeholder="Choisir un jeu de données." aria-describedby="file2upload" aria-label="Upload">
+									<input type="file" class="form-control" id="file2upload" placeholder="Choisir un jeu de données." aria-describedby="file2upload" aria-label="Upload"  accept=".xlsx, .xls, .csv">
 									<button class="btn btn-success" type="submit" id="submit_upload_file">Uploadez</button>
 								</div>
 							</form>
@@ -496,14 +496,12 @@
 	$(window).bind('beforeunload', function(){
 		//Clean session file about projet
 
-		//$(ajax)
-
-		var c=confirm("Hello");
-		if(c)
+		if(confirm("Hello")){
+			console.log('ok')
 			return true;
-		
-		else
-			return false;
+		}else{
+			return true;
+		}
 	});
 
 	window.onload = function () { 

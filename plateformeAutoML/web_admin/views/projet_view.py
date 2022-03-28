@@ -3,70 +3,19 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
 from django.http import JsonResponse
-from django.http import JsonResponse
+from django.conf import settings
+import time
 
 from web_admin.models import Algorithme
 import pandas as pd
 from web_admin.models import Fichier
+
 # Create your views here.
+from .utils_local import *
+
 
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def clean_session_project_creation(request):
-    pass
-
-def index(request):
-    if request.method == 'POST':  
-        file = request.FILES['file'].read()
-        fileName= request.POST['filename']
-        existingPath = request.POST['existingPath']
-        end = request.POST['end']
-        nextSlice = request.POST['nextSlice']
-
-        if file=="" or fileName=="" or existingPath=="" or end=="" or nextSlice=="":
-            res = JsonResponse({'data':'Invalid Request'})
-            return res
-        else:
-            if existingPath == 'null':
-                path = 'media/' + fileName
-                with open(path, 'wb+') as destination: 
-                    destination.write(file)
-                FileFolder = File()
-                FileFolder.existingPath = fileName
-                FileFolder.eof = end
-                FileFolder.name = fileName
-                FileFolder.save()
-                if int(end):
-                    res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
-                else:
-                    res = JsonResponse({'existingPath': fileName})
-                return res
-
-            else:
-                path = 'media/' + existingPath
-                model_id = File.objects.get(existingPath=existingPath)
-                if model_id.name == fileName:
-                    if not model_id.eof:
-                        with open(path, 'ab+') as destination: 
-                            destination.write(file)
-                        if int(end):
-                            model_id.eof = int(end)
-                            model_id.save()
-                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':model_id.existingPath})
-                        else:
-                            res = JsonResponse({'existingPath':model_id.existingPath})    
-                        return res
-                    else:
-                        res = JsonResponse({'data':'EOF found. Invalid request'})
-                        return res
-                else:
-                    res = JsonResponse({'data':'No such file exists in the existingPath'})
-                    return res
-    return render(request, 'index.html')
- 
 def save_info_projet(request):
     if request.method == "POST":
         title = request.POST.get('title')
@@ -93,49 +42,16 @@ def save_info_projet(request):
             #update projet info
         return JsonResponse({'data':{'id': id, 'message':'Information enregistré avec success'}})
     
-def file_upload(request):
-    
-    # if request.method == 'POST':
-    #     values = {}
-    #     # check if the post request has the file part
-    #     if 'file' not in request.files:
-    #         flash('No file part')
-    #         return redirect(request.url)
-    #     file = request.files['file']
-    #     #data_type = request.form['data_type']
-    #     data_type = "csv"
-    #     task = request.form['task']
-    #     sep = request.form['sep']
-    #     #sep= None
-    #     if file.filename == '':
-    #         flash('No file selected for uploading')
-    #         return redirect(request.url)
-    #     if file :
-    #         filename = secure_filename(file.filename)
-    #         if data_type == "numpy" and filename[-3:] != "npy":
-    #             return "Wrong file extension (expected .npy)"
-    #         if data_type == "csv" and (filename[-3:] != "csv" and filename[-3:] != "CSV"):
-    #             err = "Unsupported file extension (expected .csv)"
-    #             return render_template("error.html", err=err)
-    #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    #         values['task'] = task
-    #         values["sep"] = sep
-    #         session["filename"] = filename
-    #         session["values"] = values
-    #         session["data_type"] = data_type
-    #         session["task"] = task
-    #         return redirect(url_mod("featur_pg"))
-    #     else:
-    #         flash('Allowed file types are: {}'.format(str(ALLOWED_EXTENSIONS)))
-    #         return redirect(request.url)
+def upload_dataset(request):
+    ts = time.gmtime()
+    ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
 
     if request.method == 'POST':  
-        fichier = request.FILES['fichier'].read()
-        nom_fichier= request.POST['nom_fichier']
-        chemin = request.POST['chemin']
+        fichier = request.FILES['file'].read()
+        nom_fichier = request.POST['filename'] + ts
+        chemin = request.POST['path']
         end = request.POST['end']
         nextSlice = request.POST['nextSlice']
-
         if fichier=="" or nom_fichier=="" or chemin=="" or end=="" or nextSlice=="":
             res = JsonResponse({'data':'Requete invalide'})
             return res
@@ -144,12 +60,26 @@ def file_upload(request):
                 path = 'media/' + nom_fichier
                 with open(path, 'wb+') as destination: 
                     destination.write(fichier)
-                FileFolder = File()
-                FileFolder.chemin = nom_fichier
+                FileFolder = Fichier()
+                FileFolder.chemin = nom_fichier 
                 FileFolder.eof = end
-                FileFolder.name = nom_fichier
+                FileFolder.nom = nom_fichier
                 FileFolder.save()
+
+                old_file_id = request.session.get('fichier_id', None)
+                if old_file_id is not None:
+                    filename = Fichier.objects.get(pk=old_file_id).nom
+
+                    media_root = getattr(settings, 'MEDIA_ROOT', None)
+                    path_file = os.path.join(media_root, filename)
+                    if os.path.isfile(path_file):
+                        os.remove(path_file)
+
+                    Fichier.objects.filter(id=old_file_id).delete()
+                request.session['fichier_id'] = FileFolder.pk
+                
                 if int(end):
+                    data = load_dataframe(path)
                     res = JsonResponse({'data':'Chargment effectué avec success','chemin': nom_fichier})
                 else:
                     res = JsonResponse({'chemin': nom_fichier})
@@ -157,26 +87,27 @@ def file_upload(request):
 
             else:
                 path = 'media/' + chemin
-                model_id = File.objects.get(chemin=chemin)
-                if model_id.name == nom_fichier:
+                model_id = Fichier.objects.get(chemin=chemin)
+                if model_id.nom == nom_fichier:
                     if not model_id.eof:
                         with open(path, 'ab+') as destination: 
                             destination.write(fichier)
                         if int(end):
                             model_id.eof = int(end)
                             model_id.save()
-                            res = JsonResponse({'data':'Uploaded Successfully','chemin':model_id.chemin})
+                            res = JsonResponse({'data':'Chargement effectué avec success','chemin':model_id.chemin})
                         else:
                             res = JsonResponse({'chemin':model_id.chemin})    
                         return res
                     else:
-                        res = JsonResponse({'data':'EOF found. Invalid request'})
+                        res = JsonResponse({'data':'EOF trouvé. Requeste invalide'})
                         return res
                 else:
-                    res = JsonResponse({'data':'No such fichier exists in the chemin'})
+                    res = JsonResponse({'data':'Aucun fichier existant dans ce fichier'})
                     return res
-    return render(request, 'index.html')
-
+    else:
+        res = JsonResponse({'data':'Requete non authorisée'})
+        return res
 
 class MesFavorisView(TemplateView):
     template_name = 'pages/projets/mes_favoris.html'
