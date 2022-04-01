@@ -53,7 +53,6 @@ def extra_trees_preproc_for_classification(params):
     pr = ExtraTreesClassifier(**params)
     return pr
 
-
 def no_preprocessing(params):
     pr = None
     return pr
@@ -271,10 +270,12 @@ def plot_confusion_matrix(y_true, y_pred, classes,
                           normalize=False,
                           title=None,
                           cmap=plt.cm.Blues):
+
     """
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
+
     if not title:
         if normalize:
             title = 'Confusion matrix, with normalization'

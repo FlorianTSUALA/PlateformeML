@@ -1,6 +1,9 @@
-
+{% load static %}
 {% comment %} load settinf constant in template max_length {% endcomment %}
 <script>
+
+
+	
 	class FileUpload {
 		constructor(input) {
 			this.input = input
@@ -33,7 +36,7 @@
 			formData.append('file', currentChunk);
 			formData.append('filename', this.file.name);
 			formData.append('end', end);
-			formData.append('chemin', chemin);
+			formData.append('path', chemin);
 			formData.append('nextSlice', nextChunk);
 			$('.filename').text(this.file.name)
 			$('.textbox').text("Uploading file")
@@ -60,7 +63,7 @@
 					return xhr;
 				},
 	
-				url: '/fileUploader/',
+				url: "{% url 'upload_dataset' %}",
 				type: 'POST',
 				dataType: 'json',
 				cache: false,
