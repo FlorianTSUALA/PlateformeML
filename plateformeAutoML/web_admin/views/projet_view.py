@@ -14,6 +14,7 @@ from web_admin.models import Fichier
 from .utils_local import *
 
 
+
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
 def save_info_projet(request):
