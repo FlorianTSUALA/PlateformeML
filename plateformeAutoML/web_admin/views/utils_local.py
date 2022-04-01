@@ -11,12 +11,14 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def load_dataframe(path):
-    if file_extention(path) == '.csv':
-        data = pd.read_csv(path,sep=sep)
-    else:
-        data = pd.read_excel(path)
-    return data
 
+    if file_extention(path) == '.csv':
+        return pd.read_csv(path,sep=sep)
+    elif file_extention(path) == '.xls' or  file_extention(path) == '.xlsx'  :
+        return pd.read_excel(path)
+    else:
+        return
+     
 #################################################################   DATA EXPLORATION
 
 def load_initial(path,sep=','):
@@ -43,7 +45,8 @@ def select_cols(path, cols):
     data = pd.read_csv(path)
     return data[data.columns.intersection(cols)]
 
-def info_dataset(dataframe):
+def info_dataset(path):
+    dataframe = load_dataframe(path)
     columns = dataframe.columns
     col_sheet_name = {}
     for col in columns:

@@ -1,7 +1,13 @@
 {% load static %}
 {% comment %} load settinf constant in template max_length {% endcomment %}
 <script>
+	function findLongestWord(str) {
+		return str.length;
+	}
 
+	function add_space(length, max){
+		return str + new Array(max - le + 1).join(' ')
+	}
 
 	
 	class FileUpload {
@@ -79,9 +85,10 @@
 						chemin = res.chemin
 						self.upload_file(nextChunk, chemin);
 					} else {
+						console.log(data.data)
 						// upload complete
-						$('.textbox').text(res.data);
-						alert(res.data)
+						$('.textbox').text(res.msg);
+						alert(res.msg)
 					}
 				}
 			});

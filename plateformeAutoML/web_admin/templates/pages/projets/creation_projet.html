@@ -40,6 +40,7 @@
 							<div class="card shadow-none bg-light border">
 								<div class="card-body">
 								<form class="row g-3">
+									<input type="hidden" class="" style="display: none" name="id" value="{% if id is None %}0{% else %}{{ id }}{% endif %}" />
 									<div class="col-12">
 									<label class="form-label">Titre</label>
 									<input type="text" class="form-control" name="titre" placeholder="titre du projet">

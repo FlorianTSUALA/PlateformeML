@@ -26,8 +26,8 @@ def save_info_projet(request):
         est_publique = request.POST.get('est_publique')
         nombre_modele = request.POST.get('nombre_modele')
     
-        id = request.POST.get('id', None)
-        if id is not None:
+        id = request.POST.get('id', 0)
+        if id == 0:
             projet = Projet(
                         title = title,
                         description = description,
@@ -41,7 +41,9 @@ def save_info_projet(request):
         else:
             projet = Projet.objects.get(pk=id)
             #update projet info
-        return JsonResponse({'data':{'id': id, 'message':'Information enregistré avec success'}})
+        
+        request.session['projet_id'] = id
+        return JsonResponse({'data':{'id': id, 'msg':'Information enregistré avec success'}})
     
 def upload_dataset(request):
     ts = time.gmtime()
@@ -80,8 +82,8 @@ def upload_dataset(request):
                 request.session['fichier_id'] = FileFolder.pk
                 
                 if int(end):
-                    data = load_dataframe(path)
-                    res = JsonResponse({'data':'Chargment effectué avec success','chemin': nom_fichier})
+                    data = info_dataset(path)
+                    res = JsonResponse({'msg':'Chargment effectué avec success','data': data, 'chemin': chemin})
                 else:
                     res = JsonResponse({'chemin': nom_fichier})
                 return res
@@ -96,7 +98,8 @@ def upload_dataset(request):
                         if int(end):
                             model_id.eof = int(end)
                             model_id.save()
-                            res = JsonResponse({'data':'Chargement effectué avec success','chemin':model_id.chemin})
+                            data = info_dataset(model_id.chemin)
+                            res = JsonResponse({'msg':'Chargement effectué avec success','data': data, 'chemin': model_id.chemin})
                         else:
                             res = JsonResponse({'chemin':model_id.chemin})    
                         return res
