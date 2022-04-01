@@ -1,20 +1,20 @@
 #from RModelFramework import DataImport
 #from RModelFramework import PreprocessingData
 #from  RModelFramework import Scoring
-from .ressources.resources import *
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
+from  RMFRAMEWORK.analysis.bibliotheque.ressources.resources import *
 
-from .refractoryFramwork.importation import  DataImport
-from .refractoryFramwork.pretraitement import PreprocessingData
-from .refractoryFramwork.scoring import Scoring
-
+from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.importation import  DataImport
+from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.pretraitement import PreprocessingData
+from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.scoring import Scoring
+from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.classification import Classification
 if __name__ == "__main__":
     #pd.set_option('display.max_columns', None)
 
     data = DataImport(source)
     data.chargement()
     data.display_data(20)
-
 
     #target = 'Loan_Status'
     # dataset = data.delete_data_entry("Loan_ID",axis=1)
@@ -24,9 +24,16 @@ if __name__ == "__main__":
     dataset = data.delete_data_entry("customerID", axis=1)
 
     print(dataset.columns)
-    preprocessor1 = PreprocessingData(dataset,target)
+    preprocessor1 = PreprocessingData(dataset,target,strategy_val_manquante_num='mean',methode_normalisation=StandardScaler(), strategy_val_manquante_cat='most_frequent',methode_encodage=OneHotEncoder())
 
     preprocessor1.encodage_label()
+
+    ##donnee transformees
+
+    data_traiter = preprocessor1.transfom()
+
+    print("REPRESENTATION DES DONNEES PRETRAITER")
+    print(data_traiter)
 
     dataset = preprocessor1.dataFrame
 
@@ -46,8 +53,6 @@ if __name__ == "__main__":
     LDA = make_pipeline(preprocessor,LinearDiscriminantAnalysis())
     Binary_tree = make_pipeline(preprocessor,tree.DecisionTreeClassifier())
 
-
-
     #####Dictionnaire des Algorithmes avec leurs hyperparamètres
 
     list_of_model = {
@@ -61,27 +66,27 @@ if __name__ == "__main__":
         "Binary_tree":[Binary_tree,hyper_params_tree]
     }
 
-    scoring = Scoring(list_of_model,dataset,target)
+    classement = Classification(list_of_model,dataset,target)
 
     #pair_plot = scoring.matrix_corelation()
 
     #print(pair_plot)
 
-    performences_models,best_model = scoring.executer()
+    performences_models,best_model = classement.executer()
 
     print("la performence de tous les models  : ",performences_models)
     print("Le meilleur model est models:",best_model)
 
-    scoring.optimisationHyperParam()
+    classement.optimisationHyperParam()
 
-    scoring.save_model()
+    classement.save_model()
 
-    scoring.importance_features()
+    classement.importance_features()
 
-    score_dataFrame = scoring.scoring()
+    #score_dataFrame = classement.scoring()
     #====================SCORING SUR DE NOUVEAU DONNEES ======================"=====
 
 
-    score_dataFrame = scoring.scoring_new_data(df_new_scustomer)
+    class_dataFrame = classement.do_classification(df_new_scustomer)
 
-    print(score_dataFrame)
+    print(class_dataFrame)

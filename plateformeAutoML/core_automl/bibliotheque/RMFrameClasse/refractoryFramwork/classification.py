@@ -44,7 +44,7 @@ class Classification(RMFrammeClassification):
         return new_dataFrame
 
 
-    def save_model(self):
+    """def save_model(self):
         model = self.model_save
         filename = 'model_final.sav'
-        pickle.dump(model, open(filename, 'wb'))
+        pickle.dump(model, open(filename, 'wb'))"""

@@ -58,12 +58,12 @@ class Acquisision:
         numerical_features = list(numerical_data.columns)
         return numerical_features,categorical_features
 
-    def encodage_label(self):
+    def encodage_label(self,encodage_label = LabelEncoder()):
         target_name = self.target
         liste = self.apply_split(self.dataFrame)
         y_ = liste[1]
         X = liste[0]
-        encodage = LabelEncoder()
+        encodage = encodage_label
         y = encodage.fit_transform(y_)
         y = pd.DataFrame({target_name: y})
         #en remplace  la variable target par la variable encoddé

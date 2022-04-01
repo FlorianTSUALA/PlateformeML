@@ -1,4 +1,6 @@
 ##===================CLASSE ABSTRAITE DES FONCTIONS APPLICABLES SUR  UN MODEL====================#
+import pickle
+
 from .pretraitement import *
 
 ##===================BIBLIOTHEQUE POUR POUR LA MESURE DE PERFORMENCE DU MODEL L'OPTIMISATION DES HYPERPARAMETRES
@@ -64,10 +66,10 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
 
     # mesure = ['f1','precision','recall']
     def evaluerModel(self,model):
-        model.fit(self.X_train, self.y_train)
+        base_model = model.fit(self.X_train, self.y_train)
         y_pred = model.predict(self.X_test)
         precision = accuracy_score(self.y_test, y_pred)
-        return precision
+        return base_model,precision
 
     def rapport(self, model):
         model.fit(self.X_train, self.y_train)
@@ -89,10 +91,20 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
 
     def evalModels(self):
         precision_dico_models = {}
+        precision_ = 0
+        model_ = ""
         for name, model in self.models.items():
-            precision = self.evaluerModel(model[0])
+            base_model,precision = self.evaluerModel(model[0])
             precision_dico_models[name] = precision
-        return precision_dico_models
+
+            if precision > precision_:
+                precision_ = precision
+                model_ = base_model
+
+        print("bonjourrrrrrrrrrrrrrrrrrrr",precision_)
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxx",model_)
+
+        return precision_dico_models,model_,precision_
 
     # Fonction qui permet de faire la comparaison entre les modèles entrainés et retourne celui ayant la meilleure
     # performance.
@@ -108,16 +120,26 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
 
     # optimisation du modèle le plus performant
     def optimisationHyperParam(self, scoring='f1', cv=10):
-
         model_algo = self.best_model
+        print("----------xx--------",model_algo)
         grid = RandomizedSearchCV(self.models[model_algo][0], self.models[model_algo][1], scoring=scoring, cv=cv, n_iter=100)
         #grid = GridSearchCV(self.models[model_algo][0], self.models[model_algo][1], scoring=scoring, cv=cv,n_jobs=5, verbose=2)
 
         model = grid.fit(self.X_train, self.y_train)
         self.model_save = model
-        y_pred = grid.predict(self.X_test)
+        base_model,precision = self.evaluerModel(model)
+        #y_pred = grid.predict(self.X_test)
+        #print(classification_report(self.y_test, y_pred))
+        return base_model,precision
+
+    def rapport_analyse(self):
+        y_pred = self.model_save.predict(self.X_test)
         print(classification_report(self.y_test, y_pred))
-        return grid
+        return classification_report(self.y_test, y_pred)
+
+
+    def get_save_model(self):
+        return self.model_save
 
 
     def show_permences_model(self,dictionnaire):
@@ -139,7 +161,8 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         plt.ylabel("Score", size=20)
         plt.yticks(size=12)
         plt.title("Score des modèles non optimisés ", size=25)
-        plt.show()
+        #plt.show()
+        plt.savefig
 
 
     def importance_features(self):
@@ -155,11 +178,18 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
 
 
     def executer(self):
-        dico_models = self.evalModels()
-        self.show_permences_model(dico_models)
-        result = self.compareModels(dico_models)
+        precision_dico_models,model_,precision_ = self.evalModels()
+        self.show_permences_model(precision_dico_models)
+        result = self.compareModels(precision_dico_models)
+        return precision_dico_models,result,model_,precision_
 
-        return dico_models,result
+
+    def save_model(self,model,num):
+        model = model
+        #filename = 'model_final.sav'
+        filename = "D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
+        pickle.dump(model, open(filename,'wb'))
+        return filename
 
 
 

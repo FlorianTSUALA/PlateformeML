@@ -32,7 +32,6 @@ class PreprocessingData(Acquisision):
                                                   )
 
         return preprocessorVar
-
     ## Pipeline final de prétraitement des données (include polynomial features and select best Variables)
     def pipelinePreprocessing(self, methode_selectionVariable=SelectKBest(f_classif, k=10)):
 
@@ -48,5 +47,5 @@ class PreprocessingData(Acquisision):
         X_train,y_train = train
         #print(X_train,y_train)
         resultat = self.pipelinePreprocessing(methode_selectionVariable=SelectKBest(f_classif, k=10))
-        #print(pd.DataFrame(resultat.fit_transform(X_train, y_train)))
-        return resultat.fit_transform(X_train, y_train)
+        traiter =  pd.DataFrame(resultat.fit_transform(X_train, y_train))
+        return resultat.fit_transform(X_train, y_train) , traiter

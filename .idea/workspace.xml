@@ -4,7 +4,48 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="340782ad-eac8-445b-93fa-c421c5591ace" name="Changes" comment="" />
+    <list default="true" id="340782ad-eac8-445b-93fa-c421c5591ace" name="Changes" comment="fichier word de description des noms à utiliser">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/RMODEL_FRAMEWORK.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/chunk.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/diagrame_classe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/model_final.sav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/new_customers.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/new_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/aquisition.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/classification.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/frame.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/importation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/pretraitement.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/refractoryFramwork/scoring.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/ressources/resources.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/test_scoring.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/RModelFramework.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/Rmodel.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/finalized_model.sav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/model___e.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/model_final.sav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/output.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/backupFiles/train_u6lujuX_CVtuZ9i.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/Rmodel.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/biblioFramework.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/diagrame_classe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/finalized_model.sav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/model___e.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/output.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/resources.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/core/test_scoring.py" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,7 +69,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../PlateformeML" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/new_test.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -37,19 +78,19 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="test_biblio" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="PlateformeML" />
+    <configuration name="new_test" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Users\USER\AppData\Local\Programs\Python\Python39\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plateformeAutoML" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plateformeAutoML/test_biblio.py" />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/new_test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -68,6 +109,28 @@
       <option name="presentableId" value="Default" />
       <updated>1643367725441</updated>
     </task>
+    <task id="LOCAL-00001" summary="bibliotheque add inside core_auto folder">
+      <created>1648468594322</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1648468594322</updated>
+    </task>
+    <task id="LOCAL-00002" summary="bibliotheque add inside core_auto folder">
+      <created>1648468675129</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1648468675129</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fichier word de description des noms à utiliser">
+      <created>1648472593792</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1648472593792</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -81,5 +144,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="bibliotheque add inside core_auto folder" />
+    <MESSAGE value="fichier word de description des noms à utiliser" />
+    <option name="LAST_COMMIT_MESSAGE" value="fichier word de description des noms à utiliser" />
   </component>
 </project>

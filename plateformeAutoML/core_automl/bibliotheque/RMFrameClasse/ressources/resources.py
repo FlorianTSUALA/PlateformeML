@@ -42,16 +42,35 @@ hyper_params_tree = {
     'pipeline__selectkbest__k': range(4, 100)
 }
 
+name_of_model = {
+    "RandomForest":"Random Forest",
+    "AdaBoost": "Ada Boost",
+    "SVM": "Suport Vector Machine",
+    "KNN": "K-Nearest Neighbor",
+    "Logistic": " Logistic Regression",
+    "MLP": "Multi layer Perceptron",
+    "LDA": "Linear discriminant analysis",
+    "Binary_tree": "Binary Tree"
+}
 
-
+model_initialisation = {
+    "RandomForest" : RandomForestClassifier(random_state=0),
+    "AdaBoost":  AdaBoostClassifier(random_state=0),
+    "SVM": SVC(random_state=0),
+    "KNN": KNeighborsClassifier(),
+    "Logistic": LogisticRegression(random_state=0),
+    "MLP":  MLPClassifier(),
+    "LDA": LinearDiscriminantAnalysis(),
+    "Binary_tree":  tree.DecisionTreeClassifier()
+}
 
 
 ##===================LIEN DU FICHIER DE TEST====================#
-source2 = r'train_u6lujuX_CVtuZ9i.csv'
-source = r'chunk.csv'
+#source2 = r'train_u6lujuX_CVtuZ9i.csv'
+#source = r'chunk.csv'
 
 ##==================New dataset customer ========================
-new_dataset = r'new_customers.csv'
+#new_dataset = r'new_customers.csv'
 
-df_new = pd.read_csv(new_dataset)
-df_new_scustomer = df_new.drop(['Churn'], axis=1)
+#df_new = pd.read_csv(new_dataset)
+#df_new_scustomer = df_new.drop(['Churn'], axis=1)
