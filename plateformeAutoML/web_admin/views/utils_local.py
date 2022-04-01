@@ -11,7 +11,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def load_dataframe(path):
-
+    print((path))
     if file_extention(path) == '.csv':
         return pd.read_csv(path,sep=sep)
     elif file_extention(path) == '.xls' or  file_extention(path) == '.xlsx'  :
