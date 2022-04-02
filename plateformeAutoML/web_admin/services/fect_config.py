@@ -107,6 +107,7 @@ class FecthConfigService():
 
 
 if __name__ == "__main__":
-    algos = FecthConfigService.algorithme()
+    algos = FecthConfigService()
 
-    print(algos)
+
+    print(algos.encodage())

@@ -1,4 +1,4 @@
-from resources import *
+from ..ressources.resources import *
 
 algorithmes_disponible = {
 

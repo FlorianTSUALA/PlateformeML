@@ -2,6 +2,9 @@
 
 """
 import sklearn
+from sklearn.preprocessing import OneHotEncoder,LabelEncoder,OrdinalEncoder
+
+from sklearn.preprocessing import LabelEncoder, StandardScaler,RobustScaler,MinMaxScaler,MaxAbsScaler
 
 MAPPING_TYPE = {
     'ENTIER': {
@@ -43,22 +46,22 @@ MAPPING_TYPE = {
 
 MAPPING_SCALLER = {
     'StandardScaler': {
-        'class': sklearn.preprocessing.StandardScaler(),
+        'class': StandardScaler(),
         'label':  'Standard Scaller',
         'parameter': ''
     },
     'MinMaxScaler': {
-        'class':  sklearn.preprocessing.MinMaxScaler(),
+        'class':  MinMaxScaler(),
         'label':  'Min Max Scaler',
         'parameter': ''
     },
     'RobustScaler': {
-        'class': sklearn.preprocessing.RobustScaler(),
+        'class': RobustScaler(),
         'label':  'Robust Scaler',
         'parameter': ''
     },
     'MaxAbsScaler': {
-        'class':sklearn.preprocessing.MaxAbsScaler(),
+        'class':MaxAbsScaler(),
         'label':  'Max Abs Scaler',
         'parameter': ''
     },
@@ -82,15 +85,15 @@ MAPPING_IMPUTER = {
 
 MAPPING_ENCODAGE = {
     'OneHotEncoder': {
-        'class': sklearn.preprocessing.OneHotEncoder(),
+        'class': OneHotEncoder(),
         'label':  'OneHot Encoder',
     },
     'LabelEncoder': {
-        'class': sklearn.preprocessing.LabelEncoder(),
+        'class': LabelEncoder(),
         'label': 'Label Encoder',
     },
     'OrdinalEncoder': {
-        'class': sklearn.preprocessing.OrdinalEncoder(),
+        'class': OrdinalEncoder(),
         'label': 'OrdinalEncoder',
     },
 }
