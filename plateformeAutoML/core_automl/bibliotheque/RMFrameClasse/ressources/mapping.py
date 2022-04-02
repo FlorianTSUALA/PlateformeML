@@ -40,3 +40,31 @@ MAPPING_TYPE = {
         'label': 'Date',
     },
 }
+
+MAPPING_SCALLER = {
+    'StandardScaler': {
+        'class': StandardScaler(),
+        'label':  'Standard Scaller',
+        'parameter': ''
+    },
+}
+
+MAPPING_IMPUTER = {
+    'StandardScaler': {
+        'class': StandardScaler(),
+        'label':  'Standard Scaller',
+    },
+}
+
+MAPPING_NORMALISATION = {
+    'StandardScaler': {
+        'class': StandardScaler(),
+        'label':  'Standard Scaller',
+    },
+}
+
+MAPPING_ENCODER = {
+    "OneHotEncoder" : sklearn.preprocessing.OneHotEncoder,
+    "OrdinalEncoder" : sklearn.preprocessing.OrdinalEncoder,
+    "LabelEncoder" : sklearn.preprocessing.LabelEncoder,
+}

@@ -1,12 +1,9 @@
 from web_admin.models import Algorithme
 
-class FectConfigService():
+class FecthConfigService():
     """
         Recuperation des entité
     """
-
-    def algorithme(self):
-        pass 
 
     def encodage(self):
         pass 

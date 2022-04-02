@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 import pathlib
 import json
 
-from webapp.utils.file import file_extention
+from .file import file_extention
 
 def load_dataframe(path,sep=','):
     extention = file_extention(path)

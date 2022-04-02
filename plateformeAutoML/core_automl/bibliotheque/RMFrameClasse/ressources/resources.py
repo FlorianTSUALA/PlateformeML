@@ -54,16 +54,16 @@ name_of_model = {
     "Binary_tree": "Binary Tree"
 }
 
-model_initialisation = {
-    "RandomForest" : RandomForestClassifier(random_state=0),
-    "AdaBoost":  AdaBoostClassifier(random_state=0),
-    "SVM": SVC(random_state=0),
-    "KNN": KNeighborsClassifier(),
-    "Logistic": LogisticRegression(random_state=0),
-    "MLP":  MLPClassifier(),
-    "LDA": LinearDiscriminantAnalysis(),
-    "Binary_tree":  tree.DecisionTreeClassifier()
-}
+# model_initialisation = {
+#     "RandomForest" : RandomForestClassifier(random_state=0),
+#     "AdaBoost":  AdaBoostClassifier(random_state=0),
+#     "SVM": SVC(random_state=0),
+#     "KNN": KNeighborsClassifier(),
+#     "Logistic": LogisticRegression(random_state=0),
+#     "MLP":  MLPClassifier(),
+#     "LDA": LinearDiscriminantAnalysis(),
+#     "Binary_tree":  tree.DecisionTreeClassifier()
+# }
 
 list_of_model_disponible = {
     "RandomForest" : [RandomForestClassifier(random_state=0),hyper_params_radomForest],

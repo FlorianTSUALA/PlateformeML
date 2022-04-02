@@ -12,6 +12,7 @@ from web_admin.models import Fichier
 
 from web_admin.utils.file import *
 from web_admin.utils.session import *
+from web_admin.utils.dataset import info_dataset, load_dataframe
 
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
@@ -19,7 +20,7 @@ ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 class NouveauProjetView(View):
 
     def get(self, request, *args, **kwargs):
-        clean_session(request)
+        # clean_session(request)
         context = {
             'projet_active': True,
             'has_white_text': False,
