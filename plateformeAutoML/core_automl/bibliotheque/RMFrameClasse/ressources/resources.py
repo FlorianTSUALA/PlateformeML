@@ -1,4 +1,5 @@
 # ===============================================================================
+import sklearn.preprocessing
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
@@ -73,6 +74,26 @@ list_of_model_disponible = {
     "MLP":  [MLPClassifier(),hyper_params_MLP],
     "LDA": [LinearDiscriminantAnalysis(),hyper_params_lda],
     "Binary_tree": [tree.DecisionTreeClassifier(),hyper_params_tree]
+}
+
+
+list_technique_imputation = {
+    'mean' : "mean",
+    "median" : "median",
+    "most_frequent" : "most_frequent"
+}
+
+list_technique_normalisation = {
+    "StandardScaler" : sklearn.preprocessing.StandardScaler,
+    "MinMaxScaler" : sklearn.preprocessing.MinMaxScaler,
+    "RobustScaler" : sklearn.preprocessing.RobustScaler,
+    "MaxAbsScaler" : sklearn.preprocessing.MaxAbsScaler
+}
+
+list_technique_encodage= {
+    "OneHotEncoder" : sklearn.preprocessing.OneHotEncoder,
+    "OrdinalEncoder" : sklearn.preprocessing.OrdinalEncoder,
+    "LabelEncoder" : sklearn.preprocessing.LabelEncoder,
 }
 
 

@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="340782ad-eac8-445b-93fa-c421c5591ace" name="Changes" comment="fichier word de description des noms à utiliser">
-      <change beforePath="$PROJECT_DIR$/.idea/PlateformeML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PlateformeML.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/new_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/new_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/new_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/new_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plateformeAutoML/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plateformeAutoML/web_admin/views/projet_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/web_admin/views/projet_view.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
