@@ -1,16 +1,20 @@
 from web_admin.models import Algorithme
 
-class FectConfigService():
+class ConfigManager():
     """
-        Recuperation des entité
+        Initialisaition des configurations natives du systeme au niveau 
     """
+    
+    def init(self):
+        encodage()
+        imputation()
 
-    def algorithme(self):
-        pass 
+    def reset(self):
+        pass
 
-    def encodage(self):
-        pass 
-
+    def clean(self):
+        pass
+    
     def encodage(self):
         return 
 
@@ -60,4 +64,4 @@ class FectConfigService():
         return 
 
     def metrique_algorithme_projet(self):
-        return 
+        return  

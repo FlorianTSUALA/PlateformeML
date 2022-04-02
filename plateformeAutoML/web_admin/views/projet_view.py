@@ -10,8 +10,8 @@ from web_admin.models import Algorithme
 import pandas as pd
 from web_admin.models import Fichier
 
-from .utils_file import *
-from .utils_session import *
+from web_admin.utils.file import *
+from web_admin.utils.session import *
 
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 

@@ -1,28 +1,23 @@
 """ Utility functions used by the tool """
-from hashlib import md5
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pathlib
 import json
 
-
-def file_extention(path):
-    return pathlib.Path(path).suffix
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+from webapp.utils.file import file_extention
 
 def load_dataframe(path,sep=','):
-    if file_extention(path) == '.csv':
+    extention = file_extention(path)
+    if extention == '.csv':
         return pd.read_csv(path,sep=sep)
-    elif file_extention(path) == '.xls' or  file_extention(path) == '.xlsx'  :
+    elif extention == '.xls' or  extention == '.xlsx'  :
         return pd.read_excel(path)
+    elif extention == '.npy':
+        np.load(path)
     else:
-        return
+        return []
      
-#################################################################   DATA EXPLORATION
-
 def load_initial(path,sep=','):
     """ Encodes data and returns new data """
     data = load_dataframe(path)
@@ -63,7 +58,7 @@ def info_dataset(path):
         # macolonne["data"] = dataframe[col].to_json()
         macolonne["data"] = json.dumps(dataframe[col].values.tolist())
 
-        if (dataframe[col].dtype == "int64" or dataframe[col].dtype == "int32"):
+        if (dataframe[col].dtype == np.int64 or dataframe[col].dtype == np.int32):
             macolonne["scaler"] = "Standard_Scaler"
             macolonne["imputer"] = "Mean"
             macolonne["encoder"] = "None"
@@ -88,17 +83,3 @@ def info_dataset(path):
     print(col_sheet_name)
     # return json.dumps(col_sheet_name, cls=NumpyEncoder)
     return (col_sheet_name, dataframe.to_json())
-
-def _delete_file(path):
-   """ Deletes file from filesystem. """
-   if os.path.isfile(path):
-       os.remove(path)
-
-
-def hash_file(path):
-    """ Returns md5 hash of a file"""
-    chk = md5()
-    with open(path, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            chk.update(chunk)
-    return chk.hexdigest()
