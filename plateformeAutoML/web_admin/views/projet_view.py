@@ -255,7 +255,17 @@ def upload_dataset(request):
                 
                 if int(end):
                     data = info_dataset(path)
-                    res = JsonResponse({'msg':'Chargment effectué avec success','data': data, 'chemin': chemin})
+                    df = load_dataframe(path)
+                    print(json.dumps(df.to_json(orient="split")))
+                    res = JsonResponse(
+                        {
+                            'df': df.to_json(orient="split"),
+                            # 'columns': [
+                            #     {"title": str(col)} for col in json.dumps(df.to_json(orient="split"))["columns"]
+                            #     ],
+                            'msg':'Chargment effectué avec success','data': data, 'chemin': chemin
+                        }
+                    )
                 else:
                     res = JsonResponse({'chemin': nom_fichier})
                 return res
@@ -270,8 +280,13 @@ def upload_dataset(request):
                         if int(end):
                             model_id.eof = int(end)
                             model_id.save()
-                            data = info_dataset(model_id.chemin)
-                            res = JsonResponse({'msg':'Chargement effectué avec success','data': data, 'chemin': model_id.chemin})
+                            (data, old) = info_dataset(model_id.chemin)
+                            df = load_dataframe(model_id)
+                            res = JsonResponse({
+                                'msg':'Chargement effectué avec success',
+                                'data': data, 
+                                'chemin': model_id.chemin, 
+                                'df': old})
                         else:
                             res = JsonResponse({'chemin':model_id.chemin})    
                         return res

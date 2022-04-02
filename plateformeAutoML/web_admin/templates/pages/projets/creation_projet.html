@@ -130,33 +130,11 @@
 								<table id="dataset" class="table table-striped table-bordered" style="width:100%">
 									<thead>
 										<tr id="filters">
-											<th>Name</th>
-											<th>Position</th>
-											<th>Office</th>
-											<th>Age</th>
-											<th>Start date</th>
-											<th>Salary</th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>Tiger Nixon</td>
-											<td>System Architect</td>
-											<td>Edinburgh</td>
-											<td>61</td>
-											<td>2011/04/25</td>
-											<td>$320,800</td>
-										</tr>
 									</tbody>
 									<tfoot>
-										<tr>
-											<th>Name</th>
-											<th>Position</th>
-											<th>Office</th>
-											<th>Age</th>
-											<th>Start date</th>
-											<th>Salary</th>
-										</tr>
 									</tfoot>
 								</table>
 							</div>
@@ -514,88 +492,7 @@
 
 </script>
 
-<script>
-	//space count max and strip space
-	$('#dataset').DataTable({
-		responsive: true,
-		ordering: false,
-		initComplete: function () {
-			this.api().columns().every(function () {
-				var column = this;
 
-				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
-					.appendTo($("#filters").find("th").eq(column.index()))
-					.on('change', function () {
-					var val = $.fn.dataTable.util.escapeRegex(
-					$(this).val());                                     
-				});
-
-				console.log('select');
-				console.log(select);
-				$(select).append('<option value="Entier"> Entier </option>')
-				$(select).append('<option value="String"> Chaine &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </option>')
-				$(select).append('<option value="Float"> Réel</option>')
-
-			});
-			this.api().columns().every(function () {
-				var column = this;
-
-				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
-					.appendTo($("#filters").find("th").eq(column.index()))
-					.on('change', function () {
-					var val = $.fn.dataTable.util.escapeRegex(
-					$(this).val());                                     
-				});
-
-				$(select).append('<option value="Entier">Categoriel</option>')
-				$(select).append('<option value="String">Discret</option>')
-
-			});
-			this.api().columns().every(function () {
-				var column = this;
-
-				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
-					.appendTo($("#filters").find("th").eq(column.index()))
-					.on('change', function () {
-					var val = $.fn.dataTable.util.escapeRegex(
-					$(this).val());                                     
-				});
-
-				$(select).append('<option value="Entier">SimpleImputer</option>')
-				$(select).append('<option value="String">KNNImputer</option>')
-
-			});
-			this.api().columns().every(function () {
-				var column = this;
-
-				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
-					.appendTo($("#filters").find("th").eq(column.index()))
-					.on('change', function () {
-					var val = $.fn.dataTable.util.escapeRegex(
-					$(this).val());                                     
-				});
-
-				$(select).append('<option value="Standard Scaller">Standard Scalle</option>')
-				$(select).append('<option value="String">Robust Scaller</option>')
-
-			});
-			this.api().columns().every(function () {
-				var column = this;
-
-				var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
-					.appendTo($("#filters").find("th").eq(column.index()))
-					.on('change', function () {
-					var val = $.fn.dataTable.util.escapeRegex(
-					$(this).val());                                     
-				});
-
-				$(select).append('<option value="Entier">Label Encoding</option>')
-				$(select).append('<option value="String">Ordinal Encoding</option>')
-
-			});
-		}
-	});
-</script>
 
 	{% include 'pages/projets/file_upload_script.html' %}
 

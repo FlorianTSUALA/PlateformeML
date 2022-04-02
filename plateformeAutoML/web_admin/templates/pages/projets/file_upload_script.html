@@ -9,6 +9,26 @@
 		return str + new Array(max - le + 1).join(' ')
 	}
 
+	class Notification{
+		static success(title, body){
+		  Swal.fire(
+			{icon: 'success',
+			title: title,
+			text: body,}
+		  )
+		}
+	
+		static error(title, body){
+		  Swal.fire({
+			icon: 'error',
+			title: title,
+			text: body,
+		  })
+		}
+	
+	
+	}
+	
 	
 	class FileUpload {
 		constructor(input) {
@@ -87,9 +107,9 @@
 						self.upload_file(nextChunk, chemin);
 					} else {
 						console.log(res)
-						// upload complete
+						let df = JSON.parse(res.df)
+						FileUpload.init_table(df['data'], df['columns'])
 						$('.textbox').text(res.msg);
-						alert(res.msg)
 					}
 				}
 			});
@@ -109,14 +129,129 @@
 							</div>`
 			document.getElementById('uploaded_files').innerHTML = progress
 		}
+
+		static init_table(data, columns){
+			 if (window.table !== null) {
+				window.table.destroy();
+				window.table = null;
+				$("#dataset tbody").empty();
+			  }
+							
+				const header = $('#dataset #filters');
+				const footer = $('#dataset tfoot');
+			  	header.empty();
+			  	footer.empty();
+				console.log(columns)
+
+				let tr = document.createElement('tr'); //column
+
+				for (var j = 0; j < columns.length; j++) {
+					let th = document.createElement('th'); //column
+					let text = document.createTextNode(columns[j]); //cell
+					th.appendChild(text);
+					tr.appendChild(th);
+					header.append(th.cloneNode(true));
+				}
+				footer.append(tr);
+               
+				window.table = $('#dataset').DataTable({
+					responsive: true,
+					ordering: false,
+					initComplete: function () {
+						this.api().columns().every(function () {
+							var column = this;
+				
+							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val());                                     
+							});
+				
+							console.log('select');
+							console.log(select);
+							$(select).append('<option value="Entier"> Entier </option>')
+							$(select).append('<option value="String"> Chaine &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </option>')
+							$(select).append('<option value="Float"> Réel</option>')
+				
+						});
+						this.api().columns().every(function () {
+							var column = this;
+				
+							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val());                                     
+							});
+				
+							$(select).append('<option value="Entier">Categoriel</option>')
+							$(select).append('<option value="String">Discret</option>')
+				
+						});
+						this.api().columns().every(function () {
+							var column = this;
+				
+							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val());                                     
+							});
+				
+							$(select).append('<option value="Entier">SimpleImputer</option>')
+							$(select).append('<option value="String">KNNImputer</option>')
+				
+						});
+						this.api().columns().every(function () {
+							var column = this;
+				
+							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val());                                     
+							});
+				
+							$(select).append('<option value="Standard Scaller">Standard Scalle</option>')
+							$(select).append('<option value="String">Robust Scaller</option>')
+				
+						});
+						this.api().columns().every(function () {
+							var column = this;
+				
+							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+								var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val());                                     
+							});
+				
+							$(select).append('<option value="Entier">Label Encoding</option>')
+							$(select).append('<option value="String">Ordinal Encoding</option>')
+				
+						});
+					},
+					data: data,
+					{% comment %} columns: columns {% endcomment %}
+				});
+
+			  
+		}
 	
 	}
+	var table = null;
 		
 	(function ($) {
+
 		$('#submit_upload_file').on('click', (event) => {
 			event.preventDefault();
 			var uploader = new FileUpload(document.querySelector('#file2upload'))
 			uploader.upload();
 		});
+
+	
+
+
 	})(jQuery);
 </script>

@@ -86,7 +86,7 @@ def info_dataset(path):
         col_sheet_name[(col)] = macolonne
     print(col_sheet_name)
     # return json.dumps(col_sheet_name, cls=NumpyEncoder)
-    return col_sheet_name
+    return (col_sheet_name, dataframe.to_json())
 
 def _delete_file(path):
    """ Deletes file from filesystem. """
