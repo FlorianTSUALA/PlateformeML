@@ -1,4 +1,7 @@
-from web_admin.models import Algorithme
+#from ..models import Algorithme
+from plateformeAutoML.core_automl.bibliotheque.RMFrameClasse.ressources.mapping import *
+from plateformeAutoML.core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import *
+
 
 class FecthConfigService():
     """
@@ -6,16 +9,48 @@ class FecthConfigService():
     """
 
     def encodage(self):
-        pass 
 
-    def encodage(self):
-        return 
+        liste_encodage = {}
+
+        mapping_encoder = MAPPING_ENCODAGE
+
+        for encodage  in mapping_encoder:
+            nom = encodage
+            label = mapping_encoder[encodage]['label']
+            liste_encodage[encodage] = label
+
+        return liste_encodage
+
 
     def imputation(self):
-        return 
+
+        liste_imputation = []
+
+        mapping_imputer = MAPPING_IMPUTER
+
+        for imputer in mapping_imputer:
+
+            nom = imputer
+            label = mapping_imputer[nom]['label']
+            liste_imputation[imputer] = label
+
+        return liste_imputation
 
     def mise_echelle(self):
-        return 
+
+        liste_scaller = []
+
+        mapping_scallerr = MAPPING_SCALLER
+
+        for scaller in mapping_scallerr:
+
+            nom = scaller
+
+            label = mapping_scallerr[scaller]['label']
+
+            liste_scaller[nom] = label
+
+        return liste_scaller
 
     def taxonomie_type_donnee(self):
         return 
@@ -42,7 +77,18 @@ class FecthConfigService():
         return 
 
     def algorithme(self):
-        return 
+
+        dict_algorithmes = {}
+
+        algorithmes  = algorithmes_disponible
+
+        for algo in algorithmes:
+
+            nom = algo
+            label = algorithmes[algo]['label']
+            dict_algorithmes[nom] = label
+
+        return dict_algorithmes
 
     def critere_comparaison(self):
         return 
@@ -57,4 +103,10 @@ class FecthConfigService():
         return 
 
     def metrique_algorithme_projet(self):
-        return 
+        return
+
+
+if __name__ == "__main__":
+    algos = FecthConfigService.algorithme()
+
+    print(algos)

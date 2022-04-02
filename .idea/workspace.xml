@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="340782ad-eac8-445b-93fa-c421c5591ace" name="Changes" comment="fichier word de description des noms à utiliser">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plateformeAutoML/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/algorithme.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/algorithme.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/mapping.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/ressources/mapping.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plateformeAutoML/web_admin/services/fect_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/plateformeAutoML/web_admin/services/fect_config.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +33,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/RMFrameClasse/new_test.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/plateformeAutoML/web_admin/services/fect_config.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -40,8 +41,8 @@
       <recent name="C:\Users\USER\Documents\ML\Analyse_de_donnees_avec_ python\PlateformeML\plateformeAutoML" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.new_test (1)">
-    <configuration name="new_test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.fect_config">
+    <configuration name="fect_config" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PlateformeML" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -49,11 +50,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plateformeAutoML/web_admin/services" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plateformeAutoML/core_automl/bibliotheque/RMFrameClasse/new_test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plateformeAutoML/web_admin/services/fect_config.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -83,9 +84,13 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.new_test" />
+      <item itemvalue="Python.fect_config" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.new_test (1)" />
+        <item itemvalue="Python.fect_config" />
       </list>
     </recent_temporary>
   </component>
