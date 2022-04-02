@@ -25,33 +25,6 @@ def save_info_projet(request):
         type = request.POST.get('type')
         est_publique = request.POST.get('est_publique')
         nombre_modele = request.POST.get('nombre_modele')
-    from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
-from django.core import serializers
-from django.http import JsonResponse
-from django.conf import settings
-import time, os
-
-from web_admin.models import Algorithme
-import pandas as pd
-from web_admin.models import Fichier
-
-# Create your views here.
-from .utils_local import *
-
-
-
-ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
-
-def save_info_projet(request):
-    if request.method == "POST":
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        metrique = request.POST.get('metrique')
-        type = request.POST.get('type')
-        est_publique = request.POST.get('est_publique')
-        nombre_modele = request.POST.get('nombre_modele')
     
         id = request.POST.get('id', 0)
         if id == 0:
@@ -68,19 +41,18 @@ def save_info_projet(request):
         else:
             projet = Projet.objects.get(pk=id)
             #update projet info
-        
         request.session['projet_id'] = id
         return JsonResponse({'data':{'id': id, 'msg':'Information enregistré avec success'}})
     
-def upload_dataset(request):
+"""def upload_dataset(request):
     ts = time.gmtime()
-    ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
+    #ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
 
     if request.method == 'POST':  
         fichier = request.FILES['file'].read()
         ext = os.path.splitest(request.POST['filename'])
-        nom_fichier = ext[0] + ts + ext[1] 
-        print(nom_fichier)
+        #nom_fichier = ext[0] + ts + ext[1] 
+        print("-------------------->nom du fichier ",nom_fichier)
         chemin = request.POST['path']
         end = request.POST['end']
         nextSlice = request.POST['nextSlice']
@@ -142,8 +114,8 @@ def upload_dataset(request):
         res = JsonResponse({'data':'Requete non authorisée'})
         return res
 
-
-#FONCTION EXTRACTION DES CARACTERISQUE D'UNE COLONNE
+"""
+#FONCTION EXTRACTION DES CARACTERISQUES D'UNE COLONNE
 def infos_dataset(dataframe):
 
     columns = dataframe.columns
@@ -275,13 +247,14 @@ class ListeProjetView(TemplateView):
         request.session['projet_id'] = id
         return JsonResponse({'data':{'id': id, 'msg':'Information enregistré avec success'}})
     
-def upload_dataset(request):
+"""def upload_dataset(request):
+    
     ts = time.gmtime()
     ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
 
     if request.method == 'POST':  
         fichier = request.FILES['file'].read()
-        nom_fichier = request.POST['filename'] + ts
+        nom_fichier = request.POST['filename'] 
         chemin = request.POST['path']
         end = request.POST['end']
         nextSlice = request.POST['nextSlice']
@@ -289,6 +262,7 @@ def upload_dataset(request):
             res = JsonResponse({'data':'Requete invalide'})
             return res
         else:
+            
             if chemin == 'null':
                 path = 'media/' + nom_fichier
                 with open(path, 'wb+') as destination: 
@@ -300,9 +274,13 @@ def upload_dataset(request):
                 FileFolder.save()
 
                 old_file_id = request.session.get('fichier_id', None)
-                if old_file_id is not None:
-                    filename = Fichier.objects.get(pk=old_file_id).nom
+                filename =  Fichier.objects.latest('id')
 
+                if old_file_id is not None:
+                    #filename = Fichier.objects.get(pk=(old_file_id)
+                    filename =  Fichier.objects.latest('id')
+                    
+                    print("--------->>old_file_idold_file_idold_file_id",filename)
                     media_root = getattr(settings, 'MEDIA_ROOT', None)
                     path_file = os.path.join(media_root, filename)
                     if os.path.isfile(path_file):
@@ -313,6 +291,7 @@ def upload_dataset(request):
                 
                 if int(end):
                     data = info_dataset(path)
+                    print("infos dataset",data)
                     res = JsonResponse({'msg':'Chargment effectué avec success','data': data, 'chemin': chemin})
                 else:
                     res = JsonResponse({'chemin': nom_fichier})
@@ -342,6 +321,78 @@ def upload_dataset(request):
     else:
         res = JsonResponse({'data':'Requete non authorisée'})
         return res
+"""
+
+###############################################################################################################
+
+def upload_dataset(request):
+    if request.method == 'POST':
+        try:
+            if(request.POST['file'] == ""):
+                context = {'message':"!!! VOUS n'avez pas enté un fichier !!!"}
+                return render(request, 'donnees.html',context)
+        except Exception as e:
+            context = {'message':e}
+            print("vous avez entrez un fichier",e)
+            #return render(request, 'donnees.html', context)
+
+        myfile = request.FILES['file']
+        #header = request.POST['header']
+
+        a_string = "abc"
+
+        extension = [ "csv", "xls", "xlsx"]
+
+        extension_tuple = tuple(extension)
+
+        #ends_with_string = a_string.endswith(extension_tuple)
+
+        if not myfile.name.endswith(extension_tuple):
+            context = {'message':"!!! FORMAT DE FICHIER INCORECTE !!!"}
+            res = JsonResponse({'data':'FORMAT DE FICHIER INCORECTE !!!'})
+            return res
+
+        else:
+            fs = FileSystemStorage()
+
+            filename = fs.save(myfile.name, myfile)
+            uploaded_file_url = fs.url(filename)
+            data_upload = source + uploaded_file_url
+            dataset = Dataset()
+            dataset.source_dataset = data_upload
+            dataset.save()
+
+            projet = Projet.objects.latest('id')
+            projet.dataset = dataset
+            projet.save()
+
+            if myfile.name.endswith(".csv"):
+                if header =='noheader':
+                    frame = pd.DataFrame(pd.read_csv(data_upload,header=None))
+                else:
+                    frame = pd.DataFrame(pd.read_csv(data_upload))
+            else:
+                if header == 'noheader':
+                    frame = pd.DataFrame(pd.read_excel(data_upload, header=None,index_col = 0),sep=";")
+                else:
+                    frame = pd.DataFrame(pd.read_excel(data_upload,header=None,index_col = 0))
+                    
+                
+            dataframe = frame
+
+            print("---------------------",frame)
+           
+            res = JsonResponse({'msg':'Chargement effectué avec success','data': data, 'chemin': 'model_id.chemin'})
+    else:
+        res = JsonResponse({'data':'Requete non authorisée'})
+        return res
+
+
+
+       
+
+
+###############################################################################################################
 
 
 #FONCTION EXTRACTION DES CARACTERISQUE D'UNE COLONNE
