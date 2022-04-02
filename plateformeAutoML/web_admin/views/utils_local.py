@@ -1,8 +1,10 @@
 """ Utility functions used by the tool """
 from hashlib import md5
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pathlib
+import json
 
 def file_extention(path):
     return pathlib.Path(path).suffix
@@ -10,8 +12,7 @@ def file_extention(path):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def load_dataframe(path):
-    print((path))
+def load_dataframe(path,sep=','):
     if file_extention(path) == '.csv':
         return pd.read_csv(path,sep=sep)
     elif file_extention(path) == '.xls' or  file_extention(path) == '.xlsx'  :
@@ -45,14 +46,21 @@ def select_cols(path, cols):
     data = pd.read_csv(path)
     return data[data.columns.intersection(cols)]
 
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
 def info_dataset(path):
     dataframe = load_dataframe(path)
     columns = dataframe.columns
     col_sheet_name = {}
     for col in columns:
         macolonne = {}
-        macolonne["type"] = dataframe[col].dtype
-        macolonne["data"] = list(dataframe[col])
+        macolonne["type"] = str(dataframe[col].dtype)
+        # macolonne["data"] = dataframe[col].to_json()
+        macolonne["data"] = json.dumps(dataframe[col].values.tolist())
 
         if (dataframe[col].dtype == "int64" or dataframe[col].dtype == "int32"):
             macolonne["scaler"] = "Standard_Scaler"
@@ -75,24 +83,16 @@ def info_dataset(path):
             macolonne["encoder"] = "OneHot_Encoder"
 
             macolonne["nature"] = "categoriel"
-        col_sheet_name[col] = macolonne
-
-    return col_sheet_name
+        col_sheet_name[(col)] = macolonne
+    print(col_sheet_name)
+    # return json.dumps(col_sheet_name, cls=NumpyEncoder)
+    return (col_sheet_name, dataframe.to_json())
 
 def _delete_file(path):
    """ Deletes file from filesystem. """
    if os.path.isfile(path):
        os.remove(path)
 
-############################################################    SESSION
-
-def clean_session_project_creation(request):
-    request.session.clear()
-    #del request.session['key']
-
-def clean_session(request):
-    request.session.clear()
-    # del request.session['key']
 
 def hash_file(path):
     """ Returns md5 hash of a file"""
