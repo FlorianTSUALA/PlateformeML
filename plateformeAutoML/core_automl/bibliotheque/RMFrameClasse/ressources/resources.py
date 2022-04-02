@@ -1,4 +1,5 @@
 # ===============================================================================
+import sklearn.preprocessing
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
@@ -64,10 +65,42 @@ model_initialisation = {
     "Binary_tree":  tree.DecisionTreeClassifier()
 }
 
+list_of_model_disponible = {
+    "RandomForest" : [RandomForestClassifier(random_state=0),hyper_params_radomForest],
+    "AdaBoost":  [AdaBoostClassifier(random_state=0),hyper_params_AdaBoost],
+    "SVM": [SVC(random_state=0),hyper_params_svm],
+    "KNN": [KNeighborsClassifier(),hyper_params_knn],
+    "Logistic":[LogisticRegression(random_state=0),hyper_params_logistic],
+    "MLP":  [MLPClassifier(),hyper_params_MLP],
+    "LDA": [LinearDiscriminantAnalysis(),hyper_params_lda],
+    "Binary_tree": [tree.DecisionTreeClassifier(),hyper_params_tree]
+}
+
+
+list_technique_imputation = {
+    'mean' : "mean",
+    "median" : "median",
+    "most_frequent" : "most_frequent"
+}
+
+list_technique_normalisation = {
+    "StandardScaler" : sklearn.preprocessing.StandardScaler,
+    "MinMaxScaler" : sklearn.preprocessing.MinMaxScaler,
+    "RobustScaler" : sklearn.preprocessing.RobustScaler,
+    "MaxAbsScaler" : sklearn.preprocessing.MaxAbsScaler
+}
+
+list_technique_encodage= {
+    "OneHotEncoder" : sklearn.preprocessing.OneHotEncoder,
+    "OrdinalEncoder" : sklearn.preprocessing.OrdinalEncoder,
+    "LabelEncoder" : sklearn.preprocessing.LabelEncoder,
+}
+
+
 
 ##===================LIEN DU FICHIER DE TEST====================#
 #source2 = r'train_u6lujuX_CVtuZ9i.csv'
-#source = r'chunk.csv'
+source = r'C:\Users\USER\Documents\ML\PlateformeML\plateformeAutoML\core_automl\bibliotheque\RMFrameClasse\ressources\chunk.csv'
 
 ##==================New dataset customer ========================
 #new_dataset = r'new_customers.csv'

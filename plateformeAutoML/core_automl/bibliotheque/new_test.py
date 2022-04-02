@@ -3,7 +3,7 @@
 #from  RModelFramework import Scoring
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-from  RMFRAMEWORK.analysis.bibliotheque.ressources.resources import *
+from RMFRAMEWORK.analysis.bibliotheque.ressources.resources import *
 
 from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.importation import  DataImport
 from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.pretraitement import PreprocessingData
@@ -16,12 +16,9 @@ if __name__ == "__main__":
     data.chargement()
     data.display_data(20)
 
-    #target = 'Loan_Status'
-    # dataset = data.delete_data_entry("Loan_ID",axis=1)
-
 
     target = "Churn"
-    dataset = data.delete_data_entry("customerID", axis=1)
+    #dataset = data.delete_data_entry("customerID", axis=1)
 
     print(dataset.columns)
     preprocessor1 = PreprocessingData(dataset,target,strategy_val_manquante_num='mean',methode_normalisation=StandardScaler(), strategy_val_manquante_cat='most_frequent',methode_encodage=OneHotEncoder())
@@ -44,29 +41,27 @@ if __name__ == "__main__":
 
     ###################### INITIALISATION DES Algorithmes NECESSAIRES POUR LE SCORING #################
 
-    RandomForest = make_pipeline(preprocessor, RandomForestClassifier(random_state=0))
-    AdaBoost = make_pipeline(preprocessor, AdaBoostClassifier(random_state=0))
-    SVM = make_pipeline(preprocessor, SVC(random_state=0))
-    KNN = make_pipeline(preprocessor, KNeighborsClassifier())
-    Logistic = make_pipeline(preprocessor, LogisticRegression(random_state=0))
-    MLP = make_pipeline(preprocessor, MLPClassifier())
-    LDA = make_pipeline(preprocessor,LinearDiscriminantAnalysis())
-    Binary_tree = make_pipeline(preprocessor,tree.DecisionTreeClassifier())
+    liste_algo = projet.analyse.algorithmes.all()
+    Algorithmechoisis = []
 
-    #####Dictionnaire des Algorithmes avec leurs hyperparamètres
+    for algo in liste_algo:
+        Algorithmechoisis.append(algo.nom_algo)
 
-    list_of_model = {
-        "RandomForest": [RandomForest, hyper_params_radomForest],
-        #"AdaBoost": [AdaBoost, hyper_params_AdaBoost],
-        #"SVM": [SVM, hyper_params_svm],
-        #"KNN": [KNN, hyper_params_knn],
-        "Logistic": [Logistic, hyper_params_logistic],
-        "MLP": [MLP, hyper_params_MLP],
-        "LDA":[LDA,hyper_params_lda],
-        "Binary_tree":[Binary_tree,hyper_params_tree]
-    }
+    #Algorithmechoisis = ["RandomForest","AdaBoost","Binary_tree","KNN","LDA","Logistic"]
+    #Algorithmechoisis = ["RandomForest","Logistic"]
 
-    classement = Classification(list_of_model,dataset,target)
+    dict_algo_choisis = {}
+    for algo in Algorithmechoisis:
+        initialisation_algo = list_of_model_disponible[algo][0]
+        hyperparametre_algo = list_of_model_disponible[algo][1]
+        pipeline_algo = make_pipeline(preprocessor,initialisation_algo)
+        dict_algo_choisis[algo] = [pipeline_algo,hyperparametre_algo]
+        #print(dict_algo_choisis)
+
+
+
+
+    classement = Classification(dict_algo_choisis,dataset,target)
 
     #pair_plot = scoring.matrix_corelation()
 
