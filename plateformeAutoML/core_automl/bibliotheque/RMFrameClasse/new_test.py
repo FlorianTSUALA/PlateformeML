@@ -4,19 +4,18 @@
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
-from RMFrameClasse.ressources.resources import *
+from  ressources.resources import *
 
-from RMFrameClasse.refractoryFramwork.importation import  DataImport
-from RMFrameClasse.refractoryFramwork.pretraitement import PreprocessingData
-from RMFrameClasse.refractoryFramwork.scoring import Scoring
-from RMFrameClasse.refractoryFramwork.classification import Classification
+from refractoryFramwork.importation import  DataImport
+from refractoryFramwork.pretraitement import PreprocessingData
+#from refractoryFramwork.scoring import Scoring
+from refractoryFramwork.classification import Classification
 if __name__ == "__main__":
     #pd.set_option('display.max_columns', None)
 
     data = DataImport(source)
     data.chargement()
     data.display_data(20)
-
 
 
     #target = 'Loan_Status'
@@ -60,6 +59,7 @@ if __name__ == "__main__":
 
 
     classement = Classification(dict_algo_choisis,dataset,target)
+    #classement = Classification(list_of_model, dataset, target)
 
     #pair_plot = scoring.matrix_corelation()
 
