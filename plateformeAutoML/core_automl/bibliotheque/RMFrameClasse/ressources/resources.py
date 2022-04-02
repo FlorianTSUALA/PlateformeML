@@ -97,7 +97,6 @@ list_technique_encodage= {
 }
 
 
-
 ##===================LIEN DU FICHIER DE TEST====================#
 #source2 = r'train_u6lujuX_CVtuZ9i.csv'
 source = r'C:\Users\USER\Documents\ML\PlateformeML\plateformeAutoML\core_automl\bibliotheque\RMFrameClasse\ressources\chunk.csv'
