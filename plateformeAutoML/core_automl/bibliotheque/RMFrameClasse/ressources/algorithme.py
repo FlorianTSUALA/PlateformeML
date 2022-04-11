@@ -1,45 +1,76 @@
-from ..ressources.resources import *
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from .hyperparametre import *
 
-algorithmes_disponible = {
+ALGORITHME_SYSTEME = {
 
-    "RandomForest" : {
+    'RandomForest' : {
         'init' : RandomForestClassifier(random_state=0),
-        'hyperparametre':hyper_params_radomForest,
-        'label': "Random Forest"
+        'hyperparametre': HYPER_PARAMETRE_RADOMFOREST,
+        'label': 'Random Forest',
+        'task': 'SUPERVISED',
+        'family': 'CLASSIFICATION',
+        'package': '',
     },
-    "AdaBoost" : {
+    'AdaBoost' : {
             'init' : AdaBoostClassifier(random_state=0),
-            'hyperparametre': hyper_params_AdaBoost,
-            'label': "Ada Booster"
+            'hyperparametre': HYPER_PARAMETRE_ADABOOST,
+            'label': 'Ada Booster',
+            'task': 'SUPERVISED',
+            'family': 'CLASSIFICATION',
+            'package': '',
         },
-    "SVM" : {
+    'SVM' : {
             'init' : SVC(random_state=0),
-            'hyperparametre':hyper_params_svm,
-            'label': "Support Vactor Machine"
+            'hyperparametre': HYPER_PARAMETRE_SVM,
+            'label': 'Support Vactor Machine',
+            'task': 'SUPERVISED',
+            'family': 'CLASSIFICATION',
+            'package': '',
         },
-    "KNN" : {
+    'KNN' : {
             'init' : KNeighborsClassifier(),
-            'hyperparametre':hyper_params_knn,
-            'label': "K-Nearest Neighbor"
+            'hyperparametre': HYPER_PARAMETRE_KNN,
+            'label': 'K-Nearest Neighbor',
+            'task': 'SUPERVISED',
+            'family': 'CLASSIFICATION',
+            'package': '',
         },
-    "Logistic": {
+    'Logistic': {
         'init': LogisticRegression(random_state=0),
-        'hyperparametre': hyper_params_knn,
-        'label': "Logistic Regression"
+        'hyperparametre': HYPER_PARAMETRE_KNN,
+        'label': 'Logistic Regression',
+        'task': 'REGRESSION',
+        'family': 'CLASSIFICATION',
+        'package': '',
     },
-    "MLP": {
+    'MLP': {
         'init': MLPClassifier(),
-        'hyperparametre': hyper_params_MLP,
-        'label': "Multi layer Perceptron"
+        'hyperparametre': HYPER_PARAMETRE_MLP,
+        'label': 'Multi layer Perceptron',
+        'task': 'SUPERVISED',
+        'family': 'CLASSIFICATION',
+        'package': '',
     },
-    "LDA": {
+    'LDA': {
         'init': LinearDiscriminantAnalysis(),
-        'hyperparametre': hyper_params_lda,
-        'label': "Linear discriminant analysis"
+        'hyperparametre': HYPER_PARAMETRE_LDA,
+        'label': 'Linear discriminant analysis',
+        'task': 'SUPERVISED',
+        'family': 'CLASSIFICATION',
+        'package': '',
     },
-    "Binary_tree": {
+    'Binary_tree': {
         'init': tree.DecisionTreeClassifier(),
-        'hyperparametre': hyper_params_tree,
-        'label': "Binary Tree"
+        'hyperparametre': HYPER_PARAMETRE_TREE,
+        'label': 'Binary Tree',
+        'task': 'SUPERVISED',
+        'family': 'CLASSIFICATION',
+        'package': '',
     },
 }

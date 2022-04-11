@@ -2,57 +2,87 @@
 {% comment %} load settinf constant in template max_length {% endcomment %}
 <script type="text/javascript">
 
-	class utils{
-		static findLongestWord(val) {
-			return val.length;
+	class Request{
+		static post(url, data, callback_success, callback_error, method='POST'){
+			console.log('Initilization of post request...')
+			$.ajax({
+				url: url,
+				data: data,
+				type: method,
+				dataType: 'json',
+				success: function (res) {
+					console.log((callback_success instanceof Function))
+					console.log((typeof callback_success === 'function'))
+					if(typeof callback_success === 'function')
+						callback_success(res)
+					return {'status': 200, 'message': res}
+				},
+				error: function (res){
+					if(callback_error instanceof Function)
+						callback_error(res)
+					return {'status': 500, 'message': res}
+				}
+			  })
 		}
-	
-		static add_space(val, length, max){
-			return val + new Array(max - le + 1).join(' ')
+		static post_file(url, data, callback_success, callback_error, method='POST'){
+			data['csrfmiddlewaretoken'] = window.CSRF_TOKEN
+			$.ajax({
+				url: url,
+				data: data,
+				type: method,
+				dataType: 'json',
+				success: function (res) {
+					if(callback_success instanceof Function)
+						callback_success.apply(this, res)
+					return {'status': 200, 'message': res}
+				},
+				error: function (res){
+					if(callback_error instanceof Function)
+						callback_error.apply(this, res)
+					return {'status': 500, 'message': res}
+				}
+			  })
 		}
-	
-	}
+		static post_session(url, data, callback_success, callback_error, method='POST'){
+			data['csrfmiddlewaretoken'] = window.CSRF_TOKEN
+			$.ajax({
+				url: url,
+				data: data,
+				type: method,
+				dataType: 'json',
+				success: function (res) {
+					if(callback_success instanceof Function)
+						callback_success.apply(this, res)
+					return {'status': 200, 'message': res}
+				},
+				error: function (res){
+					if(callback_error instanceof Function)
+						callback_error.apply(this, res)
+					return {'status': 500, 'message': res}
+				}
+			  })
+		}
 
-	class Notification{
-		static allo(title, body){
-		  Swal.fire(
-			{icon: 'success',
-			title: title,
-			text: body,}
-		  )
+		static get(url, data){
+			$.ajax({
+				url: url,
+				type: 'GET',
+				data: data,
+				error: function (xhr) {
+					return {'status': 500, 'message': xhr}
+				},
+				success: function (res) {
+					return {'status': 200, 'message': res}
+				}
+			});
 		}
-		static success(title, body){
-		  Swal.fire(
-			{icon: 'success',
-			title: title,
-			text: body,}
-		  )
-		}
-		atop(title, body){
-		  Swal.fire(
-			{icon: 'success',
-			title: title,
-			text: body,}
-		  )
-		}
-	
-		static error(title, body){
-		  Swal.fire({
-			icon: 'error',
-			title: title,
-			text: body,
-		  })
-		}
-	
-	
+		
 	}
-	
 	
 	class FileUpload {
 		constructor(input) {
 			this.input = input
 			this.max_length = 1024 * 1024 * 10; // 10 mb
-			this.notify = new Notification();
 		}
 	
 		upload() {
@@ -63,7 +93,6 @@
 		initFileUpload() {
 			this.file = this.input.files[0];
 			this.upload_file(0, null);
-
 		}
 
 		upload_file(start, path) {
@@ -129,16 +158,13 @@
 						chemin = res.chemin
 						self.upload_file(nextChunk, chemin);
 					} else {
-						console.log(res)
 						let df = JSON.parse(res.df)
-						{% comment %} this.notify.atop("Allo", "Success") {% endcomment %}
-						Notification.allo("Welcome", " ~~~ #### ~~~")
-						FileUpload.init_table(df['data'], df['columns'])
+						console.log(df)
+						FileUpload.init_table(df['data'], df['columns'], res.cols_info)
 						$('.textbox').text(res.msg);
 					}
 				}
 			});
-
 
 		};
 
@@ -168,7 +194,6 @@
 				const footer = $('#dataset tfoot');
 			  	header.empty();
 			  	footer.empty();
-				console.log(columns)
 
 				let tr = document.createElement('tr'); //column
 
@@ -182,88 +207,158 @@
 				footer.append(tr);
                
 				window.table = $('#dataset').DataTable({
-					responsive: true,
+					dom: 'lBfrtip<"actions">',
+					buttons: [
+						{
+							extend: 'copy',
+							text: window.copyButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+						{
+							extend: 'csv',
+							text: window.csvButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+						{
+							extend: 'excel',
+							text: window.excelButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+						{
+							extend: 'colvis',
+							text: window.colvisButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+					],
+					{% comment %} responsive: true, {% endcomment %}
+					"autoWidth": true,
+                    "scrollCollapse": true,
+                    "scrollX": true,
 					ordering: false,
 					initComplete: function () {
-						this.api().columns().every(function () {
+						let cols_name = columns
+						this.api().columns().every(function (index) {
 							var column = this;
-				
-							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+							var select = $(`<br><select id="col-tdd-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
 								.appendTo($("#filters").find("th").eq(column.index()))
 								.on('change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val());                                     
-							});
-				
-							console.log('select');
-							console.log(select);
-							$(select).append('<option value="Entier"> Entier </option>')
-							$(select).append('<option value="String"> Chaine &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </option>')
-							$(select).append('<option value="Float"> Réel</option>')
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+
+							{% for key, value in taxonomie_type_donnee %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+						
 				
 						});
-						this.api().columns().every(function () {
+						this.api().columns().every(function (index) {
 							var column = this;
 				
-							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+							var select = $(`<br><select id="col-ndo-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
 								.appendTo($("#filters").find("th").eq(column.index()))
 								.on('change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val());                                     
-							});
-				
-							$(select).append('<option value="Entier">Categoriel</option>')
-							$(select).append('<option value="String">Discret</option>')
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+							
+							{% for key, value in nature_valeur %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
 				
 						});
-						this.api().columns().every(function () {
+						this.api().columns().every(function (index) {
 							var column = this;
 				
-							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+							var select = $(`<br><select id="col-tim-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
 								.appendTo($("#filters").find("th").eq(column.index()))
 								.on('change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val());                                     
-							});
-				
-							$(select).append('<option value="Entier">SimpleImputer</option>')
-							$(select).append('<option value="String">KNNImputer</option>')
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+
+							{% for key, value in imputer %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+	
 				
 						});
-						this.api().columns().every(function () {
+						this.api().columns().every(function (index) {
 							var column = this;
 				
-							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+							var select = $(`<br><select id="col-tme-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
 								.appendTo($("#filters").find("th").eq(column.index()))
 								.on('change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val());                                     
-							});
-				
-							$(select).append('<option value="Standard Scaller">Standard Scalle</option>')
-							$(select).append('<option value="String">Robust Scaller</option>')
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+
+							{% for key, value in scaller %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
 				
 						});
-						this.api().columns().every(function () {
+
+						this.api().columns().every(function (index) {
 							var column = this;
 				
-							var select = $('<br><select class="form-control-xs"><option value=""></option></select>')
+							var select = $(`<br><select id="col-ten-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
 								.appendTo($("#filters").find("th").eq(column.index()))
 								.on('change', function () {
-								var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val());                                     
-							});
-				
-							$(select).append('<option value="Entier">Label Encoding</option>')
-							$(select).append('<option value="String">Ordinal Encoding</option>')
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+							{% for key, value in encoder %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
 				
 						});
 					},
 					data: data,
 					{% comment %} columns: columns {% endcomment %}
 				});
+				
+				console.log(preprocessing)
+				for (const [key, value] of Object.entries(preprocessing)) {
+					$('#col-tdd-'+key).val(value['type']).change()
+					$('#col-ndo-'+key).val(value['nature']).change()
+					$('#col-tim-'+key).val(value['imputer']).change()
+					$('#col-tme-'+key).val(value['scaller']).change()
+					$('#col-ten-'+key).val(value['encoder']).change()
+				}
+				window.columns = columns
+				window.table.columns.adjust().draw(); // Redraw the DataTable
+		}
 
-			  
+		static save_info_preprocessing(){
+			if (window.columns === null)
+				return; 
+			processing = {}			 
+			console.log(preprocessing)
+			for (const item in window.columns) {
+				processing[item] = {
+					'type': $('#col-tdd-'+item).val(),
+					'nature': $('#col-ndo-'+item).val(),
+					'imputer': $('#col-tim-'+item).val(),
+					'scaller': $('#col-tme-'+item).val(),
+					'encoder': $('#col-ten-'+item).val(),
+				}
+			}
+			Request.post("{% url 'save_preprocessing' %}", processing)
+			console.log(response)
+			Notification.talk('success', 'Opération effectuée avec success')
+		}
+
+		static get_algorithme_by_task(){
+			if (window.columns === null)
+				return; 
+			processing = {}			 
+
+			console.log(response)
+			Notification.talk('success', 'Opération effectuée avec success')
 		}
 	
 	}
@@ -275,12 +370,71 @@
 			event.preventDefault();
 			var uploader = new FileUpload(document.querySelector('#file2upload'))
 			uploader.upload();
-			{% comment %} Notification.allo("Welcome", " ~~~ #### ~~~") {% endcomment %}
-
+			Notification.talk('success', 'Fichier téléversé avec success')
 		});
 
-		Notification.allo("Welcome", "Dear user")
+		$('#btn_save_info_preprocessing').on('click', (event) => { FileUpload.save_info_preprocessing() });
+		$('#btn_save_selection_algorithm').on('click', (event) => { 
+			Request.post("{% url 'save_selection_algorithme' %}", [], function (data){
+				$('#script').html(data['script'])
+			})
+			
+		 });
 
+		 $('#select-target').on('change', function(e){ 
+			let task = $(this).trim(source.val())
+			if (task == '0')
+				return false
+			Request.post("{% url 'get_algorithme_by_task' %}", task, function(response){
+				target = $('#select-algorithmes')
+				$(target).empty()
+
+				{% comment %} if(typeof(_data[val]) != "undefined"){
+						var options = (typeof(_data[val]) != "undefined") ? _data[val] : {};
+				$('<option>-- Select --</option>').appendTo(target);
+						$.each( options , function(value, index) {
+								$('<option value="' + value + '">' + index + '</option>').appendTo(target);
+						});
+					} {% endcomment %}
+			})
+
+		 })
+
+		 Notification.talk('info', 'Bienvenue à section de creation de projet !!!', 'top right');
 
 	})(jQuery);
 </script>
+
+<script>
+		
+	function display_chart(div_id, title, data){
+		let options = {
+			series: data,
+			chart: {
+			height: 450,
+			type: 'heatmap',
+		},
+		dataLabels: {
+			enabled: false
+		},
+		colors: colors,
+		xaxis: {
+			type: 'category',
+			categories: ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '01:00', '01:30']
+		},
+		title: {
+			text: title
+		},
+		grid: {
+			padding: {
+			right: 20
+			}
+		}
+		};
+	
+		let chart = new ApexCharts(document.querySelector("#"+div_id), options);
+		chart.render();
+	}
+
+</script>
+  

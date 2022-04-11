@@ -6,16 +6,11 @@ from django.core import serializers
 from django.http import JsonResponse
 
 #######
-
-import email
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
-from django.core import serializers
-from django.http import JsonResponse
 from django.contrib.auth import (authenticate, login, logout, get_user_model, REDIRECT_FIELD_NAME)
 from django.core.exceptions import ObjectDoesNotExist
-import hashlib, binascii
+import hashlib, binascii, email
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required

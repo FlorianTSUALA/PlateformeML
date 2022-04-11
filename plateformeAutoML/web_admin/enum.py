@@ -26,10 +26,10 @@ class EEtatPublication(ENoNameChoice):
     PUBLIC = 'PUBLIC'
     PRIVE = 'PRIVE'
 
-class ETypeValeur(ENoNameChoice):
-    QUALITATIF = 'QUALITATIF'
-    QUANTITATIF = 'QUANTITATIF'
-    NUMERIC = 'NUMERIC'
+class ENatureValeur(ENoNameChoice):
+    QUALITATIF = 'CATEGORIEL' #QUALITATIF DISCRET OU AUTRE...
+    QUANTITATIF = 'QUANTITATIF' #DISCRET | CONTINUE 
+    # NUMERIC = 'NUMERIC'
 
 class EEtatCompte(ENoNameChoice):
     ARCHIVE = 'ARCHIVE'
