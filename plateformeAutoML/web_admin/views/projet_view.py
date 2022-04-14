@@ -6,17 +6,20 @@ from django.http import JsonResponse
 from django.conf import settings
 import time, os
 from django.template.loader import render_to_string
-from web_admin.models import Algorithme
+from web_admin.models import Algorithme, Projet
 import pandas as pd
 from web_admin.models import Fichier
-
+from web_admin.enum import EEtatPublication
 from web_admin.utils.file import *
+from django.contrib.auth.decorators import login_required
+
 # from web_admin.utils.session import *
 from web_admin.utils.dataset import info_dataset, load_dataframe
 from web_admin.services import fetch_config as fetch
 
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
+# @login_required
 class NouveauProjetView(View):
 
     def find_longest_word(self, mylist):
@@ -27,15 +30,13 @@ class NouveauProjetView(View):
         return word
 
     def padding(self, mydict, max):
-        print(f'max: {max}')
         new_dict = { k:self.add_space(v, max) for k, v in mydict.items() }
         return new_dict.items()
 
     def get(self, request, *args, **kwargs):
         size = max( len(self.find_longest_word(fetch.get_nature_valeur())), len(self.find_longest_word(fetch.get_taxonomie_type_donnee())), 
                     len(self.find_longest_word(fetch.get_encodage())),len(self.find_longest_word(fetch.get_mise_echelle())), 
-                    len(self.find_longest_word(fetch.get_imputation()))
-                    )
+                    len(self.find_longest_word(fetch.get_imputation())))
         context = {
             'projt_active': True,
             'section_title': 'Projets',
@@ -46,6 +47,7 @@ class NouveauProjetView(View):
             'encoder': self.padding(fetch.get_encodage(), size),
             'scaller': self.padding(fetch.get_mise_echelle(), size),
             'imputer': self.padding(fetch.get_imputation(), size),
+            'status': EEtatPublication.choices(),
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
      
@@ -99,35 +101,45 @@ def featur_pg():
 
 def save_projet_info(request):
     if request.method == "POST":
-        print(request.POST)
-        return JsonResponse({'data':{'id': id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        # print(request.POST)
+        # return JsonResponse({'data':{'project_id': project_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        if request.user.is_authenticated:
+            username = request.user.utilisateur.nom
+            print('USERNAME : ', username)
 
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        metrique = request.POST.get('metrique')
-        _type = request.POST.get('type')
-        est_publique = request.POST.get('est_publique', False)
-        nombre_modele = request.POST.get('nombre_modele', 0)
-        print(_type)
-        id = request.POST.get('id', 0)
-        if id == 0:
-            projet = Projet(
-                        title = title,
-                        description = description,
-                        metrique = metrique,
-                        type = _type,
-                        est_publique = est_publique,
-                        nombre_modele = nombre_modele,
-                    )
-            projet.save()
-            id = projet.pk
-        else:
-            projet = Projet.objects.get(pk=id)
+        print( request.user.utilisateur.pk)
+        data = {
+            'titre': request.POST.get('titre'),
+            'description': request.POST.get('description'),
+            'mots_cles': request.POST.get('mots_cles'),
+            'statut': request.POST.get('statut'),
+            'image': request.FILES.get('image'),
+            'utilisateur_id': request.user.utilisateur.pk,
+        }
+        print(data)
+        project, created = Projet.objects.update_or_create( pk=request.POST.get('project_id', 0), defaults=data,)
+        project_id = project.id
+        # nombre_modele = request.POST.get('nombre_modele', 0)
+        # print(_type)
+        # if project_id == 0:
+        #     projet = Projet(
+        #                 titre = titre,
+        #                 description = description,
+        #                 mots_cles = mots_cles,
+        #                 image = image,
+        #                 statut = statut,
+        #                 # est_publique = est_publique,
+        #                 # nombre_modele = nombre_modele,
+        #             )
+        #     projet.save()
+        #     project_id = projet.pk
+        # else:
+        #     projet = Projet.objects.get(pk=project_id)
         
         if request.session.get('project', None) is None:
             request.session['project'] = dict()
-        request.session['project']['id'] = id
-        return JsonResponse({'data':{'id': id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        request.session['project']['project_id'] = project_id
+        return JsonResponse({'data':{'project_id': project_id,}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
 
 
 def save_preprocessing(request):
@@ -142,8 +154,8 @@ def save_preprocessing(request):
         est_publique = request.POST.get('est_publique')
         nombre_modele = request.POST.get('nombre_modele')
         print(_type)
-        id = request.POST.get('id', 0)
-        if id == 0:
+        project_id = request.POST.get('project_id', 0)
+        if project_id == 0:
             projet = Projet(
                         title = title,
                         description = description,
@@ -153,12 +165,12 @@ def save_preprocessing(request):
                         nombre_modele = nombre_modele,
                     )
             projet.save()
-            id = projet.pk
+            project_id = projet.pk
         else:
-            projet = Projet.objects.get(pk=id)
+            projet = Projet.objects.get(pk=project_id)
         
-        request.session['projet_id'] = id
-        return JsonResponse({'data':{'id': id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        request.session['projet_id'] = project_id
+        return JsonResponse({'data':{'project_id': project_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
 #TODO
 def save_selection_variable(request):
     if request.method == "POST":
@@ -169,8 +181,8 @@ def save_selection_variable(request):
         est_publique = request.POST.get('est_publique')
         nombre_modele = request.POST.get('nombre_modele')
         print(_type)
-        id = request.POST.get('id', 0)
-        if id == 0:
+        project_id = request.POST.get('project_id', 0)
+        if project_id == 0:
             projet = Projet(
                         title = title,
                         description = description,
@@ -180,12 +192,12 @@ def save_selection_variable(request):
                         nombre_modele = nombre_modele,
                     )
             projet.save()
-            id = projet.pk
+            project_id = projet.pk
         else:
-            projet = Projet.objects.get(pk=id)
+            projet = Projet.objects.get(pk=project_id)
         
-        request.session['projet_id'] = id
-        return JsonResponse({'data':{'id': id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        request.session['projet_id'] = project_id
+        return JsonResponse({'data':{'project_id': project_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
 
 def save_selection_algorithme(request):
     if request.method == "POST":
@@ -200,8 +212,8 @@ def save_selection_algorithme(request):
         est_publique = request.POST.get('est_publique')
         nombre_modele = request.POST.get('nombre_modele')
         print(_type)
-        id = request.POST.get('id', 0)
-        if id == 0:
+        project_id = request.POST.get('project_id', 0)
+        if project_id == 0:
             projet = Projet(
                         title = title,
                         description = description,
@@ -211,12 +223,12 @@ def save_selection_algorithme(request):
                         nombre_modele = nombre_modele,
                     )
             projet.save()
-            id = projet.pk
+            project_id = projet.pk
         else:
-            projet = Projet.objects.get(pk=id)
+            projet = Projet.objects.get(pk=project_id)
         
-        request.session['projet_id'] = id
-        return JsonResponse({'data':{'id': id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        request.session['projet_id'] = project_id
+        return JsonResponse({'data':{'project_id': project_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
 
 def upload_dataset(request):
     ts = time.gmtime()
@@ -242,8 +254,8 @@ def upload_dataset(request):
                 FileFolder.eof = end
                 FileFolder.nom = nom_fichier
                 FileFolder.save()
-
-                old_file_id = request.session['project'].///get('fichier_id', 0)
+                print(request.session.get('project', {}))
+                old_file_id = request.session.get('project', {}).get('fichier_id', 0)
                 if old_file_id != 0:
                     filename = Fichier.objects.get(pk=old_file_id).nom
 
@@ -312,8 +324,8 @@ class ListeProjetView(TemplateView):
         context['section_title'] = 'Projets'
         context['section_item_title'] = 'Listes des projets'
         return context
-        id = request.POST.get('id', 0)
-        if id == 0:
+        project_id = request.POST.get('project_id', 0)
+        if project_id == 0:
             projet = Projet(
                         title = title,
                         description = description,
@@ -323,12 +335,12 @@ class ListeProjetView(TemplateView):
                         nombre_modele = nombre_modele,
                     )
             projet.save()
-            id = projet.pk
+            project_id = projet.pk
         else:
-            projet = Projet.objects.get(pk=id)
+            projet = Projet.objects.get(pk=project_id)
     
-        request.session['projet_id'] = id
-        return JsonResponse({'data':{'id': id, 'msg':'Information enregistré avec success'}})
+        request.session['projet_id'] = project_id
+        return JsonResponse({'data':{'project_id': project_id, 'msg':'Information enregistré avec success'}})
     
 
 class MesProjetsView(TemplateView):

@@ -16,13 +16,13 @@
   <div class="col-12 col-lg-8">
     <div class="card shadow-sm border-0">
       
-      <form method="post" action="{% url 'enregistrement_update' %}" class="card-body">
+      <form method="post" action="{% url 'profile_update' %}" class="card-body">
         {% csrf_token %}
-        <h5 class="mb-0">My Account</h5>
+        <h5 class="mb-0">Mon Compte</h5>
         <hr>
         <div class="card shadow-none border">
           <div class="card-header">
-            <h6 class="mb-0">USER INFORMATION</h6>
+            <h6 class="mb-0">Mes informations</h6>
           </div>
           <div class="card-body">
             <div class="row g-3">
@@ -42,7 +42,7 @@
         </div>
         <div class="card shadow-none border">
           <div class="card-header">
-            <h6 class="mb-0">CONTACT INFORMATION</h6>
+            <h6 class="mb-0">Autres Informations</h6>
           </div>
           <div class="card-body">
             <div class="row g-3">
@@ -561,14 +561,14 @@
                 <input type="text" id="prenom" class="form-control" name="prenom" value="{{utilisateur.prenom}}">
               </div>
               <div class="col-12">
-                <label for="description" class="form-label">Appropos de Moi</label>
-                <textarea class="form-control" id="description" rows="4" cols="4" value="{{utilisateur.description}}" name="description"></textarea>
+                <label for="description" class="form-label">A propos</label>
+                <textarea class="form-control" id="description" rows="4" cols="4" name="description">{{utilisateur.description}}</textarea>
               </div>
             </div>
           </div>
         </div>
         <div class="text-start">
-          <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+          <button type="submit" class="btn btn-primary px-4">Mettre à jour</button>
         </div>
 
       </form>
@@ -579,47 +579,46 @@
     <div class="card shadow-sm border-0 overflow-hidden">
       <div class="card-body">
         <div class="profile-avatar text-center">
-          <img src="assets/images/avatars/avatar-1.png" class="rounded-circle shadow" width="120" height="120" alt="">
+          <img src="{% static 'template/assets/images/avatars/avatar-1.png' %}" class="rounded-circle shadow" width="120" height="120" alt="">
         </div>
         <div class="d-flex align-items-center justify-content-around mt-5 gap-3">
           <div class="text-center">
-            <h4 class="mb-0">45</h4>
-            <p class="mb-0 text-secondary">Friends</p>
+            <h4 class="mb-0">---</h4>
+            <p class="mb-0 text-secondary">#######</p>
           </div>
           <div class="text-center">
-            <h4 class="mb-0">15</h4>
-            <p class="mb-0 text-secondary">Photos</p>
+            <h4 class="mb-0">---</h4>
+            <p class="mb-0 text-secondary">#######</p>
           </div>
           <div class="text-center">
-            <h4 class="mb-0">86</h4>
-            <p class="mb-0 text-secondary">Comments</p>
+            <h4 class="mb-0">---</h4>
+            <p class="mb-0 text-secondary">#######</p>
           </div>
         </div>
         <div class="text-center mt-4">
-          <h4 class="mb-1">Jhon Deo, 27</h4>
-          <p class="mb-0 text-secondary">Sydney, Australia</p>
+          <h4 class="mb-1">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h4>
+          <p class="mb-0 text-secondary">{{ utilisateur.ville }}, {{ utilisateur.pays }}</p>
           <div class="mt-4"></div>
-          <h6 class="mb-1">HR Manager - Codervent Technology</h6>
-          <p class="mb-0 text-secondary">University of Information Technology</p>
+          <h6 class="mb-1">{{ utilisateur.compte.email }}, {{ utilisateur.telephone }}</h6>
+          <p class="mb-0 text-secondary">Depuis le {{ utilisateur.compte.date_adhesion }}</p>
         </div>
         <hr>
         <div class="text-start">
-          <h5 class="">About</h5>
-          <p class="mb-0">It is a long established fact that a reader will be distracted by the readable content of a
-            page when looking at its layout. The point of using Lorem.
+          <h5 class="">A propors</h5>
+          <p class="mb-0"> {{  utilisateur.description }} </p>
         </div>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-top">
-          Followers
+          Projets
           <span class="badge bg-primary rounded-pill">95</span>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
-          Following
+          Projets Privés
           <span class="badge bg-primary rounded-pill">75</span>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
-          Templates
+          Projets Publiés
           <span class="badge bg-primary rounded-pill">14</span>
         </li>
       </ul>
@@ -628,4 +627,10 @@
 </div>
 {% endblock %}
 
-{% block custom_javascript %} {% endblock %}
+{% block custom_javascript %} 
+  <script type="text/javascript">
+    $('#pays').val('{{ utilisateur.pays }}').change()
+    $('#ville').val('{{ utilisateur.ville }}').change()
+  </script>
+
+{% endblock %}

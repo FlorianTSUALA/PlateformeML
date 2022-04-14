@@ -7,7 +7,7 @@ class ENoNameChoice(Enum):
     
     @classmethod
     def choices(cls):
-        return [(key.value, key.name) for key in cls]
+        return [(key.value, key.name.lower().replace('_', ' ')) for key in cls]
 
 class ETypeDonnee(ENoNameChoice):
     ENTIER = 'ENTIER'

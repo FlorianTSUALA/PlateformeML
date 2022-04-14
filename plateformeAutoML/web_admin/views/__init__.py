@@ -1,6 +1,6 @@
 from .projet_view import *
 from .common_view import *
-from .utilisateur_view import *
+from .profile_view import *
 from .authentification_view import *
 
 from .p_algorithme_view import *

@@ -33,16 +33,40 @@
 				dataType: 'json',
 				success: function (res) {
 					if(callback_success instanceof Function)
-						callback_success.apply(this, res)
+						callback_success(res)
 					return {'status': 200, 'message': res}
 				},
 				error: function (res){
 					if(callback_error instanceof Function)
-						callback_error.apply(this, res)
+						callback_error(res)
 					return {'status': 500, 'message': res}
 				}
 			  })
 		}
+		
+		static post_form_file(url, form_id, callback_success, callback_error, method='POST'){
+
+			$.ajax({
+				url: url,
+				type: method, 
+				data: new FormData($("#"+form_id)[0]),
+				cache: false, 
+				contentType: 'multipart/form-data',
+				contentType: false,
+				processData: false,
+				success: function (res) {
+					if(callback_success instanceof Function)
+						callback_success(res)
+					return {'status': 200, 'message': res}
+				},
+				error: function (res){
+					if(callback_error instanceof Function)
+						callback_error(res)
+					return {'status': 500, 'message': res}
+				}
+			})
+		}
+
 		static post_session(url, data, callback_success, callback_error, method='POST'){
 			data['csrfmiddlewaretoken'] = window.CSRF_TOKEN
 			$.ajax({
@@ -52,12 +76,12 @@
 				dataType: 'json',
 				success: function (res) {
 					if(callback_success instanceof Function)
-						callback_success.apply(this, res)
+						callback_success(res)
 					return {'status': 200, 'message': res}
 				},
 				error: function (res){
 					if(callback_error instanceof Function)
-						callback_error.apply(this, res)
+						callback_error(res)
 					return {'status': 500, 'message': res}
 				}
 			  })
@@ -389,16 +413,27 @@
 				target = $('#select-algorithmes')
 				$(target).empty()
 
-				{% comment %} if(typeof(_data[val]) != "undefined"){
-						var options = (typeof(_data[val]) != "undefined") ? _data[val] : {};
-				$('<option>-- Select --</option>').appendTo(target);
+				{% comment %} 
+					if(typeof(_data[val]) != "undefined"){
+						var options = (typeof(_data[val]) != "undefined")? _data[val] : {};
+						$('<option>-- Select --</option>').appendTo(target);
 						$.each( options , function(value, index) {
-								$('<option value="' + value + '">' + index + '</option>').appendTo(target);
+							$('<option value="' + value + '">' + index + '</option>').appendTo(target);
 						});
-					} {% endcomment %}
+					} 
+				{% endcomment %}
+
 			})
 
-		 })
+		})
+
+		 $('#btn_submit_form_info_projet').on('click', function(e){ 
+			Request.post_form_file("{% url 'save_projet_info' %}", 'form_info_projet', function (response){
+				console.log(response)
+				$('#projet_id').val(response.data.project_id)
+				Notification.talk('success', 'informations du project sauvegardées avec success !!!', 'top');
+			})
+		})
 
 		 Notification.talk('info', 'Bienvenue à section de creation de projet !!!', 'top right');
 

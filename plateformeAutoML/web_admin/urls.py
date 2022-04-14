@@ -16,11 +16,13 @@ Including another URLconf
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
+
 from web_admin.views import (
     #AUTHENTIFICATION
-    login, logout, register, 
-    #COMPTE
-    liste, update_user, update_utilisateur, delete_utilisateur,
+    connexion, deconnexion, inscription, 
+    #PROFILE = COMPTE + UTILISATEUR
+    profile, profile_list,  profile_create, profile_update, profile_delete,
     #ACCUEIL
     VitrineView,
     #PROJET
@@ -30,8 +32,6 @@ from web_admin.views import (
     save_selection_variable, save_selection_algorithme, get_algorithme_by_task, 
     #AUTRES
     FAQView, AProposView, 
-    #UTILISATEURS
-    MonCompteView, ListUtilisateurView, CreateUtilisateurView,
     #ALGORITHME
     algorithme, algorithme_create, algorithme_update, algorithme_delete,
     #CRITERE_COMPARAISON
@@ -56,8 +56,9 @@ from web_admin.views import (
 
 urlpatterns = [
     #Authentification
-    path('login',  login, name='login'),
-    path('register',  register, name='register'),
+    path('connexion',  connexion, name='connexion'),
+    path('inscription',  inscription, name='inscription'),
+    path('deconnexion',  deconnexion, name='deconnexion'),
 
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),
@@ -78,7 +79,7 @@ urlpatterns = [
     
     #####################   CREATION
 
-    path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
+    path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
     path('clean_session/project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
     path('save_projet_info',  save_projet_info, name='save_projet_info'),
@@ -101,17 +102,18 @@ urlpatterns = [
 
 
     ####################################################################################################################################
-    #####################   UTILISATEUR
+    #####################   PROFILE = COMPTE + UTILISATEUR
     ####################################################################################################################################
     
-    path('utilisateur/mon-compte',  MonCompteView.as_view(), name='mon_compte'),
-    path('utilisateur/list', liste, name='utilisateur_list'),
-    path('utilisateur/list/archives',  ListUtilisateurView.as_view(), name='utilisateur_list_archives'),
-    path('utilisateur/list/attente_validation',  ListUtilisateurView.as_view(), name='utilisateur_list_attente_validation'),
-    path('utilisateur/create',  register, name='utilisateur_create'),
-    path('utilisateur/enregistrement_update',  update_utilisateur, name='enregistrement_update'),
-    path('utilisateur_update/<str:pk>', update_user, name='utilisateur_update'),
-    path('utilisateur_delete/<int:pk>', delete_utilisateur, name='utilisateur_delete'),
+    path('profile/list/<str:filter>', profile_list, name='profile_list'),
+    #TODO Archive, Validation : post
+    # path('profile/list/archives',  ProfileListView.as_view(), name='profile_list_archives'),
+    # path('profile/list/attente_validation',  ProfileListView.as_view(), name='profile_list_attente_validation'),
+    
+    path('profile',  profile, name='profile'),
+    # path('profile/create',  profile_create, name='profile_create'),
+    path('profile/update', profile_update, name='profile_update'),
+    path('profile/delete/<int:pk>', profile_delete, name='profile_delete'),
 
     #Paramtrage
         ####################################################################################################################################

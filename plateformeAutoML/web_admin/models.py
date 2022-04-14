@@ -5,6 +5,7 @@ from web_admin.managers import CompteManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
+from django.utils.text import slugify
 
 class Compte(AbstractBaseUser, PermissionsMixin):
     code =  models.CharField(max_length=254, blank=True,null=True)
@@ -34,31 +35,33 @@ class Utilisateur(models.Model):
     ville = models.CharField(max_length=254, blank=True,null=True)
     compte = models.OneToOneField( Compte, on_delete=models.CASCADE, primary_key=True,)
     description  =  models.TextField(max_length=254, blank=True, default='')
-
+    
     def __str__(self):
         return "%s  %s" % (self.prenom, self.nom)
 
 class Projet(models.Model):
     code =  models.CharField(max_length=254, blank=True,null=True)
-    title =  models.CharField(max_length=254, blank=True,null=True)
+    titre =  models.CharField(max_length=254, blank=True,null=True)
     description  =  models.TextField(max_length=254, blank=True, default='')
+    mots_cles  =  models.TextField(max_length=254, blank=True, default='')
     metrique =  models.CharField(max_length=254, blank=True,null=True) #to del
-    type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
-    est_publique = models.CharField(max_length=50, choices=EEtatPublication.choices(), default=EEtatPublication.PRIVE)
+    image = models.ImageField(upload_to="projet/image/%Y/%m/%d")
+    # type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
+    statut = models.CharField(max_length=50, choices=EEtatPublication.choices(), default=EEtatPublication.PRIVE)
     nombre_modele = models.IntegerField(default=0, blank=True,null=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     
     slug = models.SlugField(null=True, unique=True) #slud automatic
 
     def __str__(self):
-        return self.title
+        return self.titre
 
     def get_absolute_url(self):
         return reverse('projet_detail', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs): # new
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.titre)
         return super().save(*args, **kwargs)
 
 class JeuDonnees(models.Model):
