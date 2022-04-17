@@ -17,6 +17,43 @@ def get_imputation(default = False):
 def get_mise_echelle(default = False):
     return get(default, MAPPING_SCALLER)
     
+def get_tache(default = False):
+    collection  = ALGORITHME_SYSTEME
+    data = dict()
+    for key, value in collection:
+        if data.get(value['task'], None) is not None:
+            data[value['task']] = list()      
+        data[value['task']].append({key:value['code'], value:value['label']})
+    if default:
+        return data
+    else:
+        return data.keys()
+
+def get_package(default = False):
+    collection  = ALGORITHME_SYSTEME
+    data = dict()
+    for key, value in collection:
+        if data.get(value['package'], None) is not None:
+            data[value['package']] = list()      
+        data[value['package']].append({key:value['code'], value:value['label']})
+    if default:
+        return data
+    else:
+        return data.keys()
+
+    
+def get_famille(default = False):
+    collection  = ALGORITHME_SYSTEME.items()
+    data = dict()
+    for key, value in collection:
+        if data.get(value['family'], None) is None:
+            data[value['family']] = list()      
+        data[value['family']].append({'key':value['code'], 'value':value['label']})
+    if default:
+        return data
+    else:
+        return data.keys()
+
 def get_algorithme(default = False):
     collection  = ALGORITHME_SYSTEME
     if default:
@@ -52,16 +89,8 @@ def get_strategie_imputation(self):
 def get_strategie_mise_echelle(self):
     return 
 
-def get_famille(self):
-    return 
-
-def get_tache(self):
-    return 
 
 def get_type_apprentissage(self):
-    return 
-
-def get_package(self):
     return 
 
 def get_critere_comparaison(self):

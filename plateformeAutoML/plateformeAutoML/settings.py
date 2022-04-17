@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-os6^4h@w))&r$a08%#vjc1&vp)d6tcwppu1t1((_+_i)v*284!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'liama.automl']
 
 
 # Application definition

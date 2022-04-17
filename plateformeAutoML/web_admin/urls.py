@@ -28,7 +28,7 @@ from web_admin.views import (
     #PROJET
     AccueilView, MesFavorisView, MesProjetsView, ProjetsPublicsView, NouveauProjetView, 
     ConsulterProjetView, ModifierProjetView, ListeProjetView, 
-    save_projet_info, upload_dataset, clean_session_project_creation, save_preprocessing, 
+    save_projet_info, upload_dataset, clean_session_projet_creation, save_preprocessing, 
     save_selection_variable, save_selection_algorithme, get_algorithme_by_task, 
     #AUTRES
     FAQView, AProposView, 
@@ -82,7 +82,7 @@ urlpatterns = [
     #####################   CREATION
 
     path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
-    path('clean_session/project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
+    path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
     path('save_projet_info',  save_projet_info, name='save_projet_info'),
     path('save_preprocessing',  save_preprocessing, name='save_preprocessing'),

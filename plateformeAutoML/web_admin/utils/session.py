@@ -1,6 +1,6 @@
 """ Utility functions used by the tool """
 
-def clean_session_project_creation(request):
+def clean_session_projet_creation(request):
     request.session.clear()
     #del request.session['key']
 

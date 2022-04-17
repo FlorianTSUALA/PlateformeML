@@ -430,8 +430,8 @@
 		 $('#btn_submit_form_info_projet').on('click', function(e){ 
 			Request.post_form_file("{% url 'save_projet_info' %}", 'form_info_projet', function (response){
 				console.log(response)
-				$('#projet_id').val(response.data.project_id)
-				Notification.talk('success', 'informations du project sauvegardées avec success !!!', 'top');
+				$('#projet_id').val(response.data.projet_id)
+				Notification.talk('success', 'informations du projet sauvegardées avec success !!!', 'top');
 			})
 		})
 
