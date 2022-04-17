@@ -7,7 +7,6 @@ class FecthConfigService():
     """
         Recuperation des entité
     """
-
     def encodage(self):
 
         liste_encodage = {}
