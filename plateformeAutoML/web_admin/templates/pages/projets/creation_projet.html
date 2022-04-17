@@ -6,6 +6,8 @@
 {% block custom_style %} 
   <link href="{% static 'template/assets/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
   <link href="{% static 'template/assets/plugins/input-tags/css/tagsinput.css' %}" rel="stylesheet" />
+  <link href="{% static 'template/assets/plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'template/assets/plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />  
   <style>
 	.form-control-xs {
 		height: calc(1em + .375rem + 2px) !important;
@@ -43,18 +45,18 @@
 										<div class="card shadow-none bg-light border">
 											<div class="card-body">
 											<form class="row g-3">
-												<input type="hidden" class="" style="display: none" id='project_id' name="id" value="{% if id is None %}0{% else %}{{ id }}{% endif %}" />
+												<input type="hidden" class="" style="display: none" id='projet_id' name="projet_id" value="{% if id is None %}0{% else %}{{ id }}{% endif %}" />
 												<div class="col-12">
 												<label class="form-label">Titre</label>
-												<input type="text" class="form-control" id='project_titre' name="titre" placeholder="titre du projet">
+												<input type="text" class="form-control" id='projet_titre' name="titre" placeholder="titre du projet">
 												</div>
 												<div class="col-12">
 													<label class="form-label">Mots clés</label>
-													<input type="text" id='project_nots_cles' name="mots_cles" class="form-control" value="Regression, School, Furniture"  data-role="tagsinput" placeholder="mots clés">
+													<input type="text" id='projet_nots_cles' name="mots_cles" class="form-control" value="Regression, School, Furniture"  data-role="tagsinput" placeholder="mots clés">
 												</div>
 												<div class="col-12">
 												<label class="form-label">Description </label>
-												<textarea class="form-control" id='project_description' name="description" placeholder="description du projet" rows="4" cols="4"></textarea>
+												<textarea class="form-control" id='projet_description' name="description" placeholder="description du projet" rows="4" cols="4"></textarea>
 												</div>
 											</form>
 											</div>
@@ -258,20 +260,20 @@
 							<div class="p-4  rounded">
 								<form class="row g-3 needs-validation" novalidate="">
 									<div class="col-md-3">
-										<label for="validationCustom04" class="form-label">Modele</label>
-										<select class="form-select" id="select-algorithmes" required="">
-											<option selected="" disabled="" value="">regression...</option>
-											<option>...</option>
-											<option>...</option>
-											<option>...</option>
-											<option>...</option>
+										<label for="select-famille" class="form-label">Famille Algorithime</label>
+										<select id="select-famille"  class='form-select'>
+											{% for item in familles %}
+											<option  value="{{item}}">{{item}}</option>
+											{% endfor %}
 										</select>
-										<div class="invalid-feedback">Selectionnez un algorothme.</div>
+										<div class="invalid-feedback">Selectionnez une taches.</div>
 									</div>
 									<div class="col-md-6">
-										<label for="validationCustom03" class="form-label">Valeur</label>
-										<input type="text" class="form-control" id="validationCustom03" required="">
-										<div class="invalid-feedback">Définissez une valeur.</div>
+										<label for="select-algorithmes" class="form-label">Algorithme</label>
+										<select class="multiple-select" data-placeholder="Choose anything" multiple="multiple" required="" id="select-algorithmes" required="">
+											<option selected="" disabled="" value="">...</option>
+										</select>
+										<div class="invalid-feedback">Selectionnez un ou plusieurs algorithmes.</div>
 									</div>
 									
 									<div class="col-md-3">
@@ -487,11 +489,20 @@
 {% endblock %}
 
 {% block custom_javascript %}
-
 <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script> 
+	var FAMILLE_ALGORITHMES = {{famille_algorithmes|safe }} 
+	$('#select-famille').on('change', function () {
+
+	});
+</script>
 <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+
 <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
+<script src="{% static 'template/assets/plugins/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'template/assets/js/form-select2.js' %}"></script>
+	
 {% comment %} <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apex-custom.js' %}"></script> {% endcomment %}
 
 <script>
@@ -530,7 +541,7 @@
 
 	$(window).bind('beforeunload', function(e){
 		e = e || window.event;
-		response = Request.post("{% url 'clean_session_project_creation' %}", {})
+		response = Request.post("{% url 'clean_session_projet_creation' %}", {})
 		console.log(response)
 		// For IE and Firefox prior to version 4  
 		if (e) {

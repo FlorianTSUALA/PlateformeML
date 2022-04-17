@@ -9,3 +9,4 @@ _documentation/Workflow/init_entit_technique copy.drawio
 plateformeAutoML/db.sqlite3
 plateformeAutoML/db.sqlite3
 *.pro
+*.log

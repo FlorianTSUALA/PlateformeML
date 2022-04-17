@@ -10,6 +10,7 @@ from .hyperparametre import *
 ALGORITHME_SYSTEME = {
 
     'RandomForest' : {
+        'code': 'RandomForest',
         'init' : RandomForestClassifier(random_state=0),
         'hyperparametre': HYPER_PARAMETRE_RADOMFOREST,
         'label': 'Random Forest',
@@ -18,6 +19,7 @@ ALGORITHME_SYSTEME = {
         'package': '',
     },
     'AdaBoost' : {
+            'code': 'AdaBoost',
             'init' : AdaBoostClassifier(random_state=0),
             'hyperparametre': HYPER_PARAMETRE_ADABOOST,
             'label': 'Ada Booster',
@@ -26,6 +28,7 @@ ALGORITHME_SYSTEME = {
             'package': '',
         },
     'SVM' : {
+            'code': 'SVM',
             'init' : SVC(random_state=0),
             'hyperparametre': HYPER_PARAMETRE_SVM,
             'label': 'Support Vactor Machine',
@@ -34,7 +37,8 @@ ALGORITHME_SYSTEME = {
             'package': '',
         },
     'KNN' : {
-            'init' : KNeighborsClassifier(),
+            'code': 'KNN',
+                'init' : KNeighborsClassifier(),
             'hyperparametre': HYPER_PARAMETRE_KNN,
             'label': 'K-Nearest Neighbor',
             'task': 'SUPERVISED',
@@ -42,6 +46,7 @@ ALGORITHME_SYSTEME = {
             'package': '',
         },
     'Logistic': {
+        'code': 'Logistic',
         'init': LogisticRegression(random_state=0),
         'hyperparametre': HYPER_PARAMETRE_KNN,
         'label': 'Logistic Regression',
@@ -50,6 +55,7 @@ ALGORITHME_SYSTEME = {
         'package': '',
     },
     'MLP': {
+        'code': 'MLP',
         'init': MLPClassifier(),
         'hyperparametre': HYPER_PARAMETRE_MLP,
         'label': 'Multi layer Perceptron',
@@ -58,6 +64,7 @@ ALGORITHME_SYSTEME = {
         'package': '',
     },
     'LDA': {
+        'code': 'LDA',
         'init': LinearDiscriminantAnalysis(),
         'hyperparametre': HYPER_PARAMETRE_LDA,
         'label': 'Linear discriminant analysis',
@@ -66,6 +73,7 @@ ALGORITHME_SYSTEME = {
         'package': '',
     },
     'Binary_tree': {
+        'code': 'Binary_tree',
         'init': tree.DecisionTreeClassifier(),
         'hyperparametre': HYPER_PARAMETRE_TREE,
         'label': 'Binary Tree',
