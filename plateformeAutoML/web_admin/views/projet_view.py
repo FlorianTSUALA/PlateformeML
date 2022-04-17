@@ -111,33 +111,6 @@ def save_projet_info(request):
             'image': request.FILES.get('image'),
             'utilisateur_id': request.user.utilisateur.pk,
         }
-<<<<<<< HEAD
-        print(data)
-        project, created = Projet.objects.update_or_create( pk=request.POST.get('project_id', 0), defaults=data,)
-        project_id = project.id
-       
-        # nombre_modele = request.POST.get('nombre_modele', 0)
-        # print(_type)
-        # if project_id == 0:
-        #     projet = Projet(
-        #                 titre = titre,
-        #                 description = description,
-        #                 mots_cles = mots_cles,
-        #                 image = image,
-        #                 statut = statut,
-        #                 # est_publique = est_publique,
-        #                 # nombre_modele = nombre_modele,
-        #             )
-        #     projet.save()
-        #     project_id = projet.pk
-        # else:
-        #     projet = Projet.objects.get(pk=project_id)
-        
-        if request.session.get('project', None) is None:
-            request.session['project'] = dict()
-        request.session['project']['project_id'] = project_id
-        return JsonResponse({'data':{'project_id': project_id,}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
-=======
 
         projet = None
         projet_id = request.POST.get('projet_id', '0')
@@ -169,7 +142,6 @@ def save_projet_info(request):
             request.session['projet'] = dict()
         request.session['projet']['projet_id'] = projet_id
         return JsonResponse({'data':{'projet_id': projet_id,}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
->>>>>>> e40443f38765ed79cb169b3f6be6a94be8f4786e
 
 
 def save_preprocessing(request):
@@ -363,15 +335,8 @@ class ListeProjetView(TemplateView):
         context['projet'] = projet
         return context
 
-<<<<<<< HEAD
-
-        project_id = request.POST.get('project_id', 0)
-
-        if project_id == 0:
-=======
         projet_id = request.POST.get('projet_id', 0)
         if projet_id == 0:
->>>>>>> e40443f38765ed79cb169b3f6be6a94be8f4786e
             projet = Projet(
                         title = title,
                         description = description,
