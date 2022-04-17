@@ -77,6 +77,8 @@ urlpatterns = [
     path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
     path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
     
+
+    
     #####################   CREATION
 
     path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),

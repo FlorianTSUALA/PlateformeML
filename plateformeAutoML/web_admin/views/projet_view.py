@@ -119,6 +119,7 @@ def save_projet_info(request):
         print(data)
         project, created = Projet.objects.update_or_create( pk=request.POST.get('project_id', 0), defaults=data,)
         project_id = project.id
+       
         # nombre_modele = request.POST.get('nombre_modele', 0)
         # print(_type)
         # if project_id == 0:
@@ -319,12 +320,20 @@ class ListeProjetView(TemplateView):
     template_name = 'pages/projets/liste_projet.html'
 
     def get_context_data(self, **kwargs):
+        
+        projet = Projet.objects.all().order_by('-id')
+
+        print("xxx",projet[0].image)
+
         context = super().get_context_data(**kwargs)
         context['has_white_text'] = False
         context['section_title'] = 'Projets'
         context['section_item_title'] = 'Listes des projets'
+        context['projet'] = projet
         return context
+
         project_id = request.POST.get('project_id', 0)
+
         if project_id == 0:
             projet = Projet(
                         title = title,
