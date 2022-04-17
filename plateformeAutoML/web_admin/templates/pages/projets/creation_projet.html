@@ -493,7 +493,10 @@
 <script> 
 	var FAMILLE_ALGORITHMES = {{famille_algorithmes|safe }} 
 	$('#select-famille').on('change', function () {
-
+		let val = $(this).va()
+		console.log($(this))
+		console.log(val)
+		console.log(FAMILLE_ALGORITHMES[val])
 	});
 </script>
 <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>

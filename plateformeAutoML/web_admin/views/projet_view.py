@@ -113,7 +113,7 @@ def save_projet_info(request):
         }
 
         projet = None
-        projet_id = request.POST.get('projet_id', 0)
+        projet_id = request.POST.get('projet_id', '0')
 
         if projet_id == '0':
             print('create')
