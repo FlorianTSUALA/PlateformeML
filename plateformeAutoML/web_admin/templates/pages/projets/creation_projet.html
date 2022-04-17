@@ -351,83 +351,31 @@
 								 <tr>
 								   <th>#ID</th>
 								   <th>Algorithme</th>
-								   <th>%Erreur</th>
+								   <th>Algorithme</th>
 								   <th>%Precision</th>
+								   <th>%estimation</th>
 								   <th>%</th>
 								   <th>Date</th>
-								   <th>Shipping</th>
+								   <th>Famille</th>
 								 </tr>
 								 </thead>
-								 <tbody><tr>
-								  <td>Sport Shoes</td>
-								  <td><img src="{% static 'template/assets/images/products/01.png' %}" class="product-img-2" alt="product img"></td>
-								  <td>#9405822</td>
-								  <td><span class="badge bg-light-success text-success w-100">Paid</span></td>
-								  <td>$1250.00</td>
-								  <td>03 Feb 2020</td>
-								  <td><div class="progress" style="height: 5px;">
-									<div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-									</div>
-								  </td>
-								 </tr>
-						
-								 <tr>
-								  <td>Man Headcap</td>
-								  <td><img src="{% static 'template/assets/images/products/02.png' %}" class="product-img-2" alt="product img"></td>
-								  <td>#8304620</td>
-								  <td><span class="badge bg-light-warning text-warning w-100">Pending</span></td>
-								  <td>$1500.00</td>
-								  <td>05 Feb 2020</td>
-								  <td><div class="progress" style="height: 5px;">
-									<div class="progress-bar bg-warning" role="progressbar" style="width: 60%"></div>
-									</div></td>
-								 </tr>
-						
-								 <tr>
-								  <td>Sunglass</td>
-								  <td><img src="{% static 'template/assets/images/products/03.png' %}" class="product-img-2" alt="product img"></td>
-								  <td>#4736890</td>
-								  <td><span class="badge bg-light-danger text-danger w-100">Failed</span></td>
-								  <td>$1400.00</td>
-								  <td>06 Feb 2020</td>
-								  <td><div class="progress" style="height: 5px;">
-									<div class="progress-bar bg-danger" role="progressbar" style="width: 70%"></div>
-									</div></td>
-								 </tr>
-						
-								 <tr>
-								  <td>Shirt Formal</td>
-								  <td><img src="{% static 'template/assets/images/products/04.png' %}" class="product-img-2" alt="product img"></td>
-								  <td>#8543765</td>
-								  <td><span class="badge bg-light-success text-success w-100">Paid</span></td>
-								  <td>$1200.00</td>
-								  <td>14 Feb 2020</td>
-								  <td><div class="progress" style="height: 5px;">
-									<div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
-									</div></td>
-								 </tr>
-								 <tr>
-								  <td>Black Coat Pant</td>
-								  <td><img src="{% static 'template/assets/images/products/06.png' %}" class="product-img-2" alt="product img"></td>
-								  <td>#9629240</td>
-								  <td><span class="badge bg-light-warning text-warning w-100">Pending</span></td>
-								  <td>$1500.00</td>
-								  <td>18 Feb 2020</td>
-								  <td><div class="progress" style="height: 5px;">
-									<div class="progress-bar bg-warning" role="progressbar" style="width: 60%"></div>
-									</div></td>
-								 </tr>
-								 <tr>
-								  <td>Heals</td>
-								  <td><img src="{% static 'template/assets/images/products/05.png' %}" class="product-img-2" alt="product img"></td>
-								  <td>#8506790</td>
-								  <td><span class="badge bg-light-danger text-danger w-100">Failed</span></td>
-								  <td>$1800.00</td>
-								  <td>21 Feb 2020</td>
-								  <td><div class="progress" style="height: 5px;">
-									<div class="progress-bar bg-danger" role="progressbar" style="width: 40%"></div>
-									</div></td>
-								 </tr>
+								 <tbody>
+									 {% for model in models %}
+									<tr>
+										<td>{{model.id}}</td>
+										<td>{{model.code}}</td>
+										<td>{{model.algo}}</td>
+										<td>{{model.precision}}</td>
+										<td><span class="badge bg-light-success text-success w-100">Paid</span></td>
+										<td>$1250.00</td>
+										<td>03 Feb 2020</td>
+										<td>
+											{{model.famille}}
+										
+										</td>
+									</tr>
+									{% endfor %}
+
 								  </tbody>
 								</table>
 							</div>
