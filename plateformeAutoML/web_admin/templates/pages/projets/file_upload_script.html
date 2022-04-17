@@ -398,9 +398,15 @@
 		});
 
 		$('#btn_save_info_preprocessing').on('click', (event) => { FileUpload.save_info_preprocessing() });
-		$('#btn_save_selection_algorithm').on('click', (event) => { 
-			Request.post("{% url 'save_selection_algorithme' %}", [], function (data){
-				$('#script').html(data['script'])
+		$('#btn_save_selection_algorithm').on('click', (event) => {
+			let data = {}
+			{% comment %} let collection = $('#select-algorithme').select2('val') {% endcomment %}
+			{% comment %} for (key in collection){
+				data[key] = collection[key]
+			} {% endcomment %}
+			{% comment %} console.log(data) {% endcomment %}
+			Request.post("{% url 'save_selection_algorithme' %}", {'algo' : $('#select-algorithme').select2('val') }, function (data){
+				Notification.talk('success', data.transaction.message)
 			})
 			
 		 });

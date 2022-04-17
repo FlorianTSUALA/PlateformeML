@@ -7,6 +7,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn import tree
+from sklearn.linear_model import SGDClassifier
+
 from sklearn.pipeline import make_pipeline
 import pandas as pd
 
@@ -43,6 +45,14 @@ hyper_params_tree = {
     'pipeline__selectkbest__k': range(4, 100)
 }
 
+hyper_params_sgdc ={
+'alpha' : [1e-4,1e-3,1e-2,1e-1,1e0,1e1,1e2,1e3,1e4], #learning rate
+'n_iter': [1000], #epoch
+'loss'  : ['log'], #logistic regression
+'penalty':['l2'],
+'n_jobs': [-1]
+}
+
 name_of_model = {
     "RandomForest":"Random Forest",
     "AdaBoost": "Ada Boost",
@@ -51,7 +61,8 @@ name_of_model = {
     "Logistic": " Logistic Regression",
     "MLP": "Multi layer Perceptron",
     "LDA": "Linear discriminant analysis",
-    "Binary_tree": "Binary Tree"
+    "Binary_tree": "Binary Tree",
+    "SGDClassifier":"SGD Classifier"
 }
 
 # model_initialisation = {
@@ -73,7 +84,8 @@ list_of_model_disponible = {
     "Logistic":[LogisticRegression(random_state=0),hyper_params_logistic],
     "MLP":  [MLPClassifier(),hyper_params_MLP],
     "LDA": [LinearDiscriminantAnalysis(),hyper_params_lda],
-    "Binary_tree": [tree.DecisionTreeClassifier(),hyper_params_tree]
+    "Binary_tree": [tree.DecisionTreeClassifier(),hyper_params_tree],
+    "SGDClassifier":[SGDClassifier(),hyper_params_sgdc]
 }
 
 

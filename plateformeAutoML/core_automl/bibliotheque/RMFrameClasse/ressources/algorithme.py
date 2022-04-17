@@ -21,6 +21,7 @@ ALGORITHME_SYSTEME = {
         'type_apprentissage': 'Supervise',
         'family': 'Non lineaire',
         'package': '',
+        'implemented': True,
     },
     'AdaBoost' : {
             'code': 'AdaBoost',
@@ -30,10 +31,11 @@ ALGORITHME_SYSTEME = {
             'metadata':{
                 'tag': '',
             },
-            'task': 'Supervise',
+            'task': 'Classification',
             'type_apprentissage': 'Supervise',
-            'family': 'Classification',
+            'family': 'Non lineaire',
             'package': '',
+            'implemented': True,
         },
     'SVM' : {
             'code': 'SVM',
@@ -43,10 +45,11 @@ ALGORITHME_SYSTEME = {
             'metadata':{
                 'tag': '',
             },
-            'task': 'Supervise',
+            'task': 'Classification',
             'type_apprentissage': 'Supervise',
-            'family': 'Classification',
+            'family': 'Non lineaire',
             'package': '',
+            'implemented': True,
         },
     'KNN' : {
             'code': 'KNN',
@@ -56,10 +59,11 @@ ALGORITHME_SYSTEME = {
             'metadata':{
                 'tag': '',
             },
-            'task': 'Supervise',
+            'task': 'Classification',
             'type_apprentissage': 'Supervise',
             'family': 'Classification',
             'package': '',
+            'implemented': True,
         },
     'Logistic': {
         'code': 'Logistic',
@@ -69,9 +73,11 @@ ALGORITHME_SYSTEME = {
         'metadata':{
             'tag': '',
         },
+        'type_apprentissage': 'Supervise',
         'task': 'Regression',
         'family': 'Lineaire',
         'package': '',
+        'implemented': True,
     },
     'MLP': {
         'code': 'MLP',
@@ -85,6 +91,7 @@ ALGORITHME_SYSTEME = {
         'type_apprentissage': 'Supervise',
         'family': 'Classification',
         'package': '',
+        'implemented': True,
     },
     'LDA': {
         'code': 'LDA',
@@ -98,6 +105,7 @@ ALGORITHME_SYSTEME = {
         'type_apprentissage': 'Supervise',
         'family': 'Classification',
         'package': '',
+        'implemented': True,
     },
     'Binary_tree': {
         'code': 'Binary_tree',
@@ -111,5 +119,6 @@ ALGORITHME_SYSTEME = {
         'type_apprentissage': 'Supervise',
         'family': 'Classification',
         'package': '',
+        'implemented': True,
     },
 }

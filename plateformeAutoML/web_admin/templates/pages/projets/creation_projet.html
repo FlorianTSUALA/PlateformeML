@@ -251,8 +251,8 @@
 							<div class="d-sm-flex align-items-center">
 								<h5 class="mb-2 mb-sm-0">Progression</h5>
 								<div class="ms-auto">
-									<button type="button" onclick="round_default_noti()" class="btn btn-secondary">Annuller</button>
-									<button type="button" id="btn_save_selection_algorithm" class="btn btn-primary">Enregistrer</button>
+									<button type="button" class="btn btn-secondary">Annuller</button>
+									<button type="button" id="btn_save_selection_algorithm" class="btn btn-primary">Mettre à jour</button>
 								</div>
 							</div>
 						</div>
@@ -260,27 +260,30 @@
 							<div class="p-4  rounded">
 								<form class="row g-3 needs-validation" novalidate="">
 									<div class="col-md-3">
-										<label for="select-famille" class="form-label">Famille Algorithime</label>
-										<select id="select-famille"  class='form-select'>
-											{% for item in familles %}
+										<label for="select-type_apprentissage" class="form-label">Type type_apprentissage</label>
+										<select id="select-type_apprentissage"  class='form-select'>
+											{% for item in type_apprentissages %}
+											<option  value="{{item}}">{{item}}</option>
+											{% endfor %}
+										</select>
+										<div class="invalid-feedback">Selectionnez une taches.</div>
+									</div>
+									<div class="col-md-3">
+										<label for="select-tache" class="form-label">Tache de Machine Learning</label>
+										<select id="select-tache"  class='form-select'>
+											{% for item in taches %}
 											<option  value="{{item}}">{{item}}</option>
 											{% endfor %}
 										</select>
 										<div class="invalid-feedback">Selectionnez une taches.</div>
 									</div>
 									<div class="col-md-6">
-										<label for="select-algorithmes" class="form-label">Algorithme</label>
-										<select class="multiple-select" data-placeholder="Choose anything" multiple="multiple" required="" id="select-algorithmes" required="">
+										<label for="select-algorithme" class="form-label">Algorithme</label>
+										<select class="multiple-select" data-placeholder="Choose anything" multiple="multiple" required="" id="select-algorithme" required="">
 											<option selected="" disabled="" value="">...</option>
 										</select>
 										<div class="invalid-feedback">Selectionnez un ou plusieurs algorithmes.</div>
 									</div>
-									
-									<div class="col-md-3">
-										<label for="validationCustom03" class="form-label">&nbsp;&nbsp;&nbsp;</label>
-										<input type="submit" class="form-control btn btn-primary" value="Prédiction" id="validationCustom03" >
-									</div>
-								
 								</form>
 							</div>
 						</div>
@@ -452,8 +455,8 @@
 							<div class="p-4 border rounded">
 								<form class="row g-3 needs-validation" novalidate="">
 									<div class="col-md-3">
-										<label for="select-algorithmes" class="form-label">Modele</label>
-										<select class="form-select" id="select-algorithmes" required="">
+										<label for="not_defined" class="form-label">Modele</label>
+										<select class="form-select" id="not_defined" required="">
 											<option selected="" disabled="" value="">regression...</option>
 											<option>...</option>
 											<option>...</option>
@@ -491,16 +494,37 @@
 {% block custom_javascript %}
 <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script> 
-	var FAMILLE_ALGORITHMES = {{famille_algorithmes|safe }} 
-	$('#select-famille').on('change', function () {
-		let val = $(this).va()
-		console.log($(this))
-		console.log(val)
-		console.log(FAMILLE_ALGORITHMES[val])
-	});
-</script>
-<script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+	$('#select-algorithme').empty().trigger("change")
+	$('#select-type_apprentissage').trigger("change")
+	var TACHE_ALGORITHMES = {{ tache_algorithmes|safe }} 
+	var TYPE_APPRPENTISSAGE_TACHES = {{ type_apprentissage_taches|safe }} 
 
+	$('#select-type_apprentissage').on('change', function () {
+		$('#select-tache').empty().trigger("change")
+		let collection = TYPE_APPRPENTISSAGE_TACHES[$(this).val()]
+		for(let key in collection){
+			let data = collection[key]
+			$('#select-tache').append(new Option(data, data, false, false)).trigger('change');
+		}
+		$('#select-tache').empty().trigger("change")
+	})
+
+	$('#select-tache').on('change', function () {
+		$('#select-algorithme').empty().trigger("change")
+		let collection = TACHE_ALGORITHMES[$(this).val()]
+		for(let key in collection){
+			let data = collection[key]
+			if(data.type_apprentissage == $('#select-type_apprentissage').val())
+			{
+				$('#select-algorithme').append(new Option(data.value, data.key, false, false)).trigger('change');
+				console.log(data.value)
+			}
+		}
+	})
+
+</script>
+
+<script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
 <script src="{% static 'template/assets/plugins/select2/js/select2.min.js' %}"></script>

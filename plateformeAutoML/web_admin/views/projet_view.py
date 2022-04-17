@@ -42,8 +42,10 @@ class NouveauProjetView(View):
             'section_title': 'Projets',
             'section_item_title': 'Creation d\'un projet',
             'algorithmes': fetch.get_algorithme(),
-            'familles': fetch.get_famille(),
-            'famille_algorithmes': json.dumps(fetch.get_famille(True)),
+            'taches': fetch.get_tache(),
+            'type_apprentissages': fetch.get_type_apprentissage(),
+            'tache_algorithmes': json.dumps(fetch.get_tache(True)),
+            'type_apprentissage_taches': json.dumps(fetch.get_type_apprentissage(True)),
             'nature_valeur': self.padding(fetch.get_nature_valeur(), size),
             'taxonomie_type_donnee': self.padding(fetch.get_taxonomie_type_donnee(), size),
             'encoder': self.padding(fetch.get_encodage(), size),
@@ -202,37 +204,10 @@ def save_selection_variable(request):
         request.session['projet_id'] = projet_id
         return JsonResponse({'data':{'projet_id': projet_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
 
-#TODO
 def save_selection_algorithme(request):
     if request.method == "POST":
-        data = dict()
-        data['script'] = render_to_string('pages/projets/feature_chart.html', { 'data': 'hello Florian!!!' })
-        return JsonResponse(data)
-
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        metrique = request.POST.get('metrique')
-        _type = request.POST.get('type')
-        est_publique = request.POST.get('est_publique')
-        nombre_modele = request.POST.get('nombre_modele')
-        print(_type)
-        projet_id = request.POST.get('projet_id', 0)
-        if projet_id == 0:
-            projet = Projet(
-                        title = title,
-                        description = description,
-                        metrique = metrique,
-                        type = _type,
-                        est_publique = est_publique,
-                        nombre_modele = nombre_modele,
-                    )
-            projet.save()
-            projet_id = projet.pk
-        else:
-            projet = Projet.objects.get(pk=projet_id)
-        
-        request.session['projet_id'] = projet_id
-        return JsonResponse({'data':{'projet_id': projet_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        print(request.POST.getlist('algo[]'))
+        return JsonResponse({'data':'', 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Algorithmes enregistrés avec success'}})
 
 def upload_dataset(request):
     ts = time.gmtime()
@@ -323,11 +298,18 @@ class ListeProjetView(TemplateView):
     template_name = 'pages/projets/liste_projet.html'
 
     def get_context_data(self, **kwargs):
+        
+        projet = Projet.objects.all().order_by('-id')
+
+        print("xxx",projet[0].image)
+
         context = super().get_context_data(**kwargs)
         context['has_white_text'] = False
         context['section_title'] = 'Projets'
         context['section_item_title'] = 'Listes des projets'
+        context['projet'] = projet
         return context
+
         projet_id = request.POST.get('projet_id', 0)
         if projet_id == 0:
             projet = Projet(

@@ -77,9 +77,12 @@ urlpatterns = [
     path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
     path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
     
+
+    
     #####################   CREATION
 
-    path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
+    path('nouveau-projet',  (NouveauProjetView.as_view()), name='nouveau_projet'),
+    # path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
     path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
     path('save_projet_info',  save_projet_info, name='save_projet_info'),

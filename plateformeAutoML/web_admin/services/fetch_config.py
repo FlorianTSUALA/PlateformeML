@@ -20,10 +20,26 @@ def get_mise_echelle(default = False):
 def get_tache(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
-    for key, value in collection:
-        if data.get(value['task'], None) is not None:
+    for key, value in collection.items():
+        if data.get(value['task'], None) is None:
             data[value['task']] = list()      
-        data[value['task']].append({key:value['code'], value:value['label']})
+        data[value['task']].append({'key':value['code'], 'value':value['label'], 'type_apprentissage': value['type_apprentissage']})
+    if default:
+        return data
+    else:
+        return data.keys()
+    
+def get_type_apprentissage(default = False):
+    collection  = ALGORITHME_SYSTEME
+    data = dict()
+    
+    for key, value in collection.items():
+        if data.get(value['type_apprentissage'], None) is None:
+            data[value['type_apprentissage']] = set()
+        data[value['type_apprentissage']].add(value['task'])
+    for key, value in data.items():
+        data[key] = list(value)
+        
     if default:
         return data
     else:
@@ -32,8 +48,8 @@ def get_tache(default = False):
 def get_package(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
-    for key, value in collection:
-        if data.get(value['package'], None) is not None:
+    for key, value in collection.items():
+        if data.get(value['package'], None) is None:
             data[value['package']] = list()      
         data[value['package']].append({key:value['code'], value:value['label']})
     if default:
@@ -43,9 +59,9 @@ def get_package(default = False):
 
     
 def get_famille(default = False):
-    collection  = ALGORITHME_SYSTEME.items()
+    collection  = ALGORITHME_SYSTEME
     data = dict()
-    for key, value in collection:
+    for key, value in collection.items():
         if data.get(value['family'], None) is None:
             data[value['family']] = list()      
         data[value['family']].append({'key':value['code'], 'value':value['label']})
@@ -87,10 +103,6 @@ def get_strategie_imputation(self):
     return 
 
 def get_strategie_mise_echelle(self):
-    return 
-
-
-def get_type_apprentissage(self):
     return 
 
 def get_critere_comparaison(self):
