@@ -4,8 +4,11 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import pathlib
 import json
+from numpy import log as ln
 
 from .file import file_extention
+from web_admin.services import fetch_config as fetch
+
 
 def load_dataframe(path,sep=','):
     extention = file_extention(path)
@@ -51,35 +54,26 @@ class NumpyEncoder(json.JSONEncoder):
 def info_dataset(path):
     dataframe = load_dataframe(path)
     columns = dataframe.columns
-    col_sheet_name = {}
-    for col in columns:
-        macolonne = {}
-        macolonne["type"] = str(dataframe[col].dtype)
-        # macolonne["data"] = dataframe[col].to_json()
-        macolonne["data"] = json.dumps(dataframe[col].values.tolist())
+    cols_info = {}
+    TDD = fetch.get_taxonomie_type_donnee(True)
+    # print(TDD)
+    TDD_TYPE_KEY = dict((values['type'],key) for key, values in TDD.items())
+    for col_name in columns:
+        col_info = {}
+        col_info['type'] = TDD_TYPE_KEY[str(dataframe[col_name].dtype)]
+        # col_info["data"] = dataframe[col].to_json()
+        # col_info["data"] = json.dumps(dataframe[col_name].values.tolist())
+        col_info['nature'] = 'CATEGORIEL'
+        if dataframe[col_name].dtype in [ *TDD['ENTIER']['data'], *TDD['ENTIER']['data'], *TDD['DATE']['data'], *TDD['TIMEDELTA']['data'] ]:
+            if len(dataframe[col_name].unique())  > ln(len(dataframe))**2/3:
+                col_info['nature'] = 'QUATITATIF'
+        
+        #TODO Make more controll
+        #TODO Check to DB
+        col_info['scaller'] = TDD[col_info['type']]['preprocessing']['scaller']
+        col_info['imputer'] = TDD[col_info['type']]['preprocessing']['imputer']
+        col_info['encoder'] = TDD[col_info['type']]['preprocessing']['encoder']
 
-        if (dataframe[col].dtype == np.int64 or dataframe[col].dtype == np.int32):
-            macolonne["scaler"] = "Standard_Scaler"
-            macolonne["imputer"] = "Mean"
-            macolonne["encoder"] = "None"
-            if dataframe[col].count() < 10:
-                macolonne["nature"] = "discret"
-            else:
-                macolonne["nature"] = "continue"
-
-        elif (dataframe[col].dtype == "bool"):
-            macolonne["scaler"] = "None"
-            macolonne["imputer"] = "Most_frequent"
-            macolonne["encoder"] = "OneHot_Encoder"
-
-            macolonne["nature"] = "discret"
-        else:
-            macolonne["scaler"] = "None"
-            macolonne["imputer"] = "Most_frequent"
-            macolonne["encoder"] = "OneHot_Encoder"
-
-            macolonne["nature"] = "categoriel"
-        col_sheet_name[(col)] = macolonne
-    print(col_sheet_name)
-    # return json.dumps(col_sheet_name, cls=NumpyEncoder)
-    return (col_sheet_name, dataframe.to_json())
+        cols_info[col_name] = col_info
+    # return json.dumps(cols_info, cls=NumpyEncoder)
+    return cols_info, dataframe

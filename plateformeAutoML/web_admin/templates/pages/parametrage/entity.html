@@ -13,7 +13,9 @@
   <div class="card-body">
     <div class="row align-items-center">
       <div class="col-lg-3 col-xl-2">
-        <a href="javascript:;" class="btn btn-primary mb-3 mb-lg-0 js-create-entity" data-url="{% url url_create %}" ><i class="bi bi-plus-square-fill"></i>&nbsp &nbsp Ajouter  {% if genre == 'F' %} une {% else %} un {% endif %}  {{model}}</a>
+        {% if can_add == True %}
+          <a href="javascript:;" class="btn btn-primary mb-3 mb-lg-0 js-create-entity" data-url="{% url url_create %}" ><i class="bi bi-plus-square-fill"></i>&nbsp &nbsp Ajouter  {% if genre == 'F' %} une {% else %} un {% endif %}  {{model}}</a>
+        {% endif %}
       </div>
       <div class="col-lg-9 col-xl-10">
         <form class="float-lg-end">

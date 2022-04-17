@@ -19,9 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 #Authentification
-LOGIN_URL = reverse_lazy("login")
+LOGIN_URL = reverse_lazy("connexion")
 LOGIN_REDIRECT_URL = reverse_lazy("home")
-LOGOUT_REDIRECT_URL = reverse_lazy("login")
+LOGOUT_REDIRECT_URL = reverse_lazy("connexion")
 USE_REMEMBER_ME = False
 
 #
@@ -149,6 +149,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static', ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# os.path.join(BASE_DIR, 'static/images/upload')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}iSmartML{% endblock %}
+{% block head %}
+    	{{ super() }}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>
+	//clears page cache
+	$(window).bind("pageshow", function() {
+	    var form = $('form'); 
+	    // let the browser natively reset defaults
+	    form[0].reset();
+	}); 
+        </script>
+
+
+
+	<script>
+	//toggle all
+	function toggle_est(source) {
+	    var checkboxes = document.querySelectorAll('div.estm input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i] != source)
+		    checkboxes[i].checked = source.checked;
+	    }
+	}
+	</script>
+
+
+	<script>
+	//toggle all
+	function toggle_pre(source) {
+	    var checkboxes = document.querySelectorAll('div.prep input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i] != source)
+		    checkboxes[i].checked = source.checked;
+	    }
+	}
+	</script>
+
+	<script>
+	//toggle all
+	function toggle_features(source) {
+	    var checkboxes = document.querySelectorAll('div.features input[type="checkbox"]');
+	    for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i] != source)
+		    checkboxes[i].checked = source.checked;
+	    }
+	}
+	</script>
+
+
+
+	<script>
+	//checkbox checker, not using now
+	$(document).ready(function(){
+    		var requiredCheckboxes = $('.cl-checkbox :checkbox[required]');
+    		requiredCheckboxes.change(function(){
+        		if(requiredCheckboxes.is(':checked')) {
+            			requiredCheckboxes.removeAttr('required');
+       			 } else {
+            			requiredCheckboxes.attr('required', 'required');
+        		}
+    		});
+	});
+	</script>
+	
+
+
+	<div id="header_bar">
+	<img id="banner" src ="static/images/status/status2.svg">
+     </div>
+
+{% endblock %}
+
+{% block content %}
+<form method="post" action="" enctype="multipart/form-data">
+    <dl>	
+                <h5>{{dropped_msg}}</h5>
+		<h4><p>Select Target Feature
+				<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Target feature is feature/column in the data that we want to predict.">
+				</i>
+			 <br>
+		</p></h4>
+		<p>	
+		<div class="form-radio">
+		{% for ft in FEATURES %}
+			<nobr>
+			{% if loop.last %}
+			<input type="radio" name="target_ft" value="{{ft}}" checked  required>
+			<label>{{ft}} &nbsp; &nbsp; </label>
+			{% else %}
+			<input type="radio" name="target_ft" value="{{ft}}" required>
+			<label>{{ft}} &nbsp; &nbsp; </label>
+			{% endif%}
+			</nobr>
+		{% endfor %}
+		</div>
+		</p>
+
+		<div  >
+		<div id="cl_div" >
+		<h4><p>Select Features To Keep
+		<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Unselected features/columns will not be used for training models.">
+		</i>
+		</p></h4>
+		<input type="checkbox" checked onclick="toggle_features(this);" />&nbsp; Toggle all<br />
+		<p>
+		<div class="form-check features" >
+		{% for ft in FEATURES %}
+	    		<nobr>
+			<label class="feature_plt_label"><img  class="feature_plt" src="static/images/figs/{{loop.index0}}.png"><figcaption class="feature_cap"><input type="checkbox" name="features_ls" value="{{ft}}" checked >
+{{ft}}</figcaption> &nbsp; &nbsp; </label>
+			</nobr>
+		{% endfor %}
+		</div>
+		</p>
+	
+		</div>
+    </dl>
+    <p>
+		<button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" >Next</button>
+	</p>
+</form>
+
+{% endblock %}
