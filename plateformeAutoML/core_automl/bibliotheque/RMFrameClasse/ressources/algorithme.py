@@ -19,8 +19,8 @@ ALGORITHME_SYSTEME = {
         },
         'task': 'Classification',
         'type_apprentissage': 'Supervise',
-        'family': 'Non lineaire',
-        'package': '',
+        'family': 'Decision Tree',
+        'package': 'scikit-learn',
     },
     'AdaBoost' : {
             'code': 'AdaBoost',
@@ -30,10 +30,10 @@ ALGORITHME_SYSTEME = {
             'metadata':{
                 'tag': '',
             },
-            'task': 'Supervise',
+            'task': 'Classification',
             'type_apprentissage': 'Supervise',
-            'family': 'Classification',
-            'package': '',
+            'family': 'Ensemble',
+            'package': 'scikit-learn',
         },
     'SVM' : {
             'code': 'SVM',
@@ -43,10 +43,10 @@ ALGORITHME_SYSTEME = {
             'metadata':{
                 'tag': '',
             },
-            'task': 'Supervise',
+            'task': 'Classification',
             'type_apprentissage': 'Supervise',
-            'family': 'Classification',
-            'package': '',
+            'family': 'Nom linéaire',
+            'package': 'scitki-learn',
         },
     'KNN' : {
             'code': 'KNN',
@@ -56,10 +56,10 @@ ALGORITHME_SYSTEME = {
             'metadata':{
                 'tag': '',
             },
-            'task': 'Supervise',
+            'task': 'Classification',
             'type_apprentissage': 'Supervise',
-            'family': 'Classification',
-            'package': '',
+            'family': 'Nom linéaire',
+            'package': 'scikit-learn',
         },
     'Logistic': {
         'code': 'Logistic',
@@ -69,9 +69,9 @@ ALGORITHME_SYSTEME = {
         'metadata':{
             'tag': '',
         },
-        'task': 'Regression',
+        'task': 'Classification',
         'family': 'Lineaire',
-        'package': '',
+        'package': 'scikit-learn',
     },
     'MLP': {
         'code': 'MLP',
@@ -81,10 +81,10 @@ ALGORITHME_SYSTEME = {
         'metadata':{
             'tag': '',
         },
-        'task': 'Supervise',
+        'task': 'Classification',
         'type_apprentissage': 'Supervise',
-        'family': 'Classification',
-        'package': '',
+        'family': 'Non Lineaire',
+        'package': 'scikit-learn',
     },
     'LDA': {
         'code': 'LDA',
@@ -94,10 +94,10 @@ ALGORITHME_SYSTEME = {
         'metadata':{
             'tag': '',
         },
-        'task': 'Supervise',
+        'task': 'Classification',
         'type_apprentissage': 'Supervise',
-        'family': 'Classification',
-        'package': '',
+        'family': 'Lineaire',
+        'package': 'scikit-learn',
     },
     'Binary_tree': {
         'code': 'Binary_tree',
@@ -107,9 +107,9 @@ ALGORITHME_SYSTEME = {
         'metadata':{
             'tag': '',
         },
-        'task': 'Supervise',
+        'task': 'classification',
         'type_apprentissage': 'Supervise',
-        'family': 'Classification',
-        'package': '',
+        'family': 'Decision Tree',
+        'package': 'scikit-learn',
     },
 }
