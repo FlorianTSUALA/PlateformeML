@@ -83,7 +83,7 @@ class NouveauProjetView(View):
         liste_models = []
 
         for i in range(0,10):
-            model = Mod(i,'algo_'+str(i),'code_'+str(i),i+77,'famille_'+str(i))
+            model = Mod(i,'algo_'+str(i),'code_'+str(i),2*i+50,'famille_'+str(i))
             liste_models.append(model)
 
         
