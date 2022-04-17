@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
@@ -37,6 +38,60 @@ class NouveauProjetView(View):
         size = max( len(self.find_longest_word(fetch.get_nature_valeur())), len(self.find_longest_word(fetch.get_taxonomie_type_donnee())), 
                     len(self.find_longest_word(fetch.get_encodage())),len(self.find_longest_word(fetch.get_mise_echelle())), 
                     len(self.find_longest_word(fetch.get_imputation())))
+
+
+        """code = models.CharField(max_length=254, blank=True,null=True)
+        chemin =  models.CharField(max_length=254, blank=True,null=True)
+        precision =  models.CharField(max_length=254, blank=True,null=True)
+        rapport = models.TextField(max_length=254, blank=True,null=True)
+        resume = models.TextField(max_length=254, blank=True,null=True)
+        algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)"""
+
+
+
+        models = {
+            'random Forest': {
+            'code' : 'xxxxx',
+            'precision' : 67,
+            'famille_algorithme' : 'Lineaire'
+        },
+         'regression Logistique': {
+            'code' : 'xxxxx',
+            'precision' : 37,
+            'famille_algorithme' : 'Lineaire'
+        },
+         'Support vector machine': {
+            'code' : 'xxxxx',
+            'precision' : 69,
+            'famille_algorithme' : 'Lineaire'
+        },
+         'Arbre binaire': {
+            'code' : 'xxxxx',
+            'precision' : 96,
+            'famille_algorithme' : 'Nom Lineaire'
+        },
+        }
+
+        class Mod:
+            def __init__(self,id,algo,code,precision,famille):
+                self.id = id
+                self.algo = algo
+                self.code = code
+                self.precision = precision
+                self.famille = famille
+
+        liste_models = []
+
+        for i in range(0,10):
+            model = Mod(i,'algo_'+str(i),'code_'+str(i),i+77,'famille_'+str(i))
+            liste_models.append(model)
+
+        
+
+        
+
+
+
         context = {
             'projt_active': True,
             'section_title': 'Projets',
@@ -52,6 +107,7 @@ class NouveauProjetView(View):
             'scaller': self.padding(fetch.get_mise_echelle(), size),
             'imputer': self.padding(fetch.get_imputation(), size),
             'status': EEtatPublication.choices(),
+            'models':liste_models
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
      
