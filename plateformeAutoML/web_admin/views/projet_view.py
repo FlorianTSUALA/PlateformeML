@@ -362,6 +362,7 @@ class ListeProjetView(TemplateView):
         context['section_item_title'] = 'Listes des projets'
         context['projet'] = projet
         return context
+
 <<<<<<< HEAD
 
         project_id = request.POST.get('project_id', 0)
