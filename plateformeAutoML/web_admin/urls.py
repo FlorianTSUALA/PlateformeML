@@ -29,7 +29,7 @@ from web_admin.views import (
     AccueilView, MesFavorisView, MesProjetsView, ProjetsPublicsView, NouveauProjetView, 
     ConsulterProjetView, ModifierProjetView, ListeProjetView, 
     save_projet_info, upload_dataset, clean_session_projet_creation, save_preprocessing, 
-    save_selection_variable, save_selection_algorithme, get_algorithme_by_task, 
+    save_selection_variable, selection_algorithme, get_algorithme_by_task, 
     #AUTRES
     FAQView, AProposView, 
     #ALGORITHME
@@ -38,6 +38,8 @@ from web_admin.views import (
     critere_comparaison, critere_comparaison_create, critere_comparaison_update, critere_comparaison_delete, 
     #FAMILLE
     famille, famille_create, famille_update, famille_delete,
+    #METRIQUE
+    metrique, metrique_update,
     #PACKAGE
     package, package_create, package_update, package_delete,
     #TACHE
@@ -81,14 +83,14 @@ urlpatterns = [
     
     #####################   CREATION
 
-    path('nouveau-projet',  (NouveauProjetView.as_view()), name='nouveau_projet'),
-    # path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
+    # path('nouveau-projet',  (NouveauProjetView.as_view()), name='nouveau_projet'),
+    path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
     path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
     path('save_projet_info',  save_projet_info, name='save_projet_info'),
     path('save_preprocessing',  save_preprocessing, name='save_preprocessing'),
     path('save_selection_variable',  save_selection_variable, name='save_selection_variable'),
-    path('save_selection_algorithme',  save_selection_algorithme, name='save_selection_algorithme'),
+    path('selection_algorithme',  selection_algorithme, name='selection_algorithme'),
     path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
     
     path('consulter-projet',  ConsulterProjetView.as_view(), name='consulter_projet'),
@@ -157,10 +159,8 @@ urlpatterns = [
     path('parametrage/algorithme/<int:pk>/delete/',  algorithme_delete, name='algorithme_delete'),
 
     #Metrique
-    path('parametrage/metrique',  famille, name='metrique'),
-    path('parametrage/metrique/create/',  famille_create, name='metrique_create'),
-    path('parametrage/metrique/<int:pk>/update/',  famille_update, name='metrique_update'),
-    path('parametrage/metrique/<int:pk>/delete/',  famille_delete, name='metrique_delete'),
+    path('parametrage/metrique',  metrique, name='metrique'),
+    path('parametrage/metrique/<int:pk>/update/',  metrique_update, name='metrique_update'),
 
     #CritereCompraison
     path('parametrage/critere_comparaison/',  critere_comparaison, name='critere_comparaison'),

@@ -32,7 +32,6 @@ ALGORITHME_SYSTEME = {
             },
             'task': 'Classification',
             'type_apprentissage': 'Supervise',
-            'implemented': True,
             'family': 'Ensemble',
             'package': 'scikit-learn',
         },
@@ -70,7 +69,7 @@ ALGORITHME_SYSTEME = {
         'metadata':{
             'tag': '',
         },
-        'task': 'Classification',
+        'task': 'Regression',
         'type_apprentissage': 'Supervise',
         'family': 'Lineaire',
         'package': 'scikit-learn',

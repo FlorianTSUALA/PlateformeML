@@ -1,5 +1,7 @@
 from core_automl.bibliotheque.RMFrameClasse.ressources.mapping import (MAPPING_NATURE_VALEUR, MAPPING_TYPE, MAPPING_SCALLER, MAPPING_IMPUTER, MAPPING_ENCODER)
 from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import (ALGORITHME_SYSTEME)
+from core_automl.bibliotheque.RMFrameClasse.ressources.metric import (METRICS)
+from core_automl.bibliotheque.RMFrameClasse.ressources.task import (TYPE_APPRENTISSAGES, TACHES)
 
 
 def get(default, collection):
@@ -7,6 +9,9 @@ def get(default, collection):
         return collection
     else:
         return dict((tag, collection[tag]['label']) for tag in collection)
+
+def get_metrique(default = False):
+     return get(default, METRICS)
 
 def get_encodage(default = False):
      return get(default, MAPPING_ENCODER)
@@ -18,18 +23,21 @@ def get_mise_echelle(default = False):
     return get(default, MAPPING_SCALLER)
     
 def get_tache(default = False):
+    return get(default, TACHES)
+
+def get_tache_algorithme(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
     for key, value in collection.items():
         if data.get(value['task'], None) is None:
             data[value['task']] = list()      
-        data[value['task']].append({'key':value['code'], 'value':value['label'], 'type_apprentissage': value['type_apprentissage']})
+        data[value['task']].append({'code':value['code'], 'label':value['label'], 'type_apprentissage': value['type_apprentissage']})
     if default:
         return data
     else:
         return data.keys()
     
-def get_type_apprentissage(default = False):
+def get_type_apprentissage_tache(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
     
@@ -44,8 +52,11 @@ def get_type_apprentissage(default = False):
         return data
     else:
         return data.keys()
+    
+def get_type_apprentissage(default = False):
+    return get(default, TYPE_APPRENTISSAGES)
 
-def get_package(default = False):
+def get_package_algorithme(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
     for key, value in collection.items():
@@ -56,6 +67,23 @@ def get_package(default = False):
         return data
     else:
         return data.keys()
+
+def get_package_metrique(default = False):
+    collection  = METRICS
+    data = dict()
+    for key, value in collection.items():
+        if data.get(value['package'], None) is None:
+            data[value['package']] = list()      
+        data[value['package']].append({key:value['code'], value:value['label']})
+    if default:
+        return data
+    else:
+        return data.keys()
+
+def get_package(default = False):
+    data = get_package_metrique(default).extend(get_package_algorithme(default))
+    #todo filter unique metric
+    return data
 
     
 def get_famille(default = False):
@@ -78,7 +106,7 @@ def get_algorithme(default = False):
         return dict((tag, collection[tag]['label']) for tag in collection)
         
     
-def get_allgorithme_by_task(task):
+def get_algorithme_by_task(task):
     collection  = ALGORITHME_SYSTEME
     return dict((key, value['label']) for key, value in collection if value['task'] == str(task))
         
@@ -110,15 +138,6 @@ def get_critere_comparaison(self):
 
 def get_critere_comparison_algorithme(self):
     return 
-
-def get_metrique(self):
-    return 
-
-def get_metrique_algorithme(self):
-    return 
-
-def get_metrique_algorithme_projet(self):
-    return
 
 def fecth(self):
     pass

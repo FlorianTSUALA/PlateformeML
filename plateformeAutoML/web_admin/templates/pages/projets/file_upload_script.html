@@ -405,7 +405,7 @@
 				data[key] = collection[key]
 			} {% endcomment %}
 			{% comment %} console.log(data) {% endcomment %}
-			Request.post("{% url 'save_selection_algorithme' %}", {'algo' : $('#select-algorithme').select2('val') }, function (data){
+			Request.post("{% url 'selection_algorithme' %}", {	'algo' : $('#select-algorithme').select2('val'), 'tache': $('#select-tache').val(), 'metrique': $('#select-metrique').val() }, function (data){
 				Notification.talk('success', data.transaction.message)
 			})
 			

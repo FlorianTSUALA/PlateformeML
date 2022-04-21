@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 from web_admin.utils.file import *
 from web_admin.enum import EEtatPublication
-from web_admin.models import Algorithme, Projet, Fichier
+from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet
 from web_admin.utils.dataset import info_dataset, load_dataframe
 from web_admin.services import fetch_config as fetch
 
@@ -86,21 +86,17 @@ class NouveauProjetView(View):
             model = Mod(i,'algo_'+str(i),'code_'+str(i),i+77,'famille_'+str(i))
             liste_models.append(model)
 
-        
-
-        
-
-
-
         context = {
             'projt_active': True,
             'section_title': 'Projets',
             'section_item_title': 'Creation d\'un projet',
             'algorithmes': fetch.get_algorithme(),
-            'taches': fetch.get_tache(),
-            'type_apprentissages': fetch.get_type_apprentissage(),
-            'tache_algorithmes': json.dumps(fetch.get_tache(True)),
-            'type_apprentissage_taches': json.dumps(fetch.get_type_apprentissage(True)),
+            'taches': fetch.get_tache_algorithme(),
+            # 'taches': fetch.get_tache(True),
+            'type_apprentissages': fetch.get_type_apprentissage_tache(),
+            'metriques': json.dumps(fetch.get_metrique(True)),
+            'tache_algorithmes': json.dumps(fetch.get_tache_algorithme(True)),
+            'type_apprentissage_taches': json.dumps(fetch.get_type_apprentissage_tache(True)),
             'nature_valeur': self.padding(fetch.get_nature_valeur(), size),
             'taxonomie_type_donnee': self.padding(fetch.get_taxonomie_type_donnee(), size),
             'encoder': self.padding(fetch.get_encodage(), size),
@@ -209,7 +205,7 @@ def save_preprocessing(request):
         return JsonResponse({'data': 'test'})
         title = request.POST.get('title')
         description = request.POST.get('description')
-        metrique = request.POST.get('metrique')
+        # metrique = request.POST.get('metrique')
         _type = request.POST.get('type')
         est_publique = request.POST.get('est_publique')
         nombre_modele = request.POST.get('nombre_modele')
@@ -260,10 +256,28 @@ def save_selection_variable(request):
         request.session['projet_id'] = projet_id
         return JsonResponse({'data':{'projet_id': projet_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
 
-def save_selection_algorithme(request):
+def selection_algorithme(request):
     if request.method == "POST":
-        print(request.POST.getlist('algo[]'))
+        algos = request.POST.getlist('algo[]')
+        _metrique = request.POST.get('metrique')
+        metrique = Metrique.objects.get(code=_metrique)
+        #todo get default metrique from task if doesn't exist
+        tache = request.POST.get('tache')
+
+        AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet').get('projet_id')).delete()
+        for item in algos:
+            algorithme = Algorithme.objects.get(code=item)
+            AlgorithmeProjet.objects.create(projet_id=request.session.get('projet').get('projet_id'), algorithme=algorithme, metrique=metrique)
         return JsonResponse({'data':'', 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Algorithmes enregistrés avec success'}})
+    else:
+        items = AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet').get('projet_id'))
+        data = dict()
+        data['algorithmes'] = set()
+        for item in items:
+            data['algorithmes'].add(item.algorithme.code)
+        data['metrique'] = algorithme_projet.metrique.code 
+        
+        return JsonResponse({'data': json.dumps(data), 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Chargement des informations sur le choix des algorithmes'}})
 
 def upload_dataset(request):
     ts = time.gmtime()

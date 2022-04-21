@@ -15,6 +15,8 @@ from .p_mise_echelle_view import *
 from .p_encodage_view import *
 from .p_imputation_view import *
 
+from .p_metrique_view import *
+
 from .p_strategie_mise_echelle_view import *
 from .p_strategie_encodage_view import *
 from .p_strategie_imputation_view import *

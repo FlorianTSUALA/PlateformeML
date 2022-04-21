@@ -3,8 +3,9 @@ from django import forms
 import datetime
 from django.contrib.admin import widgets
 from django.forms.widgets import NumberInput
-from web_admin.models import  TypeApprentissage, Tache, CritereComparaison, Package, Famille, Algorithme
-from web_admin.models import  TaxonomieTypeDonnee, Encodage, Imputation, MiseEchelle, StrategieEncodage, StrategieImputation, StrategieMiseEchelle
+from web_admin.models import TypeApprentissage, Tache, CritereComparaison, Package, Famille, Algorithme
+from web_admin.models import TaxonomieTypeDonnee, Encodage, Imputation, MiseEchelle, StrategieEncodage 
+from web_admin.models import StrategieImputation, StrategieMiseEchelle, Metrique
 
 # class CompteCreationForm(UserCreationForm):
     
@@ -271,6 +272,35 @@ class ImputationForm(forms.ModelForm):
                 new_data
             )
         self.fields['description'].widget.attrs.update({'rows': '2'})
+
+class MetriqueForm(forms.ModelForm):
+
+    class Meta:
+        model = Metrique
+        fields = (
+            'libelle',
+            'description',
+            'tache',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(MetriqueForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            
+            new_data = {
+                "class": 'form-control',
+            }
+
+            self.fields[str(field)].widget.attrs.update(
+                new_data
+            )
+        self.fields['description'].widget.attrs.update({'rows': '2'})
+
+        self.fields['tache'].widget.attrs['class'] = 'form-control select2'
+        self.fields['tache'].widget.attrs['style'] = 'width: 100%;'
+        self.fields['tache'].initial = 'choisir une valeur'
+
+        
 
 class StrategieEncodageForm(forms.ModelForm):
 

@@ -73,6 +73,8 @@ class JeuDonnees(models.Model):
     pourcentage_test = models.DecimalField(default=0.3,  max_digits=3, decimal_places=2, blank=True,null=True)
     taille = models.IntegerField(default=0, blank=True,null=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
+    # compte = models.OneToOneField( Compte, on_delete=models.CASCADE, primary_key=True,)
+
 
     def __str__(self):
         return self.fichier
@@ -146,21 +148,20 @@ class Algorithme(models.Model):
 
 class Metrique(models.Model):
     code =  models.CharField(max_length=254, blank=True,null=True)
-    libele =  models.CharField(max_length=254, blank=True,null=True)
+    libelle =  models.CharField(max_length=254, blank=True,null=True)
     description  =  models.TextField(max_length=254, blank=True, default='')
-    algorithmes = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
+    # algorithmes = models.ManyToManyField(Algorithme,through='MetriqueAlgorithme')
+    tache = models.ForeignKey(Tache, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.libelle
 
 class AlgorithmeProjet(models.Model):
     code =  models.CharField(max_length=254, blank=True,null=True)
-    libele =  models.CharField(max_length=254, blank=True,null=True)
-    description  =  models.TextField(max_length=254, blank=True, default='')
-    nombre_modele = models.IntegerField(default=0, blank=True,null=True)
-    algorthme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
+    algorithme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
-    metriques = models.ManyToManyField(Metrique,through='MetriqueAlgorithmeProjet')
+    metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE, null=True)   
+    # metriques = models.ManyToManyField(Metrique,through='MetriqueAlgorithmeProjet')
 
     def __str__(self):
         return self.libelle
@@ -186,16 +187,16 @@ class Parametre(models.Model):
     def __str__(self):
         return self.libelle
 
-class MetriqueAlgorithme(models.Model):
-    code = models.CharField(max_length=254, blank=True,null=True)
-    metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
-    algorithme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
+# class MetriqueAlgorithme(models.Model):
+#     code = models.CharField(max_length=254, blank=True,null=True)
+#     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
+#     algorithme = models.ForeignKey(Algorithme, on_delete=models.CASCADE)
 
 
-class MetriqueAlgorithmeProjet(models.Model):
-    code = models.CharField(max_length=254, blank=True,null=True)
-    metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
-    algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
+# class MetriqueAlgorithmeProjet(models.Model):
+#     code = models.CharField(max_length=254, blank=True,null=True)
+#     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE)
+#     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
 
 
 class CritereComparaisonAlgorithme(models.Model):
