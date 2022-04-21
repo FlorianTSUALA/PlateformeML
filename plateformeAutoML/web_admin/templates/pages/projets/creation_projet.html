@@ -358,13 +358,15 @@
 								<thead class="table-light">
 								 <tr>
 								   <th>#ID</th>
-								   <th>Algorithme</th>
+								   <th>code</th>
 								   <th>Algorithme</th>
 								   <th>%Precision</th>
-								   <th>%estimation</th>
+								 
 								   <th>%</th>
 								   <th>Date</th>
 								   <th>Famille</th>
+								   <th>voir</th>
+								   <th>valider</th>
 								 </tr>
 								 </thead>
 								 <tbody>
@@ -373,17 +375,21 @@
 										<td>{{model.id}}</td>
 										<td>{{model.code}}</td>
 										<td>{{model.algo}}</td>
-										<td>{{model.precision}}</td>
-										<td><span class="badge bg-light-success text-success w-100">Paid</span></td>
+										
+										<td><div class="progress">
+											<div class="progress-bar" role="progressbar" style="width: {{model.precision}}%;" aria-valuenow={{model.precision}} aria-valuemin="0" aria-valuemax="100">25%</div>
+										  </div>
+										</td>
 										<td>$1250.00</td>
 										<td>03 Feb 2020</td>
-										<td>
-											{{model.famille}}
-										
-										</td>
+								
+										<td>{{model.famille}}</td> 
+										<td><a href="" class="btn btn-secondary">view</a></td>
+									<td><a href="" class="btn btn-success">valider</a></td>
 									</tr>
+									
 									{% endfor %}
-
+									
 								  </tbody>
 								</table>
 							</div>
