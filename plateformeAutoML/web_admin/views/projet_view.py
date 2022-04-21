@@ -116,7 +116,6 @@ def get_algorithme_by_task(request):
         return JsonResponse({'data': data, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
     return JsonResponse({'data': data, 'transaction': {'code': 503, 'titre':'Oups !!!', 'message': 'Page non autorisée'}})
 
-
 def load_initial(path, sep=','):
     """ Encodes data and returns new data """
     data = load_dataframe(path)
@@ -369,67 +368,34 @@ class ListeProjetView(TemplateView):
 
     def get_context_data(self, **kwargs):
         
-        projet = Projet.objects.all().order_by('-id')
-
-        print("xxx",projet[0].image)
+        projets = Projet.objects.all().order_by('-id')
 
         context = super().get_context_data(**kwargs)
         context['has_white_text'] = False
         context['section_title'] = 'Projets'
         context['section_item_title'] = 'Listes des projets'
-        context['projet'] = projet
+        context['projets'] = projets
         return context
 
-        projet_id = request.POST.get('projet_id', 0)
-        if projet_id == 0:
-            projet = Projet(
-                        title = title,
-                        description = description,
-                        metrique = metrique,
-                        type = type,
-                        est_publique = est_publique,
-                        nombre_modele = nombre_modele,
-                    )
-            projet.save()
-            projet_id = projet.pk
-        else:
-            projet = Projet.objects.get(pk=projet_id)
+def projet_update(request):
+    return
     
-        request.session['projet_id'] = projet_id
-        return JsonResponse({'data':{'projet_id': projet_id, 'msg':'Information enregistré avec success'}})
+def projet_delete(request):
+    return
     
-
-class MesProjetsView(TemplateView):
-    template_name = 'pages/projets/mes_projets.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['has_white_text'] = False
-        context['section_title'] = 'Mon espace'
-        context['section_item_title'] = 'Mes Projets'
-        return context
+def projet_edit(request):
+    return
 
 
-class ProjetsPublicsView(TemplateView):
-    template_name = 'pages/projets/projets_publics.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['has_white_text'] = False
-        context['section_title'] = 'Projets'
-        context['section_item_title'] = 'Projets publiés'
-        return context
-
-
-class ConsulterProjetView(TemplateView):
+def projet_detail(request, id):
     template_name = 'pages/projets/detail_projet.html'
+    context = dict()
+    context['has_white_text'] = False
+    context['section_title'] = 'Projets'
+    context['section_item_title'] = 'Consultation projet'
+    
+    return render(request, template_name, context=context)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['has_white_text'] = False
-        context['section_title'] = 'Projets'
-        context['section_item_title'] = 'Consultation projet'
-        return context
 
 class MesFavorisView(TemplateView):
     template_name = 'pages/projets/mes_favoris.html'
@@ -440,14 +406,3 @@ class MesFavorisView(TemplateView):
         context['section_title'] = 'Mon espace'
         context['section_item_title'] = 'Mes favoris'
         return context
-
-class ModifierProjetView(TemplateView):
-    template_name = 'pages/projets/detail_projet.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['has_white_text'] = False
-        context['section_title'] = 'Projets'
-        context['section_item_title'] = 'Mise à jour projet'
-        return context
-

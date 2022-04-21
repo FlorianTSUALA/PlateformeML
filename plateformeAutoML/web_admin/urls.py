@@ -26,8 +26,10 @@ from web_admin.views import (
     #ACCUEIL
     VitrineView,
     #PROJET
-    AccueilView, MesFavorisView, MesProjetsView, ProjetsPublicsView, NouveauProjetView, 
-    ConsulterProjetView, ModifierProjetView, ListeProjetView, 
+    AccueilView, 
+    # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
+    NouveauProjetView, 
+    projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
     save_projet_info, upload_dataset, clean_session_projet_creation, save_preprocessing, 
     save_selection_variable, selection_algorithme, get_algorithme_by_task, 
     #AUTRES
@@ -75,9 +77,9 @@ urlpatterns = [
 
     #####################   CONSULTATION
     
-    path('mes-favoris',  MesFavorisView.as_view(), name='mes_favoris'),
-    path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
-    path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
+    # path('mes-favoris',  MesFavorisView.as_view(), name='mes_favoris'),
+    # path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
+    # path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
     
 
     
@@ -93,9 +95,10 @@ urlpatterns = [
     path('selection_algorithme',  selection_algorithme, name='selection_algorithme'),
     path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
     
-    path('consulter-projet',  ConsulterProjetView.as_view(), name='consulter_projet'),
-    path('modifier-projet',  ModifierProjetView.as_view(), name='modifier_projet'),
-    path('liste-projet/<str:filter>',  ListeProjetView.as_view(), name='liste_projet'),
+    path('projet_detail',  projet_detail, name='projet_detail'),
+    path('projet_update/<int:pk>',  projet_update, name='projet_update'),
+    path('projet_delete/<int:pk>',  projet_delete, name='projet_delete'),
+    path('list_projet/<str:filter>',  ListeProjetView.as_view(), name='projet_list'), #favoris, projets, publics, tous
 
 
     ####################################################################################################################################
