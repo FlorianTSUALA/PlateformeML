@@ -77,20 +77,27 @@
 {% endblock %}
 
 {% block custom_javascript %} 
-{% include 'pages/projets/utils_script.html' %}
 
 <script>
 
   function projet_update(event, id, url){
-    {% comment %} event.preventDefault() {% endcomment %}
     Notification.talk('success', 'Voulez vous vraiment modifiez?')
 
   }
 
   function projet_delete(event, id, url){
-    {% comment %} event.preventDefault() {% endcomment %}
-    Notification.talk('success', 'Voulez vous vraiment supprimer?')
     $(event).parents('.projet').remove();
+      Notification.ask('warning', 'Suppression en cours...', 'Voulez vous vraiment supprimer ce projet?', function () {
+        Request.post("{% url 'selection_algorithme' %}", {	'algo' : $('#select-algorithme').select2('val'), 'tache': $('#select-tache').val(), 'metrique': $('#select-metrique').val() }, function (data){
+          Notification.talk('success', data.transaction.message)
+        })
+      }, function () {
+        
+      })
+        
+
+    Notification.talk('success', 'Voulez vous vraiment supprimer?')
+
   }
 
 </script>

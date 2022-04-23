@@ -251,7 +251,7 @@
 							<div class="d-sm-flex align-items-center">
 								<h5 class="mb-2 mb-sm-0">Algorithimes d'entrainemnt</h5>
 								<div class="ms-auto">
-									<button type="button" class="btn btn-secondary">Annuller</button>
+									<button type="button" id="btn_reset_selection_algorithm"  class="btn btn-secondary">Annuller</button>
 									<button type="button" id="btn_save_selection_algorithm" class="btn btn-primary">Mettre à jour</button>
 								</div>
 							</div>
@@ -449,107 +449,18 @@
 
 {% block custom_javascript %}
 <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
-<script> 
-	{% comment %} $('#select-algorithme').empty().trigger("change") {% endcomment %}
-
-	var TACHE_ALGORITHMES = {{ tache_algorithmes|safe }} 
-	var METRIQUES = {{ metriques|safe }} 
-	var TYPE_APPRPENTISSAGE_TACHES = {{ type_apprentissage_taches|safe }} 
-
-	$( document ).ready(function() {
-		$("#select-type_apprentissage").val($("#select-type_apprentissage option:first").val())
-		$('#select-type_apprentissage').trigger("change")
-
-		$('#select-type_apprentissage').on('change', function () {
-			$('#select-tache').empty().trigger("change")
-			let collection = TYPE_APPRPENTISSAGE_TACHES[$(this).val()]
-			for(let key in collection){
-				let data = collection[key]
-				$('#select-tache').append(new Option(data, data, false, false))//.trigger('change');
-			}
-			$('#select-tache').val($("#select-tache option:first").val()).trigger("change")
-		})
-
-		$('#select-tache').on('change', function () {
-			let tache = $(this).val()
-			$('#select-algorithme').empty().trigger("change")
-			$('#select-metrique').empty().trigger("change")
-			let collection = TACHE_ALGORITHMES[tache]
-			for(let key in collection){
-				let item = collection[key]
-				if(item.type_apprentissage == $('#select-type_apprentissage').val())
-				{
-					$('#select-algorithme').append(new Option(item.label, item.code, false, false))//.trigger('change');
-				}
-			}
-			for(let key in METRIQUES){
-				let item = METRIQUES[key]
-				if(item.task == tache)
-				{
-					$('#select-metrique').append(new Option(item.label, item.code, false, false))//.trigger('change');
-				}
-			}
-			$('#select-metrique').val($("#select-metrique option:first").val()).trigger("change")
-		})
-	})
-
-</script>
-
 <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
 <script src="{% static 'template/assets/plugins/select2/js/select2.min.js' %}"></script>
 <script src="{% static 'template/assets/js/form-select2.js' %}"></script>
 	
-{% comment %} <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apex-custom.js' %}"></script> {% endcomment %}
 
-<script>
-
-	$(document).ready(function() {
-		$('.inner-scrool-section a').trigger( "click" );
-		$('.inner-scrool-section').trigger( "click" );
-		$('a[href*=\\#step-0]').bind('click', function(e) {
-				e.preventDefault()
-				var target = $(this).attr("href");
-				$('html, body').stop().animate({
-						scrollTop: $(target).offset().top
-				}, 600, function() {
-					location.hash = target; 
-				});
-				return false;
-		});
-	});
-
-	$(window).scroll(function() {
-			var scrollDistance = $(window).scrollTop();
-			$('.page-section-stepper').each(function(i) {
-					if ($(this).position().top <= scrollDistance) {
-							$('.inner-scrool-section li.mm-active').removeClass('mm-active')
-							$('.inner-scrool-section li').eq(i).addClass('mm-active')
-					}
-			});
-	}).scroll();
-
-	window.onload = function () { 
-		$('ul.metismenu li.mm-active').removeClass('mm-active')
-		$('.inner-scrool-section ul.mm-collapse').addClass('mm-show')
-		$('.inner-scrool-section').addClass('mm-active')
-		$('.inner-scrool-section li').eq(0).addClass('mm-active')
-	}
-
-	$(window).bind('beforeunload', function(e){
-		e = e || window.event;
-		response = Request.post("{% url 'clean_session_projet_creation' %}", {})
-		console.log(response)
-		// For IE and Firefox prior to version 4  
-		if (e) {
-			e.returnValue = 'Sure?';
-		}
-		return e.returnValue;
-	})
-	console.log('end')
-</script>
-
+{% include 'pages/projets/fragment/menu.html' %}
+{% include 'pages/projets/fragment/info_algo.html' %}
+{% include 'pages/projets/fragment/info_dataset.html' %}
+{% include 'pages/projets/fragment/info_projet.html' %}
+{% include 'pages/projets/fragment/info_visualisation.html' %}
 {% include 'pages/projets/utils_script.html' %}
 {% include 'pages/projets/file_upload_script.html' %}
 <div id="test"></div>

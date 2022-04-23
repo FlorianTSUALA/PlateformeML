@@ -380,9 +380,14 @@ class ListeProjetView(TemplateView):
 def projet_update(request):
     return
     
-def projet_delete(request):
-    return
-    
+def projet_delete(request, pk):
+    if request.method == 'GET':
+        Projet.objects.get(pk=pk).delete()
+        return JsonResponse({'data': {}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Projet supprimé avec success'}})
+    else:
+        return JsonResponse({'data': {}, 'transaction': {'code': 503, 'titre':'Oups !!!', 'message': 'Page non autorisée'}})
+
+
 def projet_edit(request):
     return
 

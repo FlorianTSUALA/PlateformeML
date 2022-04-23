@@ -1,0 +1,33 @@
+<script>
+		
+	function display_chart(div_id, title, data){
+		let options = {
+			series: data,
+			chart: {
+			height: 450,
+			type: 'heatmap',
+		},
+		dataLabels: {
+			enabled: false
+		},
+		colors: colors,
+		xaxis: {
+			type: 'category',
+			categories: ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '01:00', '01:30']
+		},
+		title: {
+			text: title
+		},
+		grid: {
+			padding: {
+			right: 20
+			}
+		}
+		};
+	
+		let chart = new ApexCharts(document.querySelector("#"+div_id), options);
+		chart.render();
+	}
+
+</script>
+  

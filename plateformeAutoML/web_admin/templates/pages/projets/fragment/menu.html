@@ -1,0 +1,47 @@
+
+<script>
+
+	$(document).ready(function() {
+		$('.inner-scrool-section a').trigger( "click" );
+		$('.inner-scrool-section').trigger( "click" );
+		$('a[href*=\\#step-0]').bind('click', function(e) {
+				e.preventDefault()
+				var target = $(this).attr("href");
+				$('html, body').stop().animate({
+						scrollTop: $(target).offset().top
+				}, 600, function() {
+					location.hash = target; 
+				});
+				return false;
+		});
+	});
+
+	$(window).scroll(function() {
+			var scrollDistance = $(window).scrollTop();
+			$('.page-section-stepper').each(function(i) {
+					if ($(this).position().top <= scrollDistance) {
+							$('.inner-scrool-section li.mm-active').removeClass('mm-active')
+							$('.inner-scrool-section li').eq(i).addClass('mm-active')
+					}
+			});
+	}).scroll();
+
+	window.onload = function () { 
+		$('ul.metismenu li.mm-active').removeClass('mm-active')
+		$('.inner-scrool-section ul.mm-collapse').addClass('mm-show')
+		$('.inner-scrool-section').addClass('mm-active')
+		$('.inner-scrool-section li').eq(0).addClass('mm-active')
+	}
+
+	$(window).bind('beforeunload', function(e){
+		e = e || window.event;
+		response = Request.post("{% url 'clean_session_projet_creation' %}", {})
+		console.log(response)
+		// For IE and Firefox prior to version 4  
+		if (e) {
+			e.returnValue = 'Sure?';
+		}
+		return e.returnValue;
+	})
+	console.log('end')
+</script>
