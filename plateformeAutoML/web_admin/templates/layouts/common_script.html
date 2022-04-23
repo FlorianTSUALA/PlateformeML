@@ -146,10 +146,11 @@
 	class Notification{
 
 		//https://code.tutsplus.com/tutorials/creating-pretty-popup-messages-using-sweetalert2--cms-30662 
-		static talk(type='success', body, position='bottom-right') {// 'success', 'info', 'warning', 'default', 'error'
+		static talk(type='success', body, position='center-end') {// 'success', 'info', 'warning', 'default', 'error'
+		//'top', 'top-start', 'top-end', 'center', 'center-start', 'center-end', 'bottom', 'bottom-start', or 'bottom-end'
 			const Toast = Swal.mixin({
 				toast: true,
-				position: 'top-end',
+				position: position,
 				showConfirmButton: false,
 				timer: 4300,
 				timerProgressBar: true,
