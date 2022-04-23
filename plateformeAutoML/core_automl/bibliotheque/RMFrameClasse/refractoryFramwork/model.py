@@ -67,6 +67,8 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
     # mesure = ['f1','precision','recall']
     def evaluerModel(self,model):
         base_model = model.fit(self.X_train, self.y_train)
+        print("les données de test ::::::::::::::::::::",self.X_test)
+        print("les données de test ::::::::::::::::::::",self.X_test.dtypes)
         y_pred = model.predict(self.X_test)
         precision = accuracy_score(self.y_test, y_pred)
         return base_model,precision
@@ -93,18 +95,22 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         precision_dico_models = {}
         precision_ = 0
         model_ = ""
+        models_fit = {}
         for name, model in self.models.items():
             base_model,precision = self.evaluerModel(model[0])
             precision_dico_models[name] = precision
+            models_fit[name] = [base_model,precision]
 
             if precision > precision_:
                 precision_ = precision
                 model_ = base_model
+                name_ = name
 
         print("bonjourrrrrrrrrrrrrrrrrrrr",precision_)
         print("xxxxxxxxxxxxxxxxxxxxxxxxxx",model_)
 
-        return precision_dico_models,model_,precision_
+        #return precision_dico_models,model_,precision_
+        return precision_dico_models,models_fit,precision_,name_
 
     # Fonction qui permet de faire la comparaison entre les modèles entrainés et retourne celui ayant la meilleure
     # performance.
@@ -119,17 +125,25 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         return model, best
 
     # optimisation du modèle le plus performant
-    def optimisationHyperParam(self, scoring='f1', cv=10):
-        model_algo = self.best_model
+    def optimisationHyperParam(self,model, scoring='f1', cv=10):
+        print(self.X_test)
+        print(self.X_test)
+        print(self.target)
+        #model_algo = self.best_model
+        model_algo = model
         print("----------xx--------",model_algo)
         grid = RandomizedSearchCV(self.models[model_algo][0], self.models[model_algo][1], scoring=scoring, cv=cv, n_iter=100)
+
         #grid = GridSearchCV(self.models[model_algo][0], self.models[model_algo][1], scoring=scoring, cv=cv,n_jobs=5, verbose=2)
 
-        model = grid.fit(self.X_train, self.y_train)
-        self.model_save = model
-        base_model,precision = self.evaluerModel(model)
+        #model = grid.fit(self.X_train, self.y_train)
+        #self.model_save = model
+
+        base_model,precision = self.evaluerModel(grid)
+
         #y_pred = grid.predict(self.X_test)
         #print(classification_report(self.y_test, y_pred))
+
         return base_model,precision
 
     def rapport_analyse(self):
@@ -177,17 +191,25 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         print(weights.sort_values()[-10:].plot(kind='barh'))
 
 
-    def executer(self):
+    """def executer(self):
         precision_dico_models,model_,precision_ = self.evalModels()
         self.show_permences_model(precision_dico_models)
         result = self.compareModels(precision_dico_models)
-        return precision_dico_models,result,model_,precision_
+        return precision_dico_models,result,model_,precision_"""
+
+    def executer(self):
+        precision_dico_models, models_fit, precision_,name_ = self.evalModels()
+        #precision_dico_models,models_fit= self.evalModels()
+        #self.show_permences_model(precision_dico_models)
+        #result = self.compareModels(precision_dico_models)
+        return precision_dico_models,models_fit,precision_,name_
 
 
     def save_model(self,model,num):
         model = model
         #filename = 'model_final.sav'
-        filename = "D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
+        filename = "C:/Users/USER/Documents/ML/PlateformeML/plateformeAutoML/media/models_save/model_final"+str(num)+".sav"
+        #"D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
         pickle.dump(model, open(filename,'wb'))
         return filename
 

@@ -3,18 +3,29 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.conf import settings
 import time, os, json
 from django.template.loader import render_to_string
+from matplotlib.pyplot import axis
 import pandas as pd
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+#from plateformeAutoML.web_admin.models import JeuDonnees
 
 from web_admin.utils.file import *
 from web_admin.enum import EEtatPublication
-from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet
+from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees
 from web_admin.utils.dataset import info_dataset, load_dataframe
 from web_admin.services import fetch_config as fetch
+
+#IMPORT BIBLIOTHEQUE OF ML
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import *
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import classification
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork.pretraitement import  PreprocessingData
+from sklearn.preprocessing import StandardScaler,OneHotEncoder,LabelEncoder
+from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import ALGORITHME_SYSTEME
+from sklearn.pipeline import make_pipeline
 
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
@@ -83,6 +94,8 @@ class NouveauProjetView(View):
         liste_models = []
 
         for i in range(0,10):
+
+            mod = Modele()
             model = Mod(i,'algo_'+str(i),'code_'+str(i),2*i+50,'famille_'+str(i))
             liste_models.append(model)
 
@@ -406,3 +419,136 @@ class MesFavorisView(TemplateView):
         context['section_title'] = 'Mon espace'
         context['section_item_title'] = 'Mes favoris'
         return context
+
+
+def train_models(request):
+
+    if request.method == "POST":
+        
+        p_val = request.POST['p_val']
+        p_train = request.POST['p_train'] 
+        p_test = request.POST['p_test']
+        
+       
+        chemin = r'C:\Users\USER\Documents\ML\PlateformeML\plateformeAutoML\chunk.csv'
+
+        dataset = pd.read_csv(chemin)
+
+        #colonnes = Colonnne.objects.filter(dataset = datass)
+        colonnes = dataset.columns
+
+        #chemin = datass.source_dataset
+        target = 'Churn'
+        list_colonnes_select = list(colonnes)
+        """for colonne in list(colonnes):
+            list_colonnes_select.append(colonne.nom_colonne)"""
+
+
+        dataframe = dataset.drop(['customerID'],axis=1)
+
+        print("newwwwwwwwwwww",dataframe)
+
+
+        #target = target
+
+
+        dataset = dataframe
+        colonne_witout_target = []
+        for col in list_colonnes_select:
+            if col !=target:
+                colonne_witout_target.append(col)
+
+
+
+        technique_normalisation = StandardScaler()
+        technique_encodage  = OneHotEncoder()
+        imputation_valeur_num = "mean"
+        imputation_valeur_cat = 'most_frequent'
+        encodage_target = LabelEncoder()
+        metric = 'f1'
+
+        preprocessor1 = PreprocessingData(dataset, target, strategy_val_manquante_num=imputation_valeur_num,
+                                          methode_normalisation=technique_normalisation,
+                                          strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage)
+
+        label = preprocessor1.encodage_label(encodage_label=encodage_target)
+
+        ##donnee transformees
+        data_traiter, dataframeT = preprocessor1.transfom()
+
+
+        dataset = preprocessor1.dataFrame
+        preprocessor = preprocessor1.pipelinePreprocessing()
+
+        ###################### INITIALISATION DES Algorithmes NECESSAIRES POUR LE SCORING #################
+        #liste_algo = projet.analyse.algorithmes.all()
+        
+        #Algorithmechoisis = ["SVM","Logistic"]
+        Algorithmechoisis = ["SVM"]
+        print(Algorithmechoisis)
+
+
+        dict_algo_choisis = {}
+        for algo in Algorithmechoisis:
+            initialisation_algo = ALGORITHME_SYSTEME[algo]['init']
+            hyperparametre_algo = ALGORITHME_SYSTEME[algo]['hyperparametre']
+            pipeline_algo = make_pipeline(preprocessor,initialisation_algo)
+            dict_algo_choisis[algo] = [pipeline_algo,hyperparametre_algo]
+
+        classement = classification.Classification(dict_algo_choisis, dataset, target)
+
+        print(dict_algo_choisis)
+        #performences_models, best_model, model_, precision_ = classement.executer()
+        #performences_models, models_fit, precision_best,name_= classement.executer()
+        #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",precision_)
+        
+        try:
+            dico_infos_train = {}
+            for algo in Algorithmechoisis:
+                base_model,precision = classement.optimisationHyperParam(algo,scoring=metric, cv=10)
+
+                #chemin = classement.save_model(base_model, model.pk)
+                """dico_infos_train[algo] = {
+                    model : base_model,
+                    precision : precision 
+                }"""
+        except:
+            print("ERREUR lors c l'entrainement ddes  model")
+
+        print(dico_infos_train)
+   
+        class Mod:
+            def __init__(self,id,algo,code,precision,famille):
+                self.id = id
+                self.algo = algo
+                self.code = code
+                self.precision = precision
+                self.famille = famille
+                    
+        liste_models = []
+        for algo in Algorithmechoisis:
+
+            libele_algo = ALGORITHME_SYSTEME[algo]['label']
+            model = Mod(0,algo,'code_',precision*100,'famille_')
+            liste_models.append(model)
+
+        print(liste_models)
+
+        context = {
+            'models':liste_models
+        }
+        return render(request, 'pages/projets/creation_projet.html', context=context)
+
+
+     
+        
+
+
+
+
+
+  
+
+
+
+
