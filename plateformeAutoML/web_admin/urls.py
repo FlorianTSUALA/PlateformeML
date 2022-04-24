@@ -31,7 +31,7 @@ from web_admin.views import (
     NouveauProjetView, 
     projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
     save_projet_info, upload_dataset, clean_session_projet_creation, save_preprocessing, 
-    save_selection_variable, selection_algorithme, get_algorithme_by_task, 
+    save_selection_variable, selection_algorithme, get_algorithme_by_task, train_models,
     #AUTRES
     FAQView, AProposView, 
     #ALGORITHME
@@ -201,6 +201,9 @@ urlpatterns = [
     path('parametrage/taxonomie_type_donnee/<int:pk>/update/',  taxonomie_type_donnee_update, name='taxonomie_type_donnee_update'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/delete/',  taxonomie_type_donnee_delete, name='taxonomie_type_donnee_delete'),
     
+
+    #Train models
+    path('train_models/', train_models, name='train_models'),
 ]
 
 
