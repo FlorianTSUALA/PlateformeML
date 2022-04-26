@@ -475,6 +475,12 @@ def train_models(request):
                                           methode_normalisation=technique_normalisation,
                                           strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage)
 
+        liste_colonnes = colonnes.objects.all()
+        ##Technique avec pretraitement des données un à un 
+        """preprocessor1 = PreprocessingData(dataset, target, strategy_val_manquante_num=imputation_valeur_num,
+                                          methode_normalisation=technique_normalisation,
+                                          strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage,liste_colonnes)"""
+
         label = preprocessor1.encodage_label(encodage_label=encodage_target)
 
         ##donnee transformees
