@@ -429,9 +429,13 @@ def train_models(request):
         p_train = request.POST['p_train'] 
         p_test = request.POST['p_test']
         
-       
-        chemin = r'C:\Users\USER\Documents\ML\PlateformeML\plateformeAutoML\chunk.csv'
+        fichier = Fichier.objects.last()
 
+        print("-------------------->",fichier.chemin)
+
+        #chemin = r'C:\\Users\\USER\\Documents\\ML\\PlateformeML\\plateformeAutoML\\media' + '\\' + str(fichier.chemin)
+        chemin = r'C:\Users\USER\Documents\ML\PlateformeML\plateformeAutoML\chunk.csv'
+        #chemin = fichier.chemin
         dataset = pd.read_csv(chemin)
 
         #colonnes = Colonnne.objects.filter(dataset = datass)
@@ -501,11 +505,12 @@ def train_models(request):
         #performences_models, best_model, model_, precision_ = classement.executer()
         #performences_models, models_fit, precision_best,name_= classement.executer()
         #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",precision_)
-        
+        base_model = ''
+        precision = 100
         try:
             dico_infos_train = {}
             for algo in Algorithmechoisis:
-                base_model,precision = classement.optimisationHyperParam(algo,scoring=metric, cv=10)
+                #base_model,precision = classement.optimisationHyperParam(algo,scoring=metric, cv=10)
 
                 #chemin = classement.save_model(base_model, model.pk)
                 """dico_infos_train[algo] = {
@@ -529,7 +534,8 @@ def train_models(request):
         for algo in Algorithmechoisis:
 
             libele_algo = ALGORITHME_SYSTEME[algo]['label']
-            model = Mod(0,algo,'code_',precision*100,'famille_')
+            famille_algo = ALGORITHME_SYSTEME[algo]['family']
+            model = Mod(0,libele_algo,'code_',precision*100,famille_algo)
             liste_models.append(model)
 
         print(liste_models)
