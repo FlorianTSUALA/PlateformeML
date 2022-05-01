@@ -1,0 +1,114 @@
+
+            <h6 class="mb-0 text-uppercase">Distribution des variables</h6>
+            <hr>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-4">
+                <div class="card radius-10">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center" id="chart3"></div>
+                    <hr class="my-2">
+                    <small class="mb-0"><i class="bi bi-arrow-up"></i> <span>+16.5% from last week</span></small>
+                  </div>
+                </div>
+            </div><!--end row-->
+
+
+            <h6 class="mb-0 text-uppercase">HeadMap</h6>
+            <hr>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-4">
+              <div class="row">
+                <div class="card radius-10">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center" id="chart3"></div>
+                    <hr class="my-2">
+                    <small class="mb-0"><i class="bi bi-arrow-up"></i> <span>+16.5% from last week</span></small>
+                  </div>
+                </div>
+              </div>
+            </div><!--end row-->
+
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked disabled>
+              <label class="form-check-label" for="flexCheckDefault">Default checkbox</label>
+            </div>
+
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+              <label class="form-check-label" for="inlineCheckbox1">1</label>
+            </div>
+
+
+            <form>
+              <div class="mb-3">
+                <label class="form-label">Basic</label>
+                <div class="bootstrap-tagsinput">
+                  <span class="badge bg-primary">jQuery<span data-role="remove"></span></span>
+                  <span class="badge bg-primary">Script<span data-role="remove"></span></span>
+                  <span class="badge bg-primary">Net<span data-role="remove"></span></span>
+                  <input type="text" placeholder=""></div><input type="text" class="form-control visually-hidden" data-role="tagsinput" value="jQuery,Script,Net">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Multi Select</label>
+                <div class="bootstrap-tagsinput">
+                  <span class="badge bg-primary">Amsterdam<span data-role="remove"></span></span>
+                  <span class="badge bg-primary">Washington<span data-role="remove"></span></span>
+                  <span class="badge bg-primary">Sydney<span data-role="remove"></span></span>
+                  <span class="badge bg-primary">Beijing<span data-role="remove"></span></span>
+                  <span class="badge bg-primary">Cairo<span data-role="remove"></span></span>
+                  <input type="text" placeholder="">
+                </div>
+                <select multiple="" data-role="tagsinput" class="visually-hidden">
+                  <option value="Amsterdam" selected="selected">Amsterdam</option>
+                  <option value="Washington" selected="selected">Washington</option>
+                  <option value="Sydney" selected="selected">Sydney</option>
+                  <option value="Beijing" selected="selected">Beijing</option>
+                  <option value="Cairo" selected="selected">Cairo</option>
+                </select>
+              </div>
+            </form>
+  <!-- Bootstrap bundle JS -->
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <!--plugins-->
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
+  <script src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
+  <script src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+  <script src="assets/js/pace.min.js"></script>
+  <script src="assets/plugins/apexcharts-bundle/js/apexcharts.min.js"></script>
+	<script src="assets/plugins/apexcharts-bundle/js/apex-custom.js"></script>
+  <!--app-->
+  <script src="assets/js/app.js"></script>
+  <script>
+
+
+      
+    var options = {
+      series: data,
+      chart: {
+      height: 450,
+      type: 'heatmap',
+    },
+    dataLabels: {
+      enabled: false
+    },
+    colors: colors,
+    xaxis: {
+      type: 'category',
+      categories: ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '01:00', '01:30']
+    },
+    title: {
+      text: 'HeatMap Chart (Different color shades for each series)'
+    },
+    grid: {
+      padding: {
+        right: 20
+      }
+    }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
+  </script>
+  

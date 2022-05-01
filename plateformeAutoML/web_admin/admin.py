@@ -4,8 +4,7 @@ from django.contrib import admin
 
 from .models import Projet
 
-class ProjetAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description',)
-    prepopulated_fields = {'slug': ('title',)} 
-
-admin.site.register(Projet, ProjetAdmin)
+# class ProjetAdmin(admin.ModelAdmin):
+#     list_display = ('titre', 'description',)
+#     prepopulated_fields = {'slug': ('titre',)} 
+# admin.site.register(Projet, ProjetAdmin)

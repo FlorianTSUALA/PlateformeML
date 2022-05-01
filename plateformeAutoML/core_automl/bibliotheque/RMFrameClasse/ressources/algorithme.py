@@ -1,45 +1,116 @@
-from ..ressources.resources import *
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from .hyperparametre import *
 
-algorithmes_disponible = {
+ALGORITHME_SYSTEME = {
 
-    "RandomForest" : {
+    'RandomForest' : {
+        'code': 'RandomForest',
         'init' : RandomForestClassifier(random_state=0),
-        'hyperparametre':hyper_params_radomForest,
-        'label': "Random Forest"
+        'hyperparametre': HYPER_PARAMETRE_RADOMFOREST,
+        'label': 'Random Forest',
+        'metadata':{
+            'tag': '',
+        },
+        'task': 'Classification',
+        'type_apprentissage': 'Supervise',
+        'family': 'Decision Tree',
+        'package': 'scikit-learn',
     },
-    "AdaBoost" : {
+    'AdaBoost' : {
+            'code': 'AdaBoost',
             'init' : AdaBoostClassifier(random_state=0),
-            'hyperparametre': hyper_params_AdaBoost,
-            'label': "Ada Booster"
+            'hyperparametre': HYPER_PARAMETRE_ADABOOST,
+            'label': 'Ada Booster',
+            'metadata':{
+                'tag': '',
+            },
+            'task': 'Classification',
+            'type_apprentissage': 'Supervise',
+            'family': 'Ensemble',
+            'package': 'scikit-learn',
         },
-    "SVM" : {
+    'SVM' : {
+            'code': 'SVM',
             'init' : SVC(random_state=0),
-            'hyperparametre':hyper_params_svm,
-            'label': "Support Vactor Machine"
+            'hyperparametre': HYPER_PARAMETRE_SVM,
+            'label': 'Support Vactor Machine',
+            'metadata':{
+                'tag': '',
+            },
+            'task': 'Classification',
+            'type_apprentissage': 'Supervise',
+            'family': 'Nom linéaire',
+            'package': 'scitki-learn',
         },
-    "KNN" : {
+    'KNN' : {
+            'code': 'KNN',
             'init' : KNeighborsClassifier(),
-            'hyperparametre':hyper_params_knn,
-            'label': "K-Nearest Neighbor"
+            'hyperparametre': HYPER_PARAMETRE_KNN,
+            'label': 'K-Nearest Neighbor',
+            'metadata':{
+                'tag': '',
+            },
+            'task': 'Classification',
+            'type_apprentissage': 'Supervise',
+            'family': 'Nom linéaire',
+            'package': 'scikit-learn',
         },
-    "Logistic": {
+    'Logistic': {
+        'code': 'Logistic',
         'init': LogisticRegression(random_state=0),
-        'hyperparametre': hyper_params_knn,
-        'label': "Logistic Regression"
+        'hyperparametre': HYPER_PARAMETRE_KNN,
+        'label': 'Logistic Regression',
+        'metadata':{
+            'tag': '',
+        },
+        'task': 'Regression',
+        'type_apprentissage': 'Supervise',
+        'family': 'Lineaire',
+        'package': 'scikit-learn',
     },
-    "MLP": {
+    'MLP': {
+        'code': 'MLP',
         'init': MLPClassifier(),
-        'hyperparametre': hyper_params_MLP,
-        'label': "Multi layer Perceptron"
+        'hyperparametre': HYPER_PARAMETRE_MLP,
+        'label': 'Multi layer Perceptron',
+        'metadata':{
+            'tag': '',
+        },
+        'task': 'Classification',
+        'type_apprentissage': 'Supervise',
+        'family': 'Non Lineaire',
+        'package': 'scikit-learn',
     },
-    "LDA": {
+    'LDA': {
+        'code': 'LDA',
         'init': LinearDiscriminantAnalysis(),
-        'hyperparametre': hyper_params_lda,
-        'label': "Linear discriminant analysis"
+        'hyperparametre': HYPER_PARAMETRE_LDA,
+        'label': 'Linear discriminant analysis',
+        'metadata':{
+            'tag': '',
+        },
+        'task': 'Classification',
+        'type_apprentissage': 'Supervise',
+        'family': 'Lineaire',
+        'package': 'scikit-learn',
     },
-    "Binary_tree": {
+    'Binary_tree': {
+        'code': 'Binary_tree',
         'init': tree.DecisionTreeClassifier(),
-        'hyperparametre': hyper_params_tree,
-        'label': "Binary Tree"
+        'hyperparametre': HYPER_PARAMETRE_TREE,
+        'label': 'Binary Tree',
+        'metadata':{
+            'tag': '',
+        },
+        'task': 'Classification',
+        'type_apprentissage': 'Supervise',
+        'family': 'Decision Tree',
+        'package': 'scikit-learn',
     },
 }

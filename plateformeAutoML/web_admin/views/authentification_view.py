@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -23,7 +23,7 @@ from django.core.files.storage import FileSystemStorage
 from web_admin.models import Compte, Utilisateur
 from django.conf import settings
 
-def login(request):
+def connexion(request):
     redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME, reverse('home')))
     print(redirect_to)
     if request.user.is_authenticated:
@@ -66,13 +66,12 @@ def login(request):
 
     return render(request, 'login.html')
 
-def logout(request):
+def deconnexion(request):
     if not request.user.is_authenticated:
         auth_logout(request)
     return redirect(settings.LOGIN_URL)
 
-
-def registers(request):
+def inscription(request):
     print('registration')
     if request.method == "POST":
         login = request.POST.get('login')

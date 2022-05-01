@@ -20,6 +20,9 @@ class Acquisision:
 
     def __init__(self,dataFrame,target):
         self.dataFrame = dataFrame
+        self.df_transformed = None
+        # self.pipeline_transformed = None
+        self.pipeline_preprocessing = None
         self.target = target
         self.X = ''
         self.columns = ''

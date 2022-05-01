@@ -23,7 +23,7 @@
             <div class="card-body p-4 p-sm-5">
               <h5 class="card-title">Connexion</h5>
               <!-- <p class="card-text mb-5">See your growth and get consulting support!</p> -->
-              <form class="form-body" novalidate method="post" action="{% url 'login' %}">
+              <form class="form-body" novalidate method="post">
                 {% csrf_token %}
                 {% comment %} <div class="d-grid">
                   <a class="btn btn-white radius-30" href="javascript:;"><span class="d-flex justify-content-center align-items-center">
@@ -47,7 +47,7 @@
                       <label for="pwd" class="form-label">Mot de passe</label>
                       <div class="ms-auto position-relative">
                         <div class="position-absolute top-50 translate-middle-y search-icon px-3"><i class="bi bi-lock-fill"></i></div>
-                        <input type="pwd" class="form-control radius-30 ps-5" id="pwd" placeholder="Mot de passe" name="pwd">
+                        <input type="password" class="form-control radius-30 ps-5" id="pwd" placeholder="Mot de passe" name="pwd">
                       </div>
                     </div>
                     <!-- <div class="col-6">
@@ -66,7 +66,7 @@
                       </div>
                     <!-- </div> -->
                     <div class="col-12">
-                      <p class="mb-0">Avez vous pas un compte? <a href="{% url 'register' %}">créer ici</a></p>
+                      <p class="mb-0">Avez vous pas un compte? <a href="{% url 'inscription' %}">créer ici</a></p>
                     </div>
                   </div>
               </form>

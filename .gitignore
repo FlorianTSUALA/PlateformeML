@@ -8,5 +8,10 @@ _documentation/Workflow/init_entit_technique.drawio
 _documentation/Workflow/init_entit_technique copy.drawio
 plateformeAutoML/db.sqlite3
 plateformeAutoML/db.sqlite3
+*.pro
+*.log
+*.pyc
+*.pyc
+*.pyc
 *.pyc
 *.pyc
