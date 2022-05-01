@@ -212,6 +212,3 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         #"D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
         pickle.dump(model, open(filename,'wb'))
         return filename
-
-
-

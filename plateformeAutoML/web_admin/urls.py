@@ -30,8 +30,8 @@ from web_admin.views import (
     # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
     NouveauProjetView, 
     projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
-    save_projet_info, upload_dataset, clean_session_projet_creation, save_preprocessing, 
-    save_selection_variable, selection_algorithme, get_algorithme_by_task, train_models,
+    projet_info, upload_dataset, clean_session_projet_creation, info_preprocessing, 
+    selection_algorithme, get_algorithme_by_task, train_models,
     #AUTRES
     FAQView, AProposView, 
     #ALGORITHME
@@ -85,13 +85,12 @@ urlpatterns = [
     
     #####################   CREATION
 
-    # path('nouveau-projet',  (NouveauProjetView.as_view()), name='nouveau_projet'),
-    path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
+    # path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
+    path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
     path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
-    path('save_projet_info',  save_projet_info, name='save_projet_info'),
-    path('save_preprocessing',  save_preprocessing, name='save_preprocessing'),
-    path('save_selection_variable',  save_selection_variable, name='save_selection_variable'),
+    path('projet_info',  projet_info, name='projet_info'),
+    path('info_preprocessing',  info_preprocessing, name='info_preprocessing'),
     path('selection_algorithme',  selection_algorithme, name='selection_algorithme'),
     path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
     

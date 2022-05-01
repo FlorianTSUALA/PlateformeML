@@ -14,9 +14,9 @@ from django.http import HttpResponseRedirect
 #from plateformeAutoML.web_admin.models import JeuDonnees
 
 from web_admin.utils.file import *
-from web_admin.enum import EEtatPublication
+from web_admin.enum import EEtatPublication, ENatureValeur
 from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees
-from web_admin.utils.dataset import info_dataset, load_dataframe
+from web_admin.utils.dataset import info_dataset, hist_img, load_dataframe
 from web_admin.services import fetch_config as fetch
 
 #IMPORT BIBLIOTHEQUE OF ML
@@ -27,12 +27,21 @@ from sklearn.preprocessing import StandardScaler,OneHotEncoder,LabelEncoder
 from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import ALGORITHME_SYSTEME
 from sklearn.pipeline import make_pipeline
 
+from django.utils.decorators import method_decorator
+
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 def clean_session_projet_creation(request):
     request.session['projet'].clear()
 
-class NouveauProjetView(View):
+class NouveauProjetView(LoginRequiredMixin, View):
 
     def find_longest_word(self, mylist):
     	return max(mylist, key=len)
@@ -50,37 +59,27 @@ class NouveauProjetView(View):
                     len(self.find_longest_word(fetch.get_encodage())),len(self.find_longest_word(fetch.get_mise_echelle())), 
                     len(self.find_longest_word(fetch.get_imputation())))
 
-
-        """code = models.CharField(max_length=254, blank=True,null=True)
-        chemin =  models.CharField(max_length=254, blank=True,null=True)
-        precision =  models.CharField(max_length=254, blank=True,null=True)
-        rapport = models.TextField(max_length=254, blank=True,null=True)
-        resume = models.TextField(max_length=254, blank=True,null=True)
-        algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)"""
-
-
-
         models = {
             'random Forest': {
-            'code' : 'xxxxx',
-            'precision' : 67,
-            'famille_algorithme' : 'Lineaire'
-        },
-         'regression Logistique': {
-            'code' : 'xxxxx',
-            'precision' : 37,
-            'famille_algorithme' : 'Lineaire'
-        },
-         'Support vector machine': {
-            'code' : 'xxxxx',
-            'precision' : 69,
-            'famille_algorithme' : 'Lineaire'
-        },
-         'Arbre binaire': {
-            'code' : 'xxxxx',
-            'precision' : 96,
-            'famille_algorithme' : 'Nom Lineaire'
-        },
+                'code' : 'xxxxx',
+                'precision' : 67,
+                'famille_algorithme' : 'Lineaire'
+            },
+            'regression Logistique': {
+                'code' : 'xxxxx',
+                'precision' : 37,
+                'famille_algorithme' : 'Lineaire'
+            },
+            'Support vector machine': {
+                'code' : 'xxxxx',
+                'precision' : 69,
+                'famille_algorithme' : 'Lineaire'
+            },
+            'Arbre binaire': {
+                'code' : 'xxxxx',
+                'precision' : 96,
+                'famille_algorithme' : 'Nom Lineaire'
+            },
         }
 
         class Mod:
@@ -96,7 +95,7 @@ class NouveauProjetView(View):
         for i in range(0,10):
 
             mod = Modele()
-            model = Mod(i,'algo_'+str(i),'code_'+str(i),2*i+50,'famille_'+str(i))
+            model = Mod(i,'algo_'+str(i),'code_'+str(i), 10*i+50,'famille_'+str(i))
             liste_models.append(model)
 
         context = {
@@ -129,45 +128,7 @@ def get_algorithme_by_task(request):
         return JsonResponse({'data': data, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
     return JsonResponse({'data': data, 'transaction': {'code': 503, 'titre':'Oups !!!', 'message': 'Page non autorisée'}})
 
-def load_initial(path, sep=','):
-    """ Encodes data and returns new data """
-    data = load_dataframe(path)
-    mask = data.dtypes==object
-    #get_categorical()
-    categorical = data.columns[mask].tolist()
-    print(categorical)
-    if categorical:
-        print("crash")
-        #Encoder foreach column
-        le = LabelEncoder()
-        data[categorical] = data[categorical].apply(lambda x: le.fit_transform(x.astype(str)))
-        data.to_csv(path, index=False)
-    print("Not crash")
-    return data
-
-def featur_pg():
-
-    values = session.get('values', 'not set')
-    path = os.path.join(app.config['UPLOAD_FOLDER'],
-                        session.get("filename", "not set"))
-    data = load_initial(path,sep=values["sep"])
-    empty_cols = [col for col in data.columns if data[col].isnull().all()]
-    
-    data.drop(empty_cols, axis=1, inplace=True)
-
-    dropped_msg=""
-
-    if empty_cols:
-        dropped_msg = "Empty columns detected, dropped columns : "+str(empty_cols) 
-    features = data.columns
-    for i in range(len(features)):
-        plt.clf()
-        data[features[i]].hist()
-        plt.savefig("static/images/figs/" + str(i),
-                    bbox_inches="tight", transparent=True)
-    return render_template("features.html", FEATURES=features, dropped_msg=dropped_msg)
-
-def save_projet_info(request):
+def projet_info(request):
     if request.method == "POST":
         data = {
             'titre': request.POST.get('titre'),
@@ -208,87 +169,90 @@ def save_projet_info(request):
             request.session['projet'] = dict()
         request.session['projet']['projet_id'] = projet_id
         return JsonResponse({'data':{'projet_id': projet_id,}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+    else:
+        projet_session = request.session.get('projet', None)
+        if projet_session is not None:
+            projet = Project.objects.get(pk=projet_session.get('projet_id', 0))
+            return JsonResponse({'data':json.dumps(projet), 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
 
-
-def save_preprocessing(request):
-
+def info_preprocessing(request):
+    print('info_preprocessing')
     if request.method == "POST":
-        print(request.POST)
-        return JsonResponse({'data': 'test'})
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        # metrique = request.POST.get('metrique')
-        _type = request.POST.get('type')
-        est_publique = request.POST.get('est_publique')
-        nombre_modele = request.POST.get('nombre_modele')
-        print(_type)
-        projet_id = request.POST.get('projet_id', 0)
-        if projet_id == 0:
-            projet = Projet(
-                        title = title,
-                        description = description,
-                        metrique = metrique,
-                        type = _type,
-                        est_publique = est_publique,
-                        nombre_modele = nombre_modele,
-                    )
-            projet.save()
-            projet_id = projet.pk
-        else:
-            projet = Projet.objects.get(pk=projet_id)
-        
-        request.session['projet_id'] = projet_id
-        return JsonResponse({'data':{'projet_id': projet_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        print('POST')
+        preprocessing = json.loads((list(request.POST.keys())[0]))['preprocessing']
+        selected = json.loads((list(request.POST.keys())[0]))['selected']
 
-#TODO
-def save_selection_variable(request):
-    if request.method == "POST":
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        metrique = request.POST.get('metrique')
-        _type = request.POST.get('type')
-        est_publique = request.POST.get('est_publique')
-        nombre_modele = request.POST.get('nombre_modele')
-        print(_type)
-        projet_id = request.POST.get('projet_id', 0)
-        if projet_id == 0:
-            projet = Projet(
-                        title = title,
-                        description = description,
-                        metrique = metrique,
-                        type = _type,
-                        est_publique = est_publique,
-                        nombre_modele = nombre_modele,
-                    )
-            projet.save()
-            projet_id = projet.pk
-        else:
-            projet = Projet.objects.get(pk=projet_id)
+        jeu_donnees = None
+        if request.session.get('projet', None) is None:
+            return JsonResponse({'data':{}, 'transaction': {'code': 200, 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        projet_id = request.session.get('projet').get('projet_id')
+
+        jeu_donnees, created = JeuDonnees.get_or_create(projet_id=projet_id)
+        file_id = request.session.get('projet', {}).get('fichier_id', 0)
+        file_folder = FileFolder.object.get(pk=file_id)
+        jeu_donnees.fichier = FileFolder.chemin
+
+        Colonne.objects.filter(jeu_donnees=jeu_donnees).delete()
+        df = request.session['projet']['df']
+        cols_info = request.session['projet']['cols_info']
+        context = {}
+        context['images'] = hist_img(df, cols_info).items()
+
+        for key in preprocessing:
+            valeurs = ''
+            if (key['nature'] == ENatureValeur.QUALITATIF):
+                valeurs = df[key['column']].unique()
+                valeurs = ','.join(valeurs)
+            
+            Colonne.objects.create( 
+                                    libelle=key['column'], type_donnees=key['type'], est_categoriel=(key['nature'] == ENatureValeur.QUALITATIF), est_target=False, 
+                                    est_selectionnee=(key['column'] in selected), pattern='', valeurs='', jeu_donnees=jeu_donnees, 
+                                    encodage=key['encoder'], imputation=key['imputer'], normalisation=key['scaller'],
+                                )
         
-        request.session['projet_id'] = projet_id
-        return JsonResponse({'data':{'projet_id': projet_id, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}}})
+        return JsonResponse({
+                                'data':{'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', constext=context, request=request )}, 
+                                'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}
+                            })
+    else:
+        return JsonResponse({'data':{}, 'transaction': {'code': 500, 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
 
 def selection_algorithme(request):
     if request.method == "POST":
+        
+        jeu_donnees = None
+        if request.session.get('projet', None) is None:
+            return JsonResponse({'data':{}, 'transaction': {'code': 200, 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        projet_id = request.session.get('projet').get('projet_id')
+
+        #--------Begin Save target
+        jeu_donnees, created = JeuDonnees.get_or_create(projet_id=projet_id)
+        target = request.POST.get('target', 'non défini')
+        if target != 'non défini':
+            colonne = Colonne.objects.get(jeu_donnees=jeu_donnees, libelle=target)
+            colonne.est_target = True
+            colonne.save()
+        #--------End Save target
+        
         algos = request.POST.getlist('algo[]')
         _metrique = request.POST.get('metrique')
+        #to_review
         metrique = Metrique.objects.get(code=_metrique)
         #todo get default metrique from task if doesn't exist
         tache = request.POST.get('tache')
 
-        AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet').get('projet_id')).delete()
+        AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet', {}).get('projet_id', 0)).delete()
         for item in algos:
             algorithme = Algorithme.objects.get(code=item)
-            AlgorithmeProjet.objects.create(projet_id=request.session.get('projet').get('projet_id'), algorithme=algorithme, metrique=metrique)
+            AlgorithmeProjet.objects.create(projet_id=request.session.get('projet', {}).get('projet_id', 0), algorithme=algorithme, metrique=metrique)
         return JsonResponse({'data':'', 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Algorithmes enregistrés avec success'}})
     else:
-        items = AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet').get('projet_id'))
+        items = AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet', {}).get('projet_id', 0))
         data = dict()
         data['algorithmes'] = set()
         for item in items:
             data['algorithmes'].add(item.algorithme.code)
         data['metrique'] = algorithme_projet.metrique.code 
-        
         return JsonResponse({'data': json.dumps(data), 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Chargement des informations sur le choix des algorithmes'}})
 
 def upload_dataset(request):
@@ -326,15 +290,21 @@ def upload_dataset(request):
                         os.remove(path_file)
 
                     Fichier.objects.filter(id=old_file_id).delete()
-                request.session['fichier_id'] = FileFolder.pk
+                request.session['projet']['fichier_id'] = FileFolder.pk
                 
                 if int(end):
                     cols_info, df = info_dataset(path)
+                    context = {}
+                    context['images'] = hist_img(df, cols_info).items()
+                    request.session['projet']['df'] = df
+                    request.session['projet']['cols_info'] = cols_info
+
                     res = JsonResponse({
                         'msg':'Chargment effectué avec success',
                         'cols_info': cols_info, 
                         'df': df.to_json(orient="split"), 
                         'chemin': chemin,
+                        'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context, request=request),
                     })
                 else:
                     res = JsonResponse({'chemin': nom_fichier})
@@ -351,11 +321,18 @@ def upload_dataset(request):
                             model_id.eof = int(end)
                             model_id.save()
                             cols_info, df = info_dataset(model_id.chemin)
+                            request.session['projet']['df'] = df
+                            request.session['projet']['cols_info'] = cols_info
+                    
+                            context = {}
+                            context['images'] = hist_img(df, cols_info).items()
+
                             res = JsonResponse({
-                                'msg':'Chargement effectué avec success',
+                                'msg':'Chargment effectué avec success',
                                 'cols_info': cols_info, 
-                                'df': df.to_json(orient="split"),
-                                'chemin': model_id.chemin, 
+                                'df': df.to_json(orient="split"), 
+                                'chemin': chemin,
+                                'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context, request=request),
                             })
                         else:
                             res = JsonResponse({'chemin':model_id.chemin})    
@@ -425,7 +402,6 @@ class MesFavorisView(TemplateView):
         context['section_item_title'] = 'Mes favoris'
         return context
 
-
 def train_models(request):
 
     if request.method == "POST":
@@ -449,15 +425,11 @@ def train_models(request):
             list_colonnes_select.append(colonne.nom_colonne)"""
 
 
-        dataframe = dataset.drop(['customerID'],axis=1)
+        df_dataset = dataset.drop(['customerID'],axis=1)
 
         print("newwwwwwwwwwww",dataframe)
 
 
-        #target = target
-
-
-        dataset = dataframe
         colonne_witout_target = []
         for col in list_colonnes_select:
             if col !=target:
@@ -472,18 +444,17 @@ def train_models(request):
         encodage_target = LabelEncoder()
         metric = 'f1'
 
-        preprocessor1 = PreprocessingData(dataset, target, strategy_val_manquante_num=imputation_valeur_num,
+        pipeline_pretraitement = PreprocessingData(df_dataset, target, strategy_val_manquante_num=imputation_valeur_num,
                                           methode_normalisation=technique_normalisation,
                                           strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage)
 
-        label = preprocessor1.encodage_label(encodage_label=encodage_target)
+        label = pipeline_pretraitement.encodage_label(encodage_label=encodage_target)
 
         ##donnee transformees
-        data_traiter, dataframeT = preprocessor1.transfom()
+        # data_traiter, dataframeT = pipeline_pretraitement.transfom()
 
 
-        dataset = preprocessor1.dataFrame
-        preprocessor = preprocessor1.pipelinePreprocessing()
+        preprocessor = pipeline_pretraitement.pipelinePreprocessing()
 
         ###################### INITIALISATION DES Algorithmes NECESSAIRES POUR LE SCORING #################
         #liste_algo = projet.analyse.algorithmes.all()
@@ -497,7 +468,7 @@ def train_models(request):
         for algo in Algorithmechoisis:
             initialisation_algo = ALGORITHME_SYSTEME[algo]['init']
             hyperparametre_algo = ALGORITHME_SYSTEME[algo]['hyperparametre']
-            pipeline_algo = make_pipeline(preprocessor,initialisation_algo)
+            pipeline_algo = make_pipeline(preprocessor, initialisation_algo)
             dict_algo_choisis[algo] = [pipeline_algo,hyperparametre_algo]
 
         classement = classification.Classification(dict_algo_choisis, dataset, target)
@@ -532,7 +503,6 @@ def train_models(request):
                     
         liste_models = []
         for algo in Algorithmechoisis:
-
             libele_algo = ALGORITHME_SYSTEME[algo]['label']
             model = Mod(0,algo,'code_',precision*100,'famille_')
             liste_models.append(model)
@@ -543,17 +513,3 @@ def train_models(request):
             'models':liste_models
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
-
-
-     
-        
-
-
-
-
-
-  
-
-
-
-

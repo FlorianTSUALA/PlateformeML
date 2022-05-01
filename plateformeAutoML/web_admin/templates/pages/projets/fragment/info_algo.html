@@ -10,11 +10,10 @@
 			data[key] = collection[key]
 		} {% endcomment %}
 		{% comment %} console.log(data) {% endcomment %}
-		Request.post("{% url 'selection_algorithme' %}", {	'algo' : $('#select-algorithme').select2('val'), 'tache': $('#select-tache').val(), 'metrique': $('#select-metrique').val() }, function (data){
+		Request.post("{% url 'selection_algorithme' %}", {	'algo' : $('#select-algorithme').select2('val'), 'tache': $('#select-tache').val(), 'target': $('#select-variable').val(), 'metrique': $('#select-metrique').val() }, function (data){
 			Notification.talk('success', data.transaction.message)
 		})
-		
-	 });
+	})
 
 	$('#btn_reset_selection_algorithm').on('click', (event) => {
 		Request.post("{% url 'selection_algorithme' %}", {	'projet_id' : $('#projet_id').val() }, function (data){
@@ -25,7 +24,7 @@
 			$('#select-algorithme').val(data.algorithme).trigger('change')
 			Notification.talk('success', data.transaction.message)
 		})
-	 });
+	 })
 
 	$( document ).ready(function() {
 		$("#select-type_apprentissage").val($("#select-type_apprentissage option:first").val())

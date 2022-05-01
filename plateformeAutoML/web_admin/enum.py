@@ -12,12 +12,14 @@ class ENoNameChoice(Enum):
 class ETypeDonnee(ENoNameChoice):
     ENTIER = 'ENTIER'
     DECIMAL = 'DECIMAL'
+    REEL = 'REEL'
     CAHINE_CARACTERE = 'CAHINE_CARACTERE'
     INTERVALLE = 'INTERVALLE'
 
 class EDype(ENoNameChoice):
     ENTIER = 'ENTIER'
     DECIMAL = 'DECIMAL'
+    RELL = 'RELL'
     CAHINE_CARACTERE = 'CAHINE_CARACTERE'
     INTERVALLE = 'INTERVALLE'
 
