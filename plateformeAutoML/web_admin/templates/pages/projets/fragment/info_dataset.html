@@ -38,7 +38,7 @@
 			formData.append('path', chemin);
 			formData.append('nextSlice', nextChunk);
 			{% comment %} $('.filename').text(this.file.name) {% endcomment %}
-			$('.textbox').text("Fichier en cours d'envoie...")
+			$('.textbox').text("Veuillez patienter, fichier en cours d'envoie...")//todo add loading bar
 			$.ajaxSetup({
 			// make sure to send the header
 				headers: {
@@ -72,19 +72,19 @@
 				data: formData,
 				error: function (xhr) {
 					console.log('BAD')
-					alert(xhr.statusText);
+					Notification.talk('error', 'Erreur survenue lors du téléversement, veuillez reessayer!!!')
 				},
 				success: function (res) {
 					if (nextChunk < self.file.size) {
 						// upload file in chunks
-						chemin = res.chemin
+						chemin = res.data.chemin
 						self.upload_file(nextChunk, chemin)
 					} else {
-						let df = JSON.parse(res.df)
-						FileUpload.init_table(df['data'], df['columns'], res.cols_info)
-						$('.textbox').text(res.msg)
+						let df = JSON.parse(res.data.df)
+						FileUpload.init_table(df['data'], df['columns'], res.data.cols_info)
+						$('.textbox').text(res.transaction.message)
 
-						$('#histogrammes').html(res.img_block)
+						$('#histogrammes').html(res.data.img_block)
 
 						$('#select-variable').empty().trigger("change")
 						let collection = df['columns']
@@ -92,6 +92,7 @@
 						for (var j = 0; j < collection.length; j++) {
 							$('#select-variable').append(new Option(collection[j], collection[j], false, false))
 						}
+						Notification.talk(res.transaction.code, res.transaction.message)
 					}
 				}
 			});
@@ -283,7 +284,7 @@
 			$("input:checkbox[name=target]:checked").each(function(){ selected.push($(this).val()) });
 			Request.post("{% url 'info_preprocessing' %}", JSON.stringify({'preprocessing': preprocessing, 'selected': selected}), function(response){
 				console.log(response)
-				Notification.talk('success', res.transaction.message)
+				Notification.talk(response.transaction.code, response.transaction.message)
 			})
 		}
 
@@ -305,7 +306,6 @@
 			event.preventDefault();
 			var uploader = new FileUpload(document.querySelector('#file2upload'))
 			uploader.upload()
-			Notification.talk('success', 'Fichier téléversé avec success')
 		});
 
 		$('#btn_save_info_preprocessing').on('click', (event) => { FileUpload.save_info_preprocessing() })
@@ -337,15 +337,21 @@
 		 $('#btn_submit_form_info_projet').on('click', function(e){ 
 			Request.post_form_file("{% url 'projet_info' %}", 'form_info_projet', function (response){
 				$('#projet_id').val(response.data.projet_id)
-				Notification.talk('success', 'informations du projet sauvegardées avec success !!!');
+				Notification.talk(response.transaction.code, response.transaction.message);
 			})
 		})
+		 {% comment %} $('#btn_start_training').on('click', function(e){ 
+			Request.post("{% url 'projet_info' %}", 'form_info_projet', function (response){
+				$('#projet_id').val(response.data.projet_id)
+				Notification.talk(response.transaction.code, response.transaction.message);
+			})
+		}) {% endcomment %}
 
 		 $('#btn_reset_form_info_projet').on('click', function(e){ 
 			Request.get("{% url 'projet_info' %}",  function (response){
 				console.log(response)
 				$('#projet_id').val(response.data.projet_id)
-				Notification.talk('success', 'informations du projet sauvegardées avec success !!!');
+				Notification.talk(response.transaction.code, response.transaction.message);
 			})
 		})
 

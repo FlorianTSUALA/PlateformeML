@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 
 from web_admin.utils.file import *
 from web_admin.enum import EEtatPublication, ENatureValeur
-from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees
+from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees, Colonne, Imputation, MiseEchelle, Encodage
 from web_admin.utils.dataset import info_dataset, hist_img, load_dataframe
 from web_admin.services import fetch_config as fetch
 
@@ -40,6 +40,9 @@ class LoginRequiredMixin(object):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 def clean_session_projet_creation(request):
     request.session['projet'].clear()
+    if request.get('dataset', {}):
+        Fichier.objects.all().delete()
+        request.session['dataset'].clear()
 
 class NouveauProjetView(LoginRequiredMixin, View):
 
@@ -125,7 +128,7 @@ def get_algorithme_by_task(request):
         task = request.POST.get('task', 'SUPERVISED')
         if task is not None:
             data = fetch.get_allgorithme_by_task(task)
-        return JsonResponse({'data': data, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+        return JsonResponse({'data': data, 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
     return JsonResponse({'data': data, 'transaction': {'code': 503, 'titre':'Oups !!!', 'message': 'Page non autorisée'}})
 
 def projet_info(request):
@@ -168,12 +171,12 @@ def projet_info(request):
         if request.session.get('projet', None) is None:
             request.session['projet'] = dict()
         request.session['projet']['projet_id'] = projet_id
-        return JsonResponse({'data':{'projet_id': projet_id,}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+        return JsonResponse({'data':{'projet_id': projet_id,}, 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
     else:
         projet_session = request.session.get('projet', None)
         if projet_session is not None:
             projet = Project.objects.get(pk=projet_session.get('projet_id', 0))
-            return JsonResponse({'data':json.dumps(projet), 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+            return JsonResponse({'data':json.dumps(projet), 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
 
 def info_preprocessing(request):
     print('info_preprocessing')
@@ -183,50 +186,65 @@ def info_preprocessing(request):
         selected = json.loads((list(request.POST.keys())[0]))['selected']
 
         jeu_donnees = None
-        if request.session.get('projet', None) is None:
-            return JsonResponse({'data':{}, 'transaction': {'code': 200, 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
-        projet_id = request.session.get('projet').get('projet_id')
+        if not request.session.get('projet', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        if not request.session.get('dataset', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
 
-        jeu_donnees, created = JeuDonnees.get_or_create(projet_id=projet_id)
-        file_id = request.session.get('projet', {}).get('fichier_id', 0)
-        file_folder = FileFolder.object.get(pk=file_id)
-        jeu_donnees.fichier = FileFolder.chemin
-
+        projet_id = request.session.get('projet').get('projet_id', 0)
+        jeu_donnees, created = JeuDonnees.objects.get_or_create(projet_id=projet_id)
+        file_id = request.session.get('dataset').get('fichier_id', 0)
+        _fichier = Fichier.objects.get(pk=file_id)
+        jeu_donnees.fichier = _fichier.chemin
+        jeu_donnees.save()
         Colonne.objects.filter(jeu_donnees=jeu_donnees).delete()
-        df = request.session['projet']['df']
-        cols_info = request.session['projet']['cols_info']
-        context = {}
-        context['images'] = hist_img(df, cols_info).items()
-
-        for key in preprocessing:
+        df = pd.read_json(request.session['dataset']['df'])
+        # print(preprocessing)
+        for item in preprocessing:
+            #item['nature'] not found skip : colvis
             valeurs = ''
-            if (key['nature'] == ENatureValeur.QUALITATIF):
-                valeurs = df[key['column']].unique()
-                valeurs = ','.join(valeurs)
-            
-            Colonne.objects.create( 
-                                    libelle=key['column'], type_donnees=key['type'], est_categoriel=(key['nature'] == ENatureValeur.QUALITATIF), est_target=False, 
-                                    est_selectionnee=(key['column'] in selected), pattern='', valeurs='', jeu_donnees=jeu_donnees, 
-                                    encodage=key['encoder'], imputation=key['imputer'], normalisation=key['scaller'],
-                                )
-        
+            # print(ENatureValeur.QUALITATIF.value)
+            print('item : ', item)
+            if item['nature'] == ENatureValeur.QUALITATIF.value:
+                _valeurs = df[item['column']].unique()
+                valeurs = ','.join(map(str, _valeurs))
+                print(_valeurs, valeurs)
+
+            colonne = Colonne()
+            colonne.libelle=item['column']
+            type_donnees=item['type']
+            colonne.est_categoriel=(item['nature'] == ENatureValeur.QUALITATIF.value)
+            colonne.est_target=False
+            colonne.est_selectionnee=(item['column'] in selected)
+            colonne.pattern=''
+            colonne.valeurs=valeurs
+            colonne.jeu_donnees=jeu_donnees
+            colonne.encodage=Encodage.objects.get_or_none(code=item['encoder'])
+            colonne.imputation=Imputation.objects.get_or_none(code=item['imputer'])
+            colonne.normalisation=MiseEchelle.objects.get_or_none(code=item['scaller'])
+            colonne.save()
+            print(colonne.pk)
+
+        cols_info = request.session['dataset']['cols_info'] #todo check db info
+       # context = {'images': hist_img(df, cols_info).items()}
+        context = {}
         return JsonResponse({
-                                'data':{'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', constext=context, request=request )}, 
-                                'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}
+                                'data':{'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context=context, request=request )}, 
+                                'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}
                             })
     else:
-        return JsonResponse({'data':{}, 'transaction': {'code': 500, 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
+        return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
 
 def selection_algorithme(request):
     if request.method == "POST":
         
         jeu_donnees = None
         if request.session.get('projet', None) is None:
-            return JsonResponse({'data':{}, 'transaction': {'code': 200, 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
         projet_id = request.session.get('projet').get('projet_id')
 
         #--------Begin Save target
-        jeu_donnees, created = JeuDonnees.get_or_create(projet_id=projet_id)
+        jeu_donnees, created = JeuDonnees.objects.get_or_create(projet_id=projet_id)
         target = request.POST.get('target', 'non défini')
         if target != 'non défini':
             colonne = Colonne.objects.get(jeu_donnees=jeu_donnees, libelle=target)
@@ -245,7 +263,7 @@ def selection_algorithme(request):
         for item in algos:
             algorithme = Algorithme.objects.get(code=item)
             AlgorithmeProjet.objects.create(projet_id=request.session.get('projet', {}).get('projet_id', 0), algorithme=algorithme, metrique=metrique)
-        return JsonResponse({'data':'', 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Algorithmes enregistrés avec success'}})
+        return JsonResponse({'data':'', 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Algorithmes enregistrés avec success'}})
     else:
         items = AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet', {}).get('projet_id', 0))
         data = dict()
@@ -253,7 +271,7 @@ def selection_algorithme(request):
         for item in items:
             data['algorithmes'].add(item.algorithme.code)
         data['metrique'] = algorithme_projet.metrique.code 
-        return JsonResponse({'data': json.dumps(data), 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Chargement des informations sur le choix des algorithmes'}})
+        return JsonResponse({'data': json.dumps(data), 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Chargement des informations sur le choix des algorithmes'}})
 
 def upload_dataset(request):
     ts = time.gmtime()
@@ -267,49 +285,48 @@ def upload_dataset(request):
         end = request.POST['end']
         nextSlice = request.POST['nextSlice']
         if fichier=="" or nom_fichier=="" or chemin=="" or end=="" or nextSlice=="":
-            res = JsonResponse({'data':'Requete invalide'})
-            return res
+            return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete invalide'}})
         else:
             if chemin == 'null':
                 path = 'media/' + nom_fichier
                 with open(path, 'wb+') as destination: 
                     destination.write(fichier)
-                FileFolder = Fichier()
-                FileFolder.chemin = nom_fichier 
-                FileFolder.eof = end
-                FileFolder.nom = nom_fichier
-                FileFolder.save()
-                print(request.session.get('projet', {}))
-                old_file_id = request.session.get('projet', {}).get('fichier_id', 0)
-                if old_file_id != 0:
+                _fichier = Fichier()
+                _fichier.chemin = nom_fichier 
+                _fichier.eof = end
+                _fichier.nom = nom_fichier
+                _fichier.save()
+                # print('dataset : ', request.session.get('dataset'))
+                if not request.session.get('dataset', {}):
+                    request.session['dataset'] = dict()
+                old_file_id = request.session.get('dataset').get('fichier_id', 0)
+                print(old_file_id, nom_fichier)
+                if old_file_id:
                     filename = Fichier.objects.get(pk=old_file_id).nom
 
                     media_root = getattr(settings, 'MEDIA_ROOT', 0)
                     path_file = os.path.join(media_root, filename)
                     if os.path.isfile(path_file):
                         os.remove(path_file)
-
+                    request.session['dataset']['fichier_id'] = _fichier.pk
                     Fichier.objects.filter(id=old_file_id).delete()
-                request.session['projet']['fichier_id'] = FileFolder.pk
+                print(_fichier.pk)
+                request.session['dataset']['fichier_id'] = _fichier.pk
                 
                 if int(end):
                     cols_info, df = info_dataset(path)
-                    context = {}
-                    context['images'] = hist_img(df, cols_info).items()
-                    request.session['projet']['df'] = df
-                    request.session['projet']['cols_info'] = cols_info
+                    context = {'images':  hist_img(df, cols_info).items()}
+                    request.session['dataset']['df'] = df.to_json()
+                    request.session['dataset']['cols_info'] = cols_info
 
-                    res = JsonResponse({
-                        'msg':'Chargment effectué avec success',
+                    res = JsonResponse({'data':{
                         'cols_info': cols_info, 
                         'df': df.to_json(orient="split"), 
                         'chemin': chemin,
                         'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context, request=request),
-                    })
+                    }, 'transaction': {'code': 'success', 'titre':'Cool !!!', 'message': 'Chargment effectué avec success'}})
                 else:
-                    res = JsonResponse({'chemin': nom_fichier})
-                return res
-
+                    res = JsonResponse({'data':{'chemin': nom_fichier}, 'transaction': {'code': 'success', 'titre':'En cours !!!', 'message': 'Chargment en cours'}})
             else:
                 path = 'media/' + chemin
                 model_id = Fichier.objects.get(chemin=chemin)
@@ -320,32 +337,27 @@ def upload_dataset(request):
                         if int(end):
                             model_id.eof = int(end)
                             model_id.save()
-                            cols_info, df = info_dataset(model_id.chemin)
-                            request.session['projet']['df'] = df
-                            request.session['projet']['cols_info'] = cols_info
-                    
-                            context = {}
-                            context['images'] = hist_img(df, cols_info).items()
 
-                            res = JsonResponse({
-                                'msg':'Chargment effectué avec success',
-                                'cols_info': cols_info, 
-                                'df': df.to_json(orient="split"), 
-                                'chemin': chemin,
-                                'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context, request=request),
-                            })
+                            cols_info, df = info_dataset(model_id.chemin)
+                            context = {'images':  hist_img(df, cols_info).items()}
+                            request.session['ddataset']['df'] = df.to_json()
+                            request.session['ddataset']['cols_info'] = cols_info
+
+                            res = JsonResponse({'data':{
+                                                        'cols_info': cols_info, 
+                                                        'df': df.to_json(orient="split"), 
+                                                        'chemin': chemin,
+                                                        'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context, request=request),
+                            }, 'transaction': {'code': 'success', 'titre':'Cool !!!', 'message': 'Chargment effectué avec success'}})
                         else:
-                            res = JsonResponse({'chemin':model_id.chemin})    
-                        return res
+                            res = JsonResponse({'data':{'chemin': model_id.chemin}, 'transaction': {'code': 'success', 'titre':'En cours !!!', 'message': 'Chargment en cours'}})
                     else:
-                        res = JsonResponse({'data':'EOF trouvé. Requeste invalide'})
-                        return res
+                        res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'EOF trouvé. Requeste invalide'}})
                 else:
-                    res = JsonResponse({'data':'Aucun fichier existant dans ce fichier'})
-                    return res
+                    res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Aucun fichier existant dans ce fichier'}})
     else:
-        res = JsonResponse({'data':'Requete non authorisée'})
-        return res
+        res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
+    return res
 
 def clean_session_projet_creation(request):
     if request.method == "POST":
@@ -373,7 +385,7 @@ def projet_update(request):
 def projet_delete(request, pk):
     if request.method == 'GET':
         Projet.objects.get(pk=pk).delete()
-        return JsonResponse({'data': {}, 'transaction': {'code': 200, 'titre':'Génial !!!', 'message': 'Projet supprimé avec success'}})
+        return JsonResponse({'data': {}, 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Projet supprimé avec success'}})
     else:
         return JsonResponse({'data': {}, 'transaction': {'code': 503, 'titre':'Oups !!!', 'message': 'Page non autorisée'}})
 

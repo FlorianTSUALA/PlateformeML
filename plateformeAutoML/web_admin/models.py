@@ -1,7 +1,7 @@
 from django.db import models
 from .enum import ETypeDonnee, EEtatPublication, ENatureValeur, EEtatCompte
 from django.urls import reverse
-from web_admin.managers import CompteManager
+from web_admin.managers import CompteManager, ModelManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
@@ -227,6 +227,9 @@ class Encodage(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='')
     strategie_encodages = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieEncodage')
 
+    objects = ModelManager()
+
+
     def __str__(self):
         return self.libelle
 
@@ -246,6 +249,8 @@ class Imputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description  =  models.TextField(max_length=254, blank=True, default='')
     taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieImputation')
+
+    objects = ModelManager()
 
     def __str__(self):
         return self.libelle
@@ -268,6 +273,8 @@ class MiseEchelle(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='')
     taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieMiseEchelle')
 
+    objects = ModelManager()
+
     def __str__(self):
         return self.libelle
 
@@ -284,14 +291,15 @@ class StrategieMiseEchelle(models.Model):
 
 class Colonne(models.Model):
     code = models.CharField(max_length=254, blank=True,null=True)
-    libelle = models.CharField(max_length=254, blank=True,null=True)
-    type_donnees = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
+    libelle = models.CharField(max_length=254, blank=True)
+    type_donnees = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL.value)
     est_categoriel = models.BooleanField(default=False)
     est_target  = models.BooleanField(default=False)
     est_selectionnee = models.BooleanField(default=True)
     pattern = models.CharField(max_length=254, blank=True,null=True)
-    valeurs = models.CharField(max_length=254, blank=True,null=True)
-    jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
+    valeurs = models.TextField(blank=True,null=True)
+    jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE, null=False, blank=False)
+
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE, null=True)
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE, null=True)
     normalisation = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE, null=True)

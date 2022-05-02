@@ -263,7 +263,7 @@
 							
 							<div class="ms-auto">
 								<button type="button"  class="btn btn-secondary">Annuler</button>
-								<input type="submit" class="btn btn-primary" value ="Demarrer" >
+								<input type="button" id="btn_start_training" class="btn btn-primary" value ="Demarrer" >
 							</div>
 						</div>
 					</div>
@@ -271,15 +271,15 @@
 						<div class="row p-4  rounded">
 							<div class="col-12 col-lg-4">
 								<label class="form-label">% données de test</label>
-								<input type="number" class="form-control" name='p_test' placeholder="% ensemble de test">
+								<input type="number" class="form-control" name='p_test' value="30" placeholder="% ensemble de test">
 							</div>
 							<div class="col-12 col-lg-4">
 								<label class="form-label">% données d'entrainemnt</label>
-								<input type="number" class="form-control" name='p_train' placeholder="% ensemble d'entrainemnt">
+								<input type="number" class="form-control" name='p_train' value="70" placeholder="% ensemble d'entrainemnt">
 							</div>
 							<div class="col-12 col-lg-4">
 								<label class="form-label">% données de validation</label>
-								<input type="number" class="form-control" name='p_val' placeholder="% ensemble de validation">
+								<input type="number" class="form-control" name='p_val' value="0" placeholder="% ensemble de validation">
 							</div>
 						</div>
 						<div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
@@ -401,6 +401,13 @@
 {% endblock %}
 
 {% block custom_javascript %}
+
+<script>
+	var copyButtonTrans = 'Coiez'
+	var csvButtonTrans = 'CSV'
+	var excelButtonTrans = 'Excel'
+	var colvisButtonTrans = 'Variable(s) concernées(s)'
+</script>
 <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
