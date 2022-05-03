@@ -38,11 +38,11 @@ class LoginRequiredMixin(object):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 def clean_session_projet_creation(request):
-    request.session['projet'].clear()
+    del request.session['projet'] #.clear()
     if request.get('dataset', {}):
         Fichier.objects.all().delete()
-        request.session['dataset'].clear()
-        # request.session.modified = True
+        del request.session['dataset']#.clear()
+    request.session.modified = True
 
 class EditProjet(LoginRequiredMixin, View):
 
@@ -59,7 +59,7 @@ class EditProjet(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         print('TAG : %s'%kwargs.get('tag', "-------------"))
-
+        clean_session_projet_creation(request)
         size = max( len(self.find_longest_word(fetch.get_nature_valeur())), len(self.find_longest_word(fetch.get_taxonomie_type_donnee())), 
                     len(self.find_longest_word(fetch.get_encodage())),len(self.find_longest_word(fetch.get_mise_echelle())), 
                     len(self.find_longest_word(fetch.get_imputation())))
@@ -304,7 +304,7 @@ def upload_dataset(request):
                     # request.session['dataset']['fichier_id'] = _fichier.pk
                     Fichier.objects.get(pk=old_file_id).delete()
                 request.session['dataset']['fichier_id'] = _fichier.pk
-                # request.session.modified = True
+                request.session.modified = True
                 print(request.session['dataset']['fichier_id'])
                 
                 if int(end):
