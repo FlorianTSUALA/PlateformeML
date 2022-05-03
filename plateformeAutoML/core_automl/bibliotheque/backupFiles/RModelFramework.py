@@ -237,7 +237,7 @@ class RModel_i:
 
 
 
-class RMFrammeClassification(RModel_i,PreprocessingData):
+class RMFrammeEstimator(RModel_i,PreprocessingData):
 
     def __init__(self, listeModel,dataset,target):
 
@@ -356,7 +356,7 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         return dico_models,result
 
 
-class Scoring(RMFrammeClassification):
+class Scoring(RMFrammeEstimator):
 
     def __init__(self, listeModel,dataset,target):
         super().__init__(listeModel,dataset,target)

@@ -8,7 +8,7 @@ from RMFRAMEWORK.analysis.bibliotheque.ressources.resources import *
 from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.importation import  DataImport
 from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.pretraitement import PreprocessingData
 from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.scoring import Scoring
-from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.classification import Classification
+from RMFRAMEWORK.analysis.bibliotheque.refractoryFramwork.classification.estimator import Estimator
 if __name__ == "__main__":
     #pd.set_option('display.max_columns', None)
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
 
 
-    classement = Classification(dict_algo_choisis,dataset,target)
+    classement = Estimator(dict_algo_choisis,dataset,target)
 
     #pair_plot = scoring.matrix_corelation()
 

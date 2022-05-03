@@ -45,11 +45,11 @@ class RModel_i:
 
 
 
-class RMFrammeClassification(RModel_i,PreprocessingData):
+class RMFrammeEstimator(RModel_i,PreprocessingData):
 
     def __init__(self, listeModel,dataset,target):
 
-        super().__init__(dataset,target)
+        super().__init__(dataset, target)
 
         train_set, test_set = self.train_test_set()
         self.models = listeModel

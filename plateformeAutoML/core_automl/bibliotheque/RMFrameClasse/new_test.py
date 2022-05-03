@@ -9,7 +9,7 @@ from  ressources.resources import *
 from refractoryFramwork.importation import  DataImport
 from refractoryFramwork.pretraitement import PreprocessingData
 #from refractoryFramwork.scoring import Scoring
-from refractoryFramwork.classification import Classification
+from refractoryFramwork.classification.estimator import Estimator
 if __name__ == "__main__":
     #pd.set_option('display.max_columns', None)
 
@@ -58,8 +58,8 @@ if __name__ == "__main__":
 
 
 
-    classement = Classification(dict_algo_choisis,dataset,target)
-    #classement = Classification(list_of_model, dataset, target)
+    classement = Estimator(dict_algo_choisis,dataset,target)
+    #classement = Estimator(list_of_model, dataset, target)
 
     #pair_plot = scoring.matrix_corelation()
 

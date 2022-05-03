@@ -20,7 +20,7 @@ from web_admin.services import fetch_config as fetch
 
 #IMPORT BIBLIOTHEQUE OF ML
 from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import *
-from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import classification
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import estimator
 from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork.pretraitement import  PreprocessingData
 from sklearn.preprocessing import StandardScaler,OneHotEncoder,LabelEncoder
 from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import ALGORITHME_SYSTEME
@@ -436,7 +436,8 @@ def train_models(request):
         p_test = request.POST['p_test']
         #
         target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
-        selected_columns = [item['libelle'] for item in Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_selectionnee=True)]
+        colonnes = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_selectionnee=True)
+        selected_columns = [item['libelle'] for item in colonnes]
         #remove all other columns
         new_df = df[df.columns.intersection(selected_columns)]
 
@@ -450,30 +451,34 @@ def train_models(request):
         algorithms = AlgorithmeProjet.objects.get(projet_id=projet_id)
 
         training_algorithms_pipeline = {}
-        for algorithm in algorithms:
-            pipeline_pretraitement = PreprocessingData(
-                    df_dataset, target, strategy_val_manquante_num = imputation_valeur_num, methode_normalisation=technique_normalisation, 
-                    strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage
-            )
-            preprocessor = pipeline_pretraitement.pipelinePreprocessing()
+        pipeline_pretraitement = PreprocessingData(
+                new_df, target, jeu_donnees.pourcentage_test, jeu_donnees.pourcentage_entrainement, strategy_val_manquante_num = imputation_valeur_num, methode_normalisation=technique_normalisation, 
+                strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage, colonnes 
+        )
+        preprocessor = pipeline_pretraitement.pipelinePreprocessing()
 
+        for algorithm in algorithms:
             initialisation_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['init']
             hyperparametre_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['hyperparametre']
             pipeline_algo = make_pipeline(preprocessor, initialisation_algo)
             training_algorithms_pipeline[algorithm.algorithme.code] = [pipeline_algo,hyperparametre_algo]
 
-        classement = classification.Classification(training_algorithms_pipeline, dataset, target)
+        classement = estimator.Estimator(training_algorithms_pipeline, dataset, target)
         """
+            ts = time.gmtime()
+            ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
+
+            nom_fichier = str(nom_fichier).replace(ext, '') + ts + ext
             path = 'media/' + nom_model #projet_id_algo_day
                 with open(path, 'wb+') as destination: 
                     destination.write(fichier)
         """
         print(training_algorithms_pipeline)
-        #performences_models, best_model, model_, precision_ = classement.executer()
-        #performences_models, models_fit, precision_best,name_= classement.executer()
-        #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",precision_)
+        # performences_models, best_model, model_, precision_ = classement.executer()
+        performences_models, models_fit, precision_best, name= classement.executer()
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",precision_)
         base_model = ''
-        precision = 100
+        # precision = 100
         try:
             dico_infos_train = {}
             for algo in algorithms:
