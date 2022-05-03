@@ -1,0 +1,19 @@
+{% for model in models %}
+<tr>
+    <td>{{model.id}}</td>
+    <td>{{model.code}}</td>
+    <td>{{model.algo}}</td>
+    
+    <td><div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{model.precision}}%;" aria-valuenow={{model.precision}} aria-valuemin="0" aria-valuemax="100">{{model.precision}}%</div>
+      </div>
+    </td>
+    <td>$1250.00</td>
+    <td>03 Feb 2020</td>
+
+    <td>{{model.famille}}</td> 
+    <td><a href="{% url 'download_model' pk=model.id %}" target='_blank' class="btn btn-secondary">Télécharger</a></td>
+    <td><a href="{% url 'predict_model' pk=model.id %}" class="btn btn-success">Prédiction</a></td>
+</tr>
+
+{% endfor %}

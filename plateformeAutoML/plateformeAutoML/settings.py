@@ -23,7 +23,7 @@ LOGIN_URL = reverse_lazy("connexion")
 LOGIN_REDIRECT_URL = reverse_lazy("home")
 LOGOUT_REDIRECT_URL = reverse_lazy("connexion")
 USE_REMEMBER_ME = False
-
+SESSION_SAVE_EVERY_REQUEST = True
 #
 AUTH_USER_MODEL = 'web_admin.Compte'
 

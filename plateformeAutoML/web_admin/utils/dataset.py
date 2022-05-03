@@ -27,7 +27,7 @@ def load_dataframe(path,sep=','):
         return []
 
  #to del    
-def load_initial2(path,sep=','):
+def load_initial(path,sep=','):
     """ Encodes data and returns new data """
     data = load_dataframe(path)
     mask = data.dtypes==object

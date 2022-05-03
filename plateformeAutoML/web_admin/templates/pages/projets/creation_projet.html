@@ -314,34 +314,13 @@
 								   <th>code</th>
 								   <th>Algorithme</th>
 								   <th>%Precision</th>
-								 
 								   <th>%</th>
 								   <th>Date</th>
 								   <th>Famille</th>
-								   <th>voir</th>
-								   <th>valider</th>
+								   <th>Actions</th>
 								 </tr>
 								 </thead>
-								 <tbody>
-									 {% for model in models %}
-									<tr>
-										<td>{{model.id}}</td>
-										<td>{{model.code}}</td>
-										<td>{{model.algo}}</td>
-										
-										<td><div class="progress">
-											<div class="progress-bar" role="progressbar" style="width: {{model.precision}}%;" aria-valuenow={{model.precision}} aria-valuemin="0" aria-valuemax="100">25%</div>
-										  </div>
-										</td>
-										<td>$1250.00</td>
-										<td>03 Feb 2020</td>
-								
-										<td>{{model.famille}}</td> 
-										<td><a href="" class="btn btn-secondary">view</a></td>
-									<td><a href="" class="btn btn-success">valider</a></td>
-									</tr>
-									
-									{% endfor %}
+								 <tbody id="info_models">
 									
 								  </tbody>
 								</table>
@@ -402,12 +381,7 @@
 
 {% block custom_javascript %}
 
-<script>
-	var copyButtonTrans = 'Coiez'
-	var csvButtonTrans = 'CSV'
-	var excelButtonTrans = 'Excel'
-	var colvisButtonTrans = 'Variable(s) concernées(s)'
-</script>
+
 <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
