@@ -3,19 +3,18 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 from django.conf import settings
 import time, os, json
 from django.template.loader import render_to_string
 from matplotlib.pyplot import axis
 import pandas as pd
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-#from plateformeAutoML.web_admin.models import JeuDonnees
+from django.utils.decorators import method_decorator
 
 from web_admin.utils.file import *
 from web_admin.enum import EEtatPublication, ENatureValeur
-from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees, Colonne, Imputation, MiseEchelle, Encodage
+from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees, Colonne, Imputation, MiseEchelle, Encodage, TableModel
 from web_admin.utils.dataset import info_dataset, hist_img, load_dataframe
 from web_admin.services import fetch_config as fetch
 
@@ -27,7 +26,6 @@ from sklearn.preprocessing import StandardScaler,OneHotEncoder,LabelEncoder
 from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import ALGORITHME_SYSTEME
 from sklearn.pipeline import make_pipeline
 
-from django.utils.decorators import method_decorator
 
 ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 
@@ -38,13 +36,15 @@ class LoginRequiredMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
 def clean_session_projet_creation(request):
     request.session['projet'].clear()
     if request.get('dataset', {}):
         Fichier.objects.all().delete()
         request.session['dataset'].clear()
+        # request.session.modified = True
 
-class NouveauProjetView(LoginRequiredMixin, View):
+class EditProjet(LoginRequiredMixin, View):
 
     def find_longest_word(self, mylist):
     	return max(mylist, key=len)
@@ -58,6 +58,8 @@ class NouveauProjetView(LoginRequiredMixin, View):
         return new_dict.items()
 
     def get(self, request, *args, **kwargs):
+        print('TAG : %s'%kwargs.get('tag', "-------------"))
+
         size = max( len(self.find_longest_word(fetch.get_nature_valeur())), len(self.find_longest_word(fetch.get_taxonomie_type_donnee())), 
                     len(self.find_longest_word(fetch.get_encodage())),len(self.find_longest_word(fetch.get_mise_echelle())), 
                     len(self.find_longest_word(fetch.get_imputation())))
@@ -85,20 +87,10 @@ class NouveauProjetView(LoginRequiredMixin, View):
             },
         }
 
-        class Mod:
-            def __init__(self,id,algo,code,precision,famille):
-                self.id = id
-                self.algo = algo
-                self.code = code
-                self.precision = precision
-                self.famille = famille
-
         liste_models = []
 
         for i in range(0,10):
-
-            mod = Modele()
-            model = Mod(i,'algo_'+str(i),'code_'+str(i), 10*i+50,'famille_'+str(i))
+            model = TableModel(i,'algo_'+str(i),'code_'+str(i), 10*i+50,'famille_'+str(i))
             liste_models.append(model)
 
         context = {
@@ -194,6 +186,7 @@ def info_preprocessing(request):
         projet_id = request.session.get('projet').get('projet_id', 0)
         jeu_donnees, created = JeuDonnees.objects.get_or_create(projet_id=projet_id)
         file_id = request.session.get('dataset').get('fichier_id', 0)
+        print(file_id)
         _fichier = Fichier.objects.get(pk=file_id)
         jeu_donnees.fichier = _fichier.chemin
         jeu_donnees.save()
@@ -203,7 +196,6 @@ def info_preprocessing(request):
         for item in preprocessing:
             #item['nature'] not found skip : colvis
             valeurs = ''
-            # print(ENatureValeur.QUALITATIF.value)
             print('item : ', item)
             if item['nature'] == ENatureValeur.QUALITATIF.value:
                 _valeurs = df[item['column']].unique()
@@ -235,9 +227,9 @@ def info_preprocessing(request):
     else:
         return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
 
+
 def selection_algorithme(request):
     if request.method == "POST":
-        
         jeu_donnees = None
         if request.session.get('projet', None) is None:
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
@@ -302,16 +294,18 @@ def upload_dataset(request):
                 old_file_id = request.session.get('dataset').get('fichier_id', 0)
                 print(old_file_id, nom_fichier)
                 if old_file_id:
+                    #to_review
                     filename = Fichier.objects.get(pk=old_file_id).nom
 
                     media_root = getattr(settings, 'MEDIA_ROOT', 0)
                     path_file = os.path.join(media_root, filename)
                     if os.path.isfile(path_file):
                         os.remove(path_file)
-                    request.session['dataset']['fichier_id'] = _fichier.pk
-                    Fichier.objects.filter(id=old_file_id).delete()
-                print(_fichier.pk)
+                    # request.session['dataset']['fichier_id'] = _fichier.pk
+                    Fichier.objects.get(pk=old_file_id).delete()
                 request.session['dataset']['fichier_id'] = _fichier.pk
+                # request.session.modified = True
+                print(request.session['dataset']['fichier_id'])
                 
                 if int(end):
                     cols_info, df = info_dataset(path)
@@ -328,6 +322,9 @@ def upload_dataset(request):
                 else:
                     res = JsonResponse({'data':{'chemin': nom_fichier}, 'transaction': {'code': 'success', 'titre':'En cours !!!', 'message': 'Chargment en cours'}})
             else:
+                print('---------')
+                print('---------')
+                print('---------')
                 path = 'media/' + chemin
                 model_id = Fichier.objects.get(chemin=chemin)
                 if model_id.nom == nom_fichier:
@@ -362,8 +359,7 @@ def upload_dataset(request):
 def clean_session_projet_creation(request):
     if request.method == "POST":
         request.session.clear()
-        res = JsonResponse({'data':'Bye'})
-        return res
+        return JsonResponse({'data':{}, 'transaction': {'code': 'info', 'titre':'Bye !!!', 'message': 'End of session in this page'}})
 
 class ListeProjetView(TemplateView):
     template_name = 'pages/projets/liste_projet.html'
@@ -417,85 +413,62 @@ class MesFavorisView(TemplateView):
 def train_models(request):
 
     if request.method == "POST":
+
+        
+        jeu_donnees = None
+        if not request.session.get('projet', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        if not request.session.get('dataset', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
+
+        df = pd.read_json(request.session['dataset']['df'])
+
+        projet_id = request.session.get('projet').get('projet_id', 0)
+        jeu_donnees = JeuDonnees.objects.get(projet_id=projet_id)
+        jeu_donnees.pourcentage_validation = request.POST['p_val']
+        jeu_donnees.pourcentage_test = request.POST['p_test']
+        jeu_donnees.pourcentage_entrainement = request.POST['p_train']
+        jeu_donnees.taille = len(df)
+        jeu_donnees.save()
         
         p_val = request.POST['p_val']
         p_train = request.POST['p_train'] 
         p_test = request.POST['p_test']
-        
-        fichier = Fichier.objects.last()
-
-        print("-------------------->",fichier.chemin)
-
-        #chemin = r'C:\\Users\\USER\\Documents\\ML\\PlateformeML\\plateformeAutoML\\media' + '\\' + str(fichier.chemin)
-        chemin = r'C:\Users\USER\Documents\ML\PlateformeML\plateformeAutoML\chunk.csv'
-        #chemin = fichier.chemin
-        dataset = pd.read_csv(chemin)
-
-        #colonnes = Colonnne.objects.filter(dataset = datass)
-        colonnes = dataset.columns
-
-        #chemin = datass.source_dataset
-        target = 'Churn'
-        list_colonnes_select = list(colonnes)
-        """for colonne in list(colonnes):
-            list_colonnes_select.append(colonne.nom_colonne)"""
-
-
-        df_dataset = dataset.drop(['customerID'],axis=1)
-
-        print("newwwwwwwwwwww",dataframe)
-
-
-        colonne_witout_target = []
-        for col in list_colonnes_select:
-            if col !=target:
-                colonne_witout_target.append(col)
-
-
+        #
+        target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
+        selected_columns = [item['libelle'] for item in Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_selectionnee=True)]
+        #remove all other columns
+        new_df = df[df.columns.intersection(selected_columns)]
 
         technique_normalisation = StandardScaler()
         technique_encodage  = OneHotEncoder()
         imputation_valeur_num = "mean"
         imputation_valeur_cat = 'most_frequent'
         encodage_target = LabelEncoder()
-        metric = 'f1'
+        metric = 'f1' #Pas utilisé
 
-        pipeline_pretraitement = PreprocessingData(df_dataset, target, strategy_val_manquante_num=imputation_valeur_num,
-                                          methode_normalisation=technique_normalisation,
-                                          strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage)
+        algorithms = AlgorithmeProjet.objects.get(projet_id=projet_id)
 
-        liste_colonnes = colonnes.objects.all()
-        ##Technique avec pretraitement des données un à un 
-        """preprocessor1 = PreprocessingData(dataset, target, strategy_val_manquante_num=imputation_valeur_num,
-                                          methode_normalisation=technique_normalisation,
-                                          strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage,liste_colonnes)"""
+        training_algorithms_pipeline = {}
+        for algorithm in algorithms:
+            pipeline_pretraitement = PreprocessingData(
+                    df_dataset, target, strategy_val_manquante_num = imputation_valeur_num, methode_normalisation=technique_normalisation, 
+                    strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage
+            )
+            preprocessor = pipeline_pretraitement.pipelinePreprocessing()
 
-        label = preprocessor1.encodage_label(encodage_label=encodage_target)
-
-        ##donnee transformees
-        # data_traiter, dataframeT = pipeline_pretraitement.transfom()
-
-
-        preprocessor = pipeline_pretraitement.pipelinePreprocessing()
-
-        ###################### INITIALISATION DES Algorithmes NECESSAIRES POUR LE SCORING #################
-        #liste_algo = projet.analyse.algorithmes.all()
-        
-        #Algorithmechoisis = ["SVM","Logistic"]
-        Algorithmechoisis = ["SVM"]
-        print(Algorithmechoisis)
-
-
-        dict_algo_choisis = {}
-        for algo in Algorithmechoisis:
-            initialisation_algo = ALGORITHME_SYSTEME[algo]['init']
-            hyperparametre_algo = ALGORITHME_SYSTEME[algo]['hyperparametre']
+            initialisation_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['init']
+            hyperparametre_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['hyperparametre']
             pipeline_algo = make_pipeline(preprocessor, initialisation_algo)
-            dict_algo_choisis[algo] = [pipeline_algo,hyperparametre_algo]
+            training_algorithms_pipeline[algorithm.algorithme.code] = [pipeline_algo,hyperparametre_algo]
 
-        classement = classification.Classification(dict_algo_choisis, dataset, target)
-
-        print(dict_algo_choisis)
+        classement = classification.Classification(training_algorithms_pipeline, dataset, target)
+        """
+            path = 'media/' + nom_model #projet_id_algo_day
+                with open(path, 'wb+') as destination: 
+                    destination.write(fichier)
+        """
+        print(training_algorithms_pipeline)
         #performences_models, best_model, model_, precision_ = classement.executer()
         #performences_models, models_fit, precision_best,name_= classement.executer()
         #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",precision_)
@@ -503,7 +476,7 @@ def train_models(request):
         precision = 100
         try:
             dico_infos_train = {}
-            for algo in Algorithmechoisis:
+            for algo in algorithms:
                 #base_model,precision = classement.optimisationHyperParam(algo,scoring=metric, cv=10)
 
                 #chemin = classement.save_model(base_model, model.pk)
@@ -515,20 +488,12 @@ def train_models(request):
             print("ERREUR lors c l'entrainement ddes  model")
 
         print(dico_infos_train)
-   
-        class Mod:
-            def __init__(self,id,algo,code,precision,famille):
-                self.id = id
-                self.algo = algo
-                self.code = code
-                self.precision = precision
-                self.famille = famille
                     
         liste_models = []
-        for algo in Algorithmechoisis:
+        for index, algo in  enumerate(algorithms):
             libele_algo = ALGORITHME_SYSTEME[algo]['label']
             famille_algo = ALGORITHME_SYSTEME[algo]['family']
-            model = Mod(0,libele_algo,'code_',precision*100,famille_algo)
+            model = TableModel(index, libele_algo, 'code_',precision*100, famille_algo)
             liste_models.append(model)
 
         print(liste_models)
@@ -537,3 +502,41 @@ def train_models(request):
             'models':liste_models
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
+
+
+def predict_model(request, pk):
+    print('prediction...')
+    if request.method == "POST":
+        print('POST')
+        jeu_donnees = None
+        # return render(request, 'pages/projets/fragments/block/')
+        if not request.session.get('projet', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+       # context = {'images': hist_img(df, cols_info).items()}
+        context = {}
+        return JsonResponse({
+                                'data':{'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context=context, request=request )}, 
+                                'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}
+                            })
+    else:
+        return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
+
+
+def download_model(request, pk):
+    if pk != '':
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # Define the full file path
+        filepath = BASE_DIR + '/filedownload/Files/' + filename
+        # Open the file for reading content
+        path = open(filepath, 'rb')
+        # Set the mime type
+        mime_type, _ = mimetypes.guess_type(filepath)
+        # Set the return value of the HttpResponse
+        response = HttpResponse(path, content_type=mime_type)
+        # Set the HTTP header for sending to browser
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        # Return the response value
+        return response
+    else:
+        # Load the template
+        print('hello')

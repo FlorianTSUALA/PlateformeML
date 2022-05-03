@@ -70,6 +70,7 @@ class JeuDonnees(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='', null=True)
     source =  models.CharField(max_length=254, blank=True,null=True)
     pourcentage_validation = models.DecimalField(default=0,  max_digits=3, decimal_places=2, blank=True,null=True)
+    pourcentage_entrainement = models.DecimalField(default=0,  max_digits=3, decimal_places=2, blank=True,null=True)
     pourcentage_test = models.DecimalField(default=0.3,  max_digits=3, decimal_places=2, blank=True,null=True)
     taille = models.IntegerField(default=0, blank=True,null=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
@@ -304,6 +305,8 @@ class Colonne(models.Model):
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE, null=True)
     normalisation = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE, null=True)
 
+    objects = ModelManager()
+
     def __str__(self):
         return self.libelle
 
@@ -343,5 +346,14 @@ class Configuration():
     # def __str__(self):
     #     return self.description
 
-
+class TableModel:
+    class Meta:
+       managed = False
+       
+    def __init__(self,id,algo,code,precision,famille):
+        self.id = id
+        self.algo = algo
+        self.code = code
+        self.precision = precision
+        self.famille = famille
 # Create your models here.
