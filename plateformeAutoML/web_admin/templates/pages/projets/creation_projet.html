@@ -263,7 +263,7 @@
 							
 							<div class="ms-auto">
 								<button type="button"  class="btn btn-secondary">Annuler</button>
-								<input type="button" id="btn_start_training" class="btn btn-primary" value ="Demarrer" >
+								<input type="submit" id="btn_start_training" class="btn btn-primary" value ="Demarrer" >
 							</div>
 						</div>
 					</div>
@@ -285,6 +285,7 @@
 						<div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
 					</div>
 					</div>
+					<a href="{% url  'train_models'  %} " target="_blank"   class="btn btn-primary">Lancer</a>
 				</div>
 				</div>
 			</form>
@@ -313,15 +314,22 @@
 								   <th>#ID</th>
 								   <th>code</th>
 								   <th>Algorithme</th>
-								   <th>%Precision</th>
-								   <th>%</th>
-								   <th>Date</th>
-								   <th>Famille</th>
+								   <th>Precision</th>
+								   <th>chemin</th>
 								   <th>Actions</th>
 								 </tr>
 								 </thead>
 								 <tbody id="info_models">
-									
+									{% for model in infos_modeles_train %}
+									<tr>
+										<td>{{model.pk}}</td>
+										<td>{{model.code}}</td>
+										<td>{{model.algorithme_projet}}</td>
+										<td>{{model.precision}}</td>
+										<td>{{model.chemin}}</td>
+										<td><a href="{% url 'predict_model' model.pk %}" class="btn btn-success btn-sm">Tester le Model</a></td>
+									</tr>
+									{% endfor %}
 								  </tbody>
 								</table>
 							</div>

@@ -1,4 +1,5 @@
 from pyexpat import model
+from statistics import mode
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
@@ -412,99 +413,108 @@ class MesFavorisView(TemplateView):
 
 def train_models(request):
 
-    if request.method == "POST":
-
-        
+    if request.method == "GET":
+       
         jeu_donnees = None
         if not request.session.get('projet', {}):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
         if not request.session.get('dataset', {}):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
 
+        print("save model OK..................")
         df = pd.read_json(request.session['dataset']['df'])
+        print("save model OK..................",df)
+
 
         projet_id = request.session.get('projet').get('projet_id', 0)
         jeu_donnees = JeuDonnees.objects.get(projet_id=projet_id)
-        jeu_donnees.pourcentage_validation = request.POST['p_val']
-        jeu_donnees.pourcentage_test = request.POST['p_test']
-        jeu_donnees.pourcentage_entrainement = request.POST['p_train']
+        jeu_donnees.pourcentage_validation = request.POST.get('p_val', 0)
+        jeu_donnees.pourcentage_test = request.POST.get('p_test', 0.3)
+        jeu_donnees.pourcentage_entrainement = request.POST.get('p_train', 0.7)
         jeu_donnees.taille = len(df)
-        jeu_donnees.save()
+        r = jeu_donnees.save()
         
-        p_val = request.POST['p_val']
-        p_train = request.POST['p_train'] 
-        p_test = request.POST['p_test']
-        #
         target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
-        colonnes = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_selectionnee=True)
-        selected_columns = [item['libelle'] for item in colonnes]
+        colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
+
+        selected_columns = [item.libelle for item in list(colonnes)]
         #remove all other columns
         new_df = df[df.columns.intersection(selected_columns)]
 
-        technique_normalisation = StandardScaler()
-        technique_encodage  = OneHotEncoder()
-        imputation_valeur_num = "mean"
-        imputation_valeur_cat = 'most_frequent'
-        encodage_target = LabelEncoder()
         metric = 'f1' #Pas utilisé
 
-        algorithms = AlgorithmeProjet.objects.get(projet_id=projet_id)
+        algorithms = AlgorithmeProjet.objects.filter(projet_id=projet_id)
 
         training_algorithms_pipeline = {}
-        pipeline_pretraitement = PreprocessingData(
+        """pipeline_pretraitement = PreprocessingData(
                 new_df, target, jeu_donnees.pourcentage_test, jeu_donnees.pourcentage_entrainement, strategy_val_manquante_num = imputation_valeur_num, methode_normalisation=technique_normalisation, 
-                strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage, colonnes 
-        )
+                strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage, *colonnes
+        )"""
+        pipeline_pretraitement = PreprocessingData(new_df, target.libelle, jeu_donnees.pourcentage_test, jeu_donnees.pourcentage_entrainement,*colonnes)
         preprocessor = pipeline_pretraitement.pipelinePreprocessing()
 
-        for algorithm in algorithms:
+        #Affichage des données Prétraitées 
+        print("---####################DONNEES PRETAITEES-----------")
+        print(pipeline_pretraitement.transform())
+
+        for algorithm in list(algorithms):
             initialisation_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['init']
             hyperparametre_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['hyperparametre']
             pipeline_algo = make_pipeline(preprocessor, initialisation_algo)
             training_algorithms_pipeline[algorithm.algorithme.code] = [pipeline_algo,hyperparametre_algo]
 
-        classement = estimator.Estimator(training_algorithms_pipeline, dataset, target)
-        """
+            estimateur = estimator.Estimator(training_algorithms_pipeline,new_df, target.libelle)
+        
             ts = time.gmtime()
             ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
 
-            nom_fichier = str(nom_fichier).replace(ext, '') + ts + ext
-            path = 'media/' + nom_model #projet_id_algo_day
-                with open(path, 'wb+') as destination: 
-                    destination.write(fichier)
-        """
+            #nom_fichier = str(nom_fichier).replace(ext, '') + ts + ext
+            path = "C:/Users/USER/Documents/ML/PlateformeML/plateformeAutoML/media/models_save"
+            #projet_id_algo_day
+            """with open(path, 'wb+') as destination: 
+                destination.write(fichier)"""
+
         print(training_algorithms_pipeline)
-        # performences_models, best_model, model_, precision_ = classement.executer()
-        performences_models, models_fit, precision_best, name= classement.executer()
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",precision_)
+       
+        #Entrainement des modèles sans optimisation
+        #performences_models, best_model, model_, precision_ = classement.executer()
+       
         base_model = ''
-        # precision = 100
+
+        #ENTRAINEMENT ET OPTIMISATION AVEC LES DONNEES CHARGEES ET LES ALGORITHMES SELECTIONNES
         try:
             dico_infos_train = {}
-            for algo in algorithms:
-                #base_model,precision = classement.optimisationHyperParam(algo,scoring=metric, cv=10)
-
-                #chemin = classement.save_model(base_model, model.pk)
-                """dico_infos_train[algo] = {
-                    model : base_model,
-                    precision : precision 
-                }"""
+            for algo in list(algorithms):
+                base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=metric, cv=10)
+                dico_infos_train[algo.algorithme.libelle] = {
+                    'model_training' : base_model,
+                    'precision' : round(precision,3),
+                    'algo': algo
+                }
         except:
-            print("ERREUR lors c l'entrainement ddes  model")
+            print("ERREUR lors l'entrainement des  models")
 
-        print(dico_infos_train)
+        print("-----------------------",dico_infos_train)
                     
         liste_models = []
-        for index, algo in  enumerate(algorithms):
-            libele_algo = ALGORITHME_SYSTEME[algo]['label']
-            famille_algo = ALGORITHME_SYSTEME[algo]['family']
-            model = TableModel(index, libele_algo, 'code_',precision*100, famille_algo)
+        for index, algo in  enumerate(dico_infos_train):
+            libele_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['label']
+            code_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['code']
+            famille_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['family']
+            algo_projet = dico_infos_train[algo]['algo']
+            
+            model = Modele(code=code_algo, chemin=" ",precision = round(precision*100,3),rapport = "",resume="", algorithme_projet = algo_projet)
+    
+            model.save()
+            chemin = estimateur.save_model(dico_infos_train[algo]['model_training'], path,model.pk)
+            model.chemin = chemin
+            model.save()
             liste_models.append(model)
-
+        
+        print("valeurs de retour Here ...")
         print(liste_models)
-
         context = {
-            'models':liste_models
+            'infos_modeles_train':liste_models
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
 
@@ -525,7 +535,6 @@ def predict_model(request, pk):
                             })
     else:
         return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
-
 
 def download_model(request, pk):
     if pk != '':

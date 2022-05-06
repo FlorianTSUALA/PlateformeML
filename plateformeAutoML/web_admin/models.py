@@ -164,8 +164,8 @@ class AlgorithmeProjet(models.Model):
     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE, null=True)   
     # metriques = models.ManyToManyField(Metrique,through='MetriqueAlgorithmeProjet')
 
-    def __str__(self):
-        return self.libelle
+    """def __str__(self):
+        return self.alg"""
 
 class Modele(models.Model):
     code = models.CharField(max_length=254, blank=True,null=True)

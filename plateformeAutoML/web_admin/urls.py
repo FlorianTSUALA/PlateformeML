@@ -106,7 +106,7 @@ urlpatterns = [
 
 
     ####################################################################################################################################
-    #####################   AUTRES
+    #####################                                            AUTRES
     ####################################################################################################################################
 
     path('faq',  FAQView.as_view(), name='faq'),
@@ -204,7 +204,6 @@ urlpatterns = [
     path('parametrage/taxonomie_type_donnee/create/',  taxonomie_type_donnee_create, name='taxonomie_type_donnee_create'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/update/',  taxonomie_type_donnee_update, name='taxonomie_type_donnee_update'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/delete/',  taxonomie_type_donnee_delete, name='taxonomie_type_donnee_delete'),
-    
 ]
 
 
