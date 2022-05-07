@@ -526,14 +526,23 @@ def predict_projet(request,pk):
     colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
     selected_columns = [item.libelle for item in list(colonnes)]
 
-    features = []
-    for col in list(colonnes):
-        if col.pk !=target.pk:
-            features.append(col)
-
     colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
-    
+    features = []
     for col in colonnes:
+        if col.pk != target.pk:
+            valeur = col.valeurs.split(',')
+            print("-xxx-----",valeur)
+            print("---xxx---",col.valeurs)
+
+            #col.arrays = valeur
+            features.append(col)
+            #print(col.arrays)
+
+    
+    
+    liste_colonnes = []
+    for col in colonnes:
+        #valeur = col.valeurs.split(',')
         print(col.libelle,"------>TYPE",col.est_categoriel,"-----ccccccccccccccc--->",col.valeurs)
     
     if request.method == "POST":

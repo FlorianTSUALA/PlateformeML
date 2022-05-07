@@ -19,7 +19,6 @@ class Compte(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_adhesion = models.DateTimeField(default=now)
     etat = models.CharField(max_length=50, choices=EEtatCompte.choices(), default=EEtatCompte.ACTIF)
-
     USERNAME_FIELD = 'login'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['email','telephone']
@@ -302,8 +301,8 @@ class Colonne(models.Model):
     est_target  = models.BooleanField(default=False)
     est_selectionnee = models.BooleanField(default=True)
     pattern = models.CharField(max_length=254, blank=True,null=True)
-    valeurs = ArrayField(models.CharField(max_length=100), null=True)
-    #valeurs = models.TextField(blank=True,null=True)
+    #valeurs = ArrayField(models.CharField(max_length=100), null=True)
+    valeurs = models.TextField(blank=True,null=True)
     jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE, null=False, blank=False)
 
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE, null=True)
@@ -334,8 +333,6 @@ class Valeur(models.Model):
     def __str__(self):
         return self.contenu
 
-
-
 class Fichier(models.Model):
     code = models.CharField(max_length=254, blank=True,null=True)
     chemin = models.CharField(unique=True, max_length=100)
@@ -354,7 +351,6 @@ class Configuration():
 class TableModel:
     class Meta:
        managed = False
-       
     def __init__(self,id,algo,code,precision,famille):
         self.id = id
         self.algo = algo
