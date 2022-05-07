@@ -76,10 +76,10 @@ def info_dataset(path):
         col_info['type'] = TDD_TYPE_KEY[str(dataframe[col_name].dtype)]
         # col_info["data"] = dataframe[col].to_json()
         # col_info["data"] = json.dumps(dataframe[col_name].values.tolist())
-        col_info['nature'] = 'CATEGORIEL'
+        col_info['nature'] =  ENatureValeur.QUALITATIF.value
         if dataframe[col_name].dtype in [ *TDD['ENTIER']['data'], *TDD['ENTIER']['data'], *TDD['DATE']['data'], *TDD['TIMEDELTA']['data'] ]:
             if len(dataframe[col_name].unique())  > ln(len(dataframe))**2/3:
-                col_info['nature'] = ENatureValeur.QUALITATIF.value
+                col_info['nature'] = ENatureValeur.QUANTITATIF.value
         
         #TODO Make more controll
         #TODO Check to DB
