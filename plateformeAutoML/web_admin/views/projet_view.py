@@ -532,10 +532,14 @@ def predict_projet(request,pk):
             features.append(col)
 
     colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
-    
+    new_cols = []
     for col in colonnes:
         print(col.libelle,"------>TYPE",col.est_categoriel,"-----ccccccccccccccc--->",col.valeurs)
-    
+        col.array_valeurs = str(col.valeurs).split(',')
+        print(col.array_valeurs)
+        new_cols.append(col)
+    colonnes = new_cols
+
     if request.method == "POST":
         data_input = []
         datas = request.POST

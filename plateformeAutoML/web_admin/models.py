@@ -302,8 +302,9 @@ class Colonne(models.Model):
     est_target  = models.BooleanField(default=False)
     est_selectionnee = models.BooleanField(default=True)
     pattern = models.CharField(max_length=254, blank=True,null=True)
-    valeurs = ArrayField(models.CharField(max_length=100), null=True)
-    #valeurs = models.TextField(blank=True,null=True)
+    # valeurs = ArrayField(models.CharField(max_length=100), null=True)
+    array_valeurs = list()
+    valeurs = models.TextField(blank=True,null=True)
     jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE, null=False, blank=False)
 
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE, null=True)
