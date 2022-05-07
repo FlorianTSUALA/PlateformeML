@@ -35,39 +35,41 @@
 							<div class="p-4 border rounded">
 								<form class="row g-3 needs-validation" novalidate="">
 									<div class="row">
-                                        <div class="col-md-12">
-                                            <label for="not_defined" class="form-label">Modele</label>
-                                            <select class="form-select" id="not_defined" required="">
-                                                <option selected="" disabled="" value="">regression...</option>
-                                                <option>...</option>
-                                            </select>
-                                            <div class="invalid-feedback">Selectionnez un algorithme.</div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label for="validationCustom03" class="form-label">Valeur</label>
-                                            <input type="text" class="form-control" id="validationCustom04" required="">
-                                            <div class="invalid-feedback">Définissez une valeur.</div>
-                                        </div>
 
-                                        <div class="col-md-12">
-                                            <label for="validationCustom03" class="form-label">Valeur</label>
-                                            <input type="text" class="form-control" id="validationCustom06" required="">
-                                            <div class="invalid-feedback">Définissez une valeur.</div>
+                                        {% for colonne in features %}
+                                            
+                                    
+                                            {% if colonne.est_categoriel == True %}
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="not_defined" class="form-label">{{colonne.libelle}}</label>
+                                                    <select class="form-select" id="not_defined" required="">
+                                                        <option selected=""  value="">...</option>
+                                                        {% for val in colonne.valeurs %}
+                                                            <option selected="" disabled="" value="">{{val}}</option>
+                                                        {% endfor %}
+                                                        
+                                                       
+                                                    </select>
+                                                    <div class="invalid-feedback">Selectionnez un algorithme.</div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% if colonne.est_categoriel == False %}
+                                                <div class="col-md-12 mt-3">
+                                                    <label for="validationCustom03" class="form-label">{{colonne.libelle}}</label>
+                                                    <input type="text" class="form-control" id="validationCustom04" required="">
+                                                    <div class="invalid-feedback">Définissez une valeur.</div>
+                                                </div>
+                                            {% endif %}
+                                           
+                                        {% endfor %}
                                         </div>
-
-                                        <div class="col-md-12">
-                                            <label for="validationCustom03" class="form-label">Valeur</label>
-                                            <input type="text" class="form-control" id="validationCustom05" required="">
-                                            <div class="invalid-feedback">Définissez une valeur.</div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label for="validationCustom03" class="form-label">&nbsp;&nbsp;&nbsp;</label>
+                                                <input type="submit" class="form-control btn btn-primary" value="Prédiction" id="validationCustom03" >
+                                            </div>
                                         </div>
-
-                                    </div>
-									<div class="row">
-                                        <div class="col-md-3">
-                                            <label for="validationCustom03" class="form-label">&nbsp;&nbsp;&nbsp;</label>
-                                            <input type="submit" class="form-control btn btn-primary" value="Prédiction" id="validationCustom03" >
-                                        </div>
-                                    </div>
 									
 								
 								</form>

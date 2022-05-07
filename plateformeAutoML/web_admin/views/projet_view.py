@@ -197,11 +197,12 @@ def info_preprocessing(request):
         # print(preprocessing)
         for item in preprocessing:
             #item['nature'] not found skip : colvis
-            valeurs = ''
+            valeurs = []
             print('item : ', item)
             if item['nature'] == ENatureValeur.QUALITATIF.value:
                 _valeurs = df[item['column']].unique()
-                valeurs = ','.join(map(str, _valeurs))
+                #valeurs = ','.join(map(str, _valeurs))
+                valeurs.append(map(str, _valeurs))
                 print(_valeurs, valeurs)
 
             colonne = Colonne()

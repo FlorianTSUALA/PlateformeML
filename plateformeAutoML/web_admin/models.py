@@ -7,6 +7,9 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from django.utils.text import slugify
 
+#from django.contrib.postgres.fields import ArrayField
+
+
 class Compte(AbstractBaseUser, PermissionsMixin):
     code =  models.CharField(max_length=254, blank=True,null=True)
     login = models.CharField(max_length=70, unique=True)
@@ -299,7 +302,8 @@ class Colonne(models.Model):
     est_target  = models.BooleanField(default=False)
     est_selectionnee = models.BooleanField(default=True)
     pattern = models.CharField(max_length=254, blank=True,null=True)
-    valeurs = models.TextField(blank=True,null=True)
+    valeurs = ArrayField(models.CharField(max_length=100), null=True)
+    #valeurs = models.TextField(blank=True,null=True)
     jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE, null=False, blank=False)
 
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE, null=True)
