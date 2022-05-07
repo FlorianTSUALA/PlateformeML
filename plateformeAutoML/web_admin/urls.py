@@ -31,7 +31,7 @@ from web_admin.views import (
     EditProjet, 
     projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
     projet_info, upload_dataset, clean_session_projet_creation, info_preprocessing, 
-    selection_algorithme, get_algorithme_by_task, train_models, download_model, predict_model,
+    selection_algorithme, get_algorithme_by_task, train_models, download_model, predict_model,predict_projet,
     #AUTRES
     FAQView, AProposView, 
     #ALGORITHME
@@ -96,6 +96,8 @@ urlpatterns = [
     path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
     
     path('train_models/', train_models, name='train_models'),
+    path('predict_projet/<int:pk>', predict_projet, name='predict_projet'),
+
     path('download_model/<int:pk>', download_model, name='download_model'),
     path('predict_model/<int:pk>', predict_model, name='predict_model'),
 
