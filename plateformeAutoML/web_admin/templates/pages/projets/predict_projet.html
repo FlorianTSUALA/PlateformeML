@@ -1,0 +1,106 @@
+{% extends 'layouts/base_with_breadcrumb.html' %}
+{% load static %}
+
+{% block title %} AutoML - Plateforme du Machine Learning', Automaisé {% endblock %}
+
+{% block custom_style %} 
+  <link href="{% static 'template/assets/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'template/assets/plugins/input-tags/css/tagsinput.css' %}" rel="stylesheet" />
+  <link href="{% static 'template/assets/plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'template/assets/plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />  
+  <style>
+	.form-control-xs {
+		height: calc(1em + .375rem + 2px) !important;
+		padding: .125rem .25rem !important;
+		font-size: .75rem !important;
+		line-height: 1.5;
+		border-radius: .2rem;
+	}
+  </style>
+{% endblock %} 
+
+{% block content %} 
+<div class="">
+	<div id="step-01" class="page-section-stepper container py-2">
+        <div id="step-07" class="page-section-stepper container py-2">
+			<h2 class="font-weight-light text-center text-muted py-3">Prédiction du modèle</h2>
+			<div class="row">
+				<div class="col-lg-12 mx-auto">
+					<div class="card">
+						<div class="card-header py-3 bg-transparent"> 
+							<div class="d-sm-flex align-items-center">
+							<h5 class="ml-3">Definisez les variables pour la production</h5>
+						</div>
+						<div class="card-body">
+							<div class="p-4 border rounded">
+								<form class="row g-3 needs-validation" novalidate="">
+									<div class="row">
+                                        <div class="col-md-12">
+                                            <label for="not_defined" class="form-label">Modele</label>
+                                            <select class="form-select" id="not_defined" required="">
+                                                <option selected="" disabled="" value="">regression...</option>
+                                                <option>...</option>
+                                            </select>
+                                            <div class="invalid-feedback">Selectionnez un algorithme.</div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="validationCustom03" class="form-label">Valeur</label>
+                                            <input type="text" class="form-control" id="validationCustom04" required="">
+                                            <div class="invalid-feedback">Définissez une valeur.</div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <label for="validationCustom03" class="form-label">Valeur</label>
+                                            <input type="text" class="form-control" id="validationCustom06" required="">
+                                            <div class="invalid-feedback">Définissez une valeur.</div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <label for="validationCustom03" class="form-label">Valeur</label>
+                                            <input type="text" class="form-control" id="validationCustom05" required="">
+                                            <div class="invalid-feedback">Définissez une valeur.</div>
+                                        </div>
+
+                                    </div>
+									<div class="row">
+                                        <div class="col-md-3">
+                                            <label for="validationCustom03" class="form-label">&nbsp;&nbsp;&nbsp;</label>
+                                            <input type="submit" class="form-control btn btn-primary" value="Prédiction" id="validationCustom03" >
+                                        </div>
+                                    </div>
+									
+								
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/row-->
+		</div>
+    </div>
+</div>
+<div id="script"></div>
+{% endblock %}
+
+{% block custom_javascript %}
+
+
+<script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
+<script src="{% static 'template/assets/plugins/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'template/assets/js/form-select2.js' %}"></script>
+	
+
+{% include 'pages/projets/fragment/menu.html' %}
+{% include 'pages/projets/fragment/info_algo.html' %}
+{% include 'pages/projets/fragment/info_dataset.html' %}
+{% include 'pages/projets/fragment/info_projet.html' %}
+
+<div id="test"></div>
+
+
+{% endblock %}
+

@@ -174,6 +174,7 @@ class Modele(models.Model):
     rapport = models.TextField(max_length=254, blank=True,null=True)
     resume = models.TextField(max_length=254, blank=True,null=True)
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
+    jeuDonnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.resume

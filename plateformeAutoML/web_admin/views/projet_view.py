@@ -1,4 +1,5 @@
 from pyexpat import model
+from select import select
 from statistics import mode
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -412,19 +413,15 @@ class MesFavorisView(TemplateView):
         return context
 
 def train_models(request):
-
     if request.method == "GET":
-       
         jeu_donnees = None
         if not request.session.get('projet', {}):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
         if not request.session.get('dataset', {}):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
-
         print("save model OK..................")
         df = pd.read_json(request.session['dataset']['df'])
         print("save model OK..................",df)
-
 
         projet_id = request.session.get('projet').get('projet_id', 0)
         jeu_donnees = JeuDonnees.objects.get(projet_id=projet_id)
@@ -482,6 +479,7 @@ def train_models(request):
         base_model = ''
 
         #ENTRAINEMENT ET OPTIMISATION AVEC LES DONNEES CHARGEES ET LES ALGORITHMES SELECTIONNES
+        
         try:
             dico_infos_train = {}
             for algo in list(algorithms):
@@ -492,10 +490,9 @@ def train_models(request):
                     'algo': algo
                 }
         except:
-            print("ERREUR lors l'entrainement des  models")
+            print("ERREUR lors l'entrainement des  modeles")
 
-        print("-----------------------",dico_infos_train)
-                    
+        print("-----------------------",dico_infos_train)        
         liste_models = []
         for index, algo in  enumerate(dico_infos_train):
             libele_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['label']
@@ -504,10 +501,11 @@ def train_models(request):
             algo_projet = dico_infos_train[algo]['algo']
             
             model = Modele(code=code_algo, chemin=" ",precision = round(precision*100,3),rapport = "",resume="", algorithme_projet = algo_projet)
-    
+            model.jeuDonnees = jeu_donnees
             model.save()
             chemin = estimateur.save_model(dico_infos_train[algo]['model_training'], path,model.pk)
             model.chemin = chemin
+          
             model.save()
             liste_models.append(model)
         
@@ -517,6 +515,87 @@ def train_models(request):
             'infos_modeles_train':liste_models
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
+
+
+def predict_projet(request,pk):
+
+    model = Modele.objects.get(pk = pk)
+    jeu_donnees = JeuDonnees.objects.get(pk=model.jeuDonnees.pk)
+    target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
+    colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
+    selected_columns = [item.libelle for item in list(colonnes)]
+
+    features = []
+    for col in list(colonnes):
+        if col.pk !=target.pk:
+            features.append(col)
+
+    colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
+    
+    for col in colonnes:
+        print(col.libelle,"------>TYPE",col.est_categoriel,"-----ccccccccccccccc--->",col.valeurs)
+    
+    if request.method == "POST":
+        data_input = []
+        datas = request.POST
+        colonne_list = []
+        for col in colonnes:
+            x = datas[col.nom_colonne]
+            colonne_list.append(col)
+            print("xxxxxxxxytpexxxxxxxx",type(x))
+            if col.type_colonne in ['float64','int64','int32','float32']:
+                print("valeurrrrrrrrrrrrrrrrrrrrrr",col.nom_colonne,col.type_colonne)
+                print(x)
+                x = float(x)
+            data_input.append(x)
+        print("Les données entrées:",data_input)
+
+        model = Model.objects.filter(projet=projet.pk,best_model=True)[0]
+        #model = Model.objects.get(pk=370)
+        print(model)
+        #model = Model.objects.get(id=id)
+        filename = model.chemin
+        loaded_model = pickle.load(open(filename, 'rb'))
+        #data_input.append('No')
+        #data_input = data_input
+        data_input = [data_input]
+        print("data reshape",data_input)
+        print(loaded_model)
+
+        #cols = ['gender', 'SeniorCitizen', 'tenure', 'ServiceCount', 'Contract',
+        #'PaperlessBilling', 'MonthlyCharges', 'TotalCharges']
+
+        #cols = colonne_list
+        cols = list_cat
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",cols)
+
+        #valeur = [['Male', 1.0, 100.0, 7.0, 'Month-to-month', 'Yes', 155.0, 155.0]]
+
+        #print(valeur)
+        print(data_input)
+        #val =  [1, 0.0, 100.0, 7.0, 3.0, 4.0]
+        #x =  [['Female','0',8,6,'Month-to-month','Yes',99.65,820.5]]
+        test_set = data_input
+        print("------------",test_set)
+        df2 = pd.DataFrame(np.array(test_set),columns=cols)
+
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",df2)
+        resultat = loaded_model.predict(df2)
+        resultat2  = (loaded_model.predict_proba(df2) * 100)[:,1][0]
+        print(resultat,resultat2)
+        print(colonnes)
+        context = {
+            'colonnes': list(colonnes),
+            'resultat': resultat2,
+            'pop_domaine': domaine.population_etudier,
+            'id_projet':projet.pk
+        }
+        return render(request, 'pages/projets/predict_projet.html', context)
+
+    context = {
+        'features' : features
+    }
+    return render(request, 'pages/projets/predict_projet.html', context=context)
 
 
 def predict_model(request, pk):
