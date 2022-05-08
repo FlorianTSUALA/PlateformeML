@@ -197,12 +197,12 @@ def info_preprocessing(request):
         # print(preprocessing)
         for item in preprocessing:
             #item['nature'] not found skip : colvis
-            valeurs = []
+            valeurs = ''
             print('item : ', item)
             if item['nature'] == ENatureValeur.QUALITATIF.value:
                 _valeurs = df[item['column']].unique()
-                #valeurs = ','.join(map(str, _valeurs))
-                valeurs.append(map(str, _valeurs))
+                valeurs = ','.join(map(str, _valeurs))
+                #valeurs.append(map(str, _valeurs))
                 print(_valeurs, valeurs)
 
             colonne = Colonne()
@@ -467,7 +467,17 @@ def train_models(request):
             ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
 
             #nom_fichier = str(nom_fichier).replace(ext, '') + ts + ext
-            path = "C:/Users/USER/Documents/ML/PlateformeML/plateformeAutoML/media/models_save"
+
+            import os
+            BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+            print("le repertoire de base du projet est " , BASE_DIR)
+
+            path = str(BASE_DIR) + "\..\media\models_projets" 
+
+            print("le repertoire BON REPERTOIRE EST  " , path)
+
+            #path = "C:/Users/USER/Documents/ML/PlateformeML/plateformeAutoML/media/models_save"
             #projet_id_algo_day
             """with open(path, 'wb+') as destination: 
                 destination.write(fichier)"""
@@ -517,46 +527,47 @@ def train_models(request):
         }
         return render(request, 'pages/projets/creation_projet.html', context=context)
 
-
+import pickle
 def predict_projet(request,pk):
 
     model = Modele.objects.get(pk = pk)
     jeu_donnees = JeuDonnees.objects.get(pk=model.jeuDonnees.pk)
     target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
-    colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
+    #colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
+    colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
     selected_columns = [item.libelle for item in list(colonnes)]
 
     features = []
-    for col in list(colonnes):
+    for col in colonnes:
         if col.pk !=target.pk:
             features.append(col)
+            #print(type(col.valeurs))
 
-    colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
+    #
     new_cols = []
     for col in colonnes:
-        print(col.libelle,"------>TYPE",col.est_categoriel,"-----ccccccccccccccc--->",col.valeurs)
-        col.array_valeurs = str(col.valeurs).split(',')
-        print(col.array_valeurs)
-        new_cols.append(col)
-    colonnes = new_cols
+        if col.pk !=target.pk:
+            #print(col.libelle,"------>TYPE",col.est_categoriel,"-----ccccccccccccccc--->",col.valeurs)
+            col.array_valeurs = col.valeurs.split(',')
+            #print("----------------------",col.valeurs,dir())
+            print(col.array_valeurs[0])
+            new_cols.append(col)
+    #colonnes = new_cols
 
     if request.method == "POST":
         data_input = []
         datas = request.POST
         colonne_list = []
         for col in colonnes:
-            x = datas[col.nom_colonne]
-            colonne_list.append(col)
-            print("xxxxxxxxytpexxxxxxxx",type(x))
-            if col.type_colonne in ['float64','int64','int32','float32']:
-                print("valeurrrrrrrrrrrrrrrrrrrrrr",col.nom_colonne,col.type_colonne)
-                print(x)
-                x = float(x)
+            x = datas[col.libelle]
+            colonne_list.append(col.libelle)
+            #print("xxxxxxxxytpexxxxxxxx",type(x))
+            """if col.est_categoriel in ['float64','int64','int32','float32']:
+                print("valeurrrrrrrrrrrrrrrrrrrrrr",col.nom_colonne,col.type_colonne)"""
+            print(x)
             data_input.append(x)
         print("Les données entrées:",data_input)
 
-        model = Model.objects.filter(projet=projet.pk,best_model=True)[0]
-        #model = Model.objects.get(pk=370)
         print(model)
         #model = Model.objects.get(id=id)
         filename = model.chemin
@@ -565,14 +576,14 @@ def predict_projet(request,pk):
         #data_input = data_input
         data_input = [data_input]
         print("data reshape",data_input)
-        print(loaded_model)
+        #print(loaded_model)
 
         #cols = ['gender', 'SeniorCitizen', 'tenure', 'ServiceCount', 'Contract',
         #'PaperlessBilling', 'MonthlyCharges', 'TotalCharges']
 
-        #cols = colonne_list
-        cols = list_cat
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",cols)
+        cols = colonne_list
+        #cols = list_cat
+        #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",cols)
 
         #valeur = [['Male', 1.0, 100.0, 7.0, 'Month-to-month', 'Yes', 155.0, 155.0]]
 
@@ -584,21 +595,20 @@ def predict_projet(request,pk):
         print("------------",test_set)
         df2 = pd.DataFrame(np.array(test_set),columns=cols)
 
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",df2)
+        print(df2)
         resultat = loaded_model.predict(df2)
         resultat2  = (loaded_model.predict_proba(df2) * 100)[:,1][0]
         print(resultat,resultat2)
         print(colonnes)
         context = {
-            'colonnes': list(colonnes),
-            'resultat': resultat2,
-            'pop_domaine': domaine.population_etudier,
-            'id_projet':projet.pk
+            'features' : new_cols,
+            #'colonnes': list(colonnes),
+            'resultat': resultat[0],
         }
         return render(request, 'pages/projets/predict_projet.html', context)
 
     context = {
-        'features' : features
+    'features' : new_cols
     }
     return render(request, 'pages/projets/predict_projet.html', context=context)
 

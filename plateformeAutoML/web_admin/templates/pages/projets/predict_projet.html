@@ -29,11 +29,12 @@
 					<div class="card">
 						<div class="card-header py-3 bg-transparent"> 
 							<div class="d-sm-flex align-items-center">
-							<h5 class="ml-3">Definisez les variables pour la production</h5>
+							<h5 class="ml-3">Definisez les variables pour la prédiction</h5>
 						</div>
 						<div class="card-body">
 							<div class="p-4 border rounded">
-								<form class="row g-3 needs-validation" novalidate="">
+								<form class="row g-3" method = "POST">
+                                    {% csrf_token %}
 									<div class="row">
 
                                         {% for colonne in features %}
@@ -42,22 +43,21 @@
                                             {% if colonne.est_categoriel == True %}
                                                 <div class="col-md-12 mt-3">
                                                     <label for="not_defined" class="form-label">{{colonne.libelle}}</label>
-                                                    <select class="form-select" id="not_defined" required="">
-                                                        <option selected=""  value="">...</option>
-                                                        {% for val in colonne.valeurs %}
-                                                            <option selected="" disabled="" value="">{{val}}</option>
+                                                    <select class="form-select" name = {{colonne.libelle}}>
+                                                       
+                                                        {% for val in colonne.array_valeurs %}
+                                                            <option>{{val}}</option>
                                                         {% endfor %}
-                                                        
                                                        
                                                     </select>
-                                                    <div class="invalid-feedback">Selectionnez un algorithme.</div>
+                                                    <div class="invalid-feedback">Faite un choix de {{colonne.libelle}}</div>
                                                 </div>
                                             {% endif %}
                                             
                                             {% if colonne.est_categoriel == False %}
                                                 <div class="col-md-12 mt-3">
-                                                    <label for="validationCustom03" class="form-label">{{colonne.libelle}}</label>
-                                                    <input type="text" class="form-control" id="validationCustom04" required="">
+                                                    <label for="validationCustom03"  class="form-label">{{colonne.libelle}}</label>
+                                                    <input type="number" name = {{colonne.libelle}} class="form-control"  required="">
                                                     <div class="invalid-feedback">Définissez une valeur.</div>
                                                 </div>
                                             {% endif %}
@@ -81,6 +81,39 @@
 			<!--/row-->
 		</div>
     </div>
+
+    {% if resultat %}
+
+    <div class="card text-white bg-success mb-3">
+        <div class="card-body">
+
+        <div id="step-01" class="page-section-stepper container py-2">
+            <div id="step-07" class="page-section-stepper container py-2">
+                <h2 class="font-weight-light text-center text-muted py-3">Résultat de la prédiction </h2>
+                <div class="row">
+                    <div class="col-lg-12 mx-auto">
+                        <div class="card">
+                            
+                            <div class="card-body">
+                                <div class="p-4 border rounded">
+                                    <table class="table">
+                                        <tbody>
+                                          <tr>
+                                            <th scope="row">Classe d'affectation</th>
+                                            <td>{{resultat}}</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/row-->
+            </div>
+        </div>
+        </div>
+    {% endif %}
 </div>
 <div id="script"></div>
 {% endblock %}
