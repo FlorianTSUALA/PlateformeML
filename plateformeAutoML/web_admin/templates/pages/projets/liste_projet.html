@@ -53,7 +53,8 @@
               Mots clés : {{projet.mots_cles}}
               <small>74 Vue(s)</small>
               <div class="actions d-flex align-items-center justify-content-center gap-2 mt-3">
-                <a href="{% url 'edit_projet' tag=''+projet.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-fill"></i> Modifier</a>
+                <a href="{% url 'projet_detail' projet.pk %}" tag='' class="btn btn-sm btn-outline-success"><i class="bi bi-pencil-fill"></i> Consulter</a>
+                <a href="{% url 'edit_projet' projet.pk %}" tag='' class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-fill"></i> Modifier</a>
                 <a onclick="projet_delete(this)" data-url="{% url 'projet_delete' pk=projet.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Supprimer</a>
               </div>
             </div>

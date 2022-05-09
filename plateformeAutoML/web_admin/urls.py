@@ -101,7 +101,7 @@ urlpatterns = [
     path('download_model/<int:pk>', download_model, name='download_model'),
     path('predict_model/<int:pk>', predict_model, name='predict_model'),
 
-    path('projet_detail',  projet_detail, name='projet_detail'),
+    path('projet_detail/<int:pk>',  projet_detail, name='projet_detail'),
     path('projet_update/<int:pk>',  projet_update, name='projet_update'),
     path('projet_delete/<int:pk>',  projet_delete, name='projet_delete'),
     path('list_projet/<str:filter>',  ListeProjetView.as_view(), name='projet_list'), #favoris, projets, publics, tous

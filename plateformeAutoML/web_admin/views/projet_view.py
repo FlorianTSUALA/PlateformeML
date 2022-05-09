@@ -393,13 +393,21 @@ def projet_edit(request):
     return
 
 
-def projet_detail(request, id):
-    template_name = 'pages/projets/detail_projet.html'
+def projet_detail(request,pk):
+    template_name = 'pages/projets/projet_detail.html'
+    
+    projet = Projet.objects.get(pk=pk)
+
+
+    #modeles = model = Modele.objects.filter()
+    modeles = ""
+
     context = dict()
     context['has_white_text'] = False
     context['section_title'] = 'Projets'
     context['section_item_title'] = 'Consultation projet'
-    
+    context['projet'] = projet
+    context['modeles'] = modeles
     return render(request, template_name, context=context)
 
 
