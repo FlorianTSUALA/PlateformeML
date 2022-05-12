@@ -5,7 +5,7 @@ import pickle
 
 
 
-class Scoring(RMFrammeClassification):
+class Scoring(RMFrammeEstimator):
 
     def __init__(self, listeModel,dataset,target):
         super().__init__(listeModel,dataset,target)

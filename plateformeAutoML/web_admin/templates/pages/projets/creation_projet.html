@@ -263,7 +263,7 @@
 							
 							<div class="ms-auto">
 								<button type="button"  class="btn btn-secondary">Annuler</button>
-								<input type="submit" class="btn btn-primary" value ="Demarrer" >
+								<input type="submit" id="btn_start_training" class="btn btn-primary" value ="Demarrer" >
 							</div>
 						</div>
 					</div>
@@ -271,20 +271,21 @@
 						<div class="row p-4  rounded">
 							<div class="col-12 col-lg-4">
 								<label class="form-label">% données de test</label>
-								<input type="number" class="form-control" name='p_test' placeholder="% ensemble de test">
+								<input type="number" class="form-control" name='p_test' value="30" placeholder="% ensemble de test">
 							</div>
 							<div class="col-12 col-lg-4">
 								<label class="form-label">% données d'entrainemnt</label>
-								<input type="number" class="form-control" name='p_train' placeholder="% ensemble d'entrainemnt">
+								<input type="number" class="form-control" name='p_train' value="70" placeholder="% ensemble d'entrainemnt">
 							</div>
 							<div class="col-12 col-lg-4">
 								<label class="form-label">% données de validation</label>
-								<input type="number" class="form-control" name='p_val' placeholder="% ensemble de validation">
+								<input type="number" class="form-control" name='p_val' value="0" placeholder="% ensemble de validation">
 							</div>
 						</div>
 						<div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
 					</div>
 					</div>
+					<a href="{% url  'train_models'  %} " target="_blank"   class="btn btn-primary">Lancer</a>
 				</div>
 				</div>
 			</form>
@@ -313,36 +314,22 @@
 								   <th>#ID</th>
 								   <th>code</th>
 								   <th>Algorithme</th>
-								   <th>%Precision</th>
-								 
-								   <th>%</th>
-								   <th>Date</th>
-								   <th>Famille</th>
-								   <th>voir</th>
-								   <th>valider</th>
+								   <th>Precision</th>
+								   <th>chemin</th>
+								   <th>Actions</th>
 								 </tr>
 								 </thead>
-								 <tbody>
-									 {% for model in models %}
+								 <tbody id="info_models">
+									{% for model in infos_modeles_train %}
 									<tr>
-										<td>{{model.id}}</td>
+										<td>{{model.pk}}</td>
 										<td>{{model.code}}</td>
-										<td>{{model.algo}}</td>
-										
-										<td><div class="progress">
-											<div class="progress-bar" role="progressbar" style="width: {{model.precision}}%;" aria-valuenow={{model.precision}} aria-valuemin="0" aria-valuemax="100">25%</div>
-										  </div>
-										</td>
-										<td>$1250.00</td>
-										<td>03 Feb 2020</td>
-								
-										<td>{{model.famille}}</td> 
-										<td><a href="" class="btn btn-secondary">view</a></td>
-									<td><a href="" class="btn btn-success">valider</a></td>
+										<td>{{model.algorithme_projet.algorithme.libelle}} | {{model.algorithme_projet.metrique.libelle}}</td>
+										<td>{{model.precision}}</td>
+										<td>{{model.chemin}}</td>
+										<td><a href="{% url 'predict_projet' model.pk %}" class="btn btn-success btn-sm">Tester le Model</a></td>
 									</tr>
-									
 									{% endfor %}
-									
 								  </tbody>
 								</table>
 							</div>
@@ -401,6 +388,8 @@
 {% endblock %}
 
 {% block custom_javascript %}
+
+
 <script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
 <script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>

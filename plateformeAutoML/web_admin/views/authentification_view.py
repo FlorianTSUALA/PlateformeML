@@ -22,6 +22,7 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from web_admin.models import Compte, Utilisateur
 from django.conf import settings
+from web_admin.services import init_config as init
 
 def connexion(request):
     redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME, reverse('home')))
@@ -44,8 +45,7 @@ def connexion(request):
         dk = hashlib.pbkdf2_hmac('sha256', str.encode(password), b'salt', 10000)
         password = binascii.hexlify(dk)
 
-        print("User Active State : ", compte.is_active)
-        print(str(password) ,"  ", str(compte.password))
+        # print("User Active State : ", compte.is_active)
         if str(password) == str(compte.password):
             if  compte.is_active:
                 # The default Django's "remember me" lifetime is 2 weeks and can be changed by modifying
@@ -54,6 +54,13 @@ def connexion(request):
                     if not remember_me:
                         request.session.set_expiry(0)
                 auth_login(request, compte)
+                # --------------------------
+                #         INIT DATA        #
+                # --------------------------
+                init.run()
+                # --------------------------
+                #         INIT DATA        #
+                # --------------------------
                 return redirect(redirect_to)
             else:
                 pass

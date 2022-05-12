@@ -18,7 +18,9 @@ import pandas as pd
 
 class Acquisision:
 
-    def __init__(self,dataFrame,target):
+    def __init__(self,dataFrame,target, percent_test, percent_train):
+        self.percent_test = percent_test
+        self.percent_train = percent_train
         self.dataFrame = dataFrame
         self.df_transformed = None
         # self.pipeline_transformed = None
@@ -74,9 +76,9 @@ class Acquisision:
         self.dataFrame = df
         return df
 
-    def train_test_set(self,test_size=0.3):
+    def train_test_set(self):
         df  = self.dataFrame
-        trainset, testset = train_test_split(self.dataFrame, test_size=test_size, random_state=0)
+        trainset, testset = train_test_split(self.dataFrame, test_size=self.percent_test, random_state=0)
         X_train, y_train = self.split_datas(trainset)
         X_test, y_test = self.split_datas(testset)
         return list([X_train, y_train]),list([X_test, y_test])

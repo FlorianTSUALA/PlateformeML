@@ -17,7 +17,7 @@
     </div>
     <div class="col-lg-2 col-6 col-md-3">
       <select class="form-select">
-        <option>All category</option>
+        <option>Toutes les tâches</option>
         <option>Fashion</option>
         <option>Electronics</option>
         <option>Furniture</option>
@@ -26,9 +26,9 @@
     </div>
     <div class="col-lg-2 col-6 col-md-3">
       <select class="form-select">
-        <option>Latest added</option>
-        <option>Cheap first</option>
-        <option>Most viewed</option>
+        <option>Plus vus</option>
+        <option>Plus recent</option>
+        <option>Plus ancien</option>
       </select>
     </div>
   </div>
@@ -50,11 +50,12 @@
                 <i class="bi bi-star-fill text-warning"></i>
                 <i class="bi bi-star-fill text-warning"></i>
               </div>
-              Keys words : {{projet.mots_cles}}
-              <small>74 Reviews</small>
+              Mots clés : {{projet.mots_cles}}
+              <small>74 Vue(s)</small>
               <div class="actions d-flex align-items-center justify-content-center gap-2 mt-3">
-                <a onclick="projet_update(this)" data-url="{% url 'projet_update' pk=projet.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-fill"></i> Edit</a>
-                <a onclick="projet_delete(this)" data-url="{% url 'projet_delete' pk=projet.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Delete</a>
+                <a href="{% url 'projet_detail' projet.pk %}" tag='' class="btn btn-sm btn-outline-success"><i class="bi bi-pencil-fill"></i> Consulter</a>
+                <a href="{% url 'edit_projet' projet.pk %}" tag='' class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-fill"></i> Modifier</a>
+                <a onclick="projet_delete(this)" data-url="{% url 'projet_delete' pk=projet.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash-fill"></i> Supprimer</a>
               </div>
             </div>
           </div>
@@ -79,27 +80,17 @@
 {% block custom_javascript %} 
 
 <script>
-
-  function projet_update(event, id, url){
-    Notification.talk('success', 'Voulez vous vraiment modifiez?')
-
-  }
-
   function projet_delete(event, id, url){
     $(event).parents('.projet').remove();
       Notification.ask('warning', 'Suppression en cours...', 'Voulez vous vraiment supprimer ce projet?', function () {
         Request.post("{% url 'selection_algorithme' %}", {	'algo' : $('#select-algorithme').select2('val'), 'tache': $('#select-tache').val(), 'metrique': $('#select-metrique').val() }, function (data){
           Notification.talk('success', data.transaction.message)
         })
-      }, function () {
-        
+      }, function (e) {
+        Notification.talk('error', 'Impossible de supprimer le projet; veuillez reessayer plutard!')
       })
-        
-
     Notification.talk('success', 'Voulez vous vraiment supprimer?')
-
   }
-
 </script>
 
 {% endblock %}

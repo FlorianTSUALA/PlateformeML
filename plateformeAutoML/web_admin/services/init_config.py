@@ -59,9 +59,11 @@ def package(force = False):
         Package.objects.all().delete()
     if len(Package.objects.all()) == 0:
         items = get_package(True)
+        data = set()
         for key in items:
-            item = items[key]
-            model = Package(code = key, libelle = item['label'])
+            data.add(key)
+        for key in data:
+            model = Package(code = key, libelle = key)
             model.save()
 
 #0
@@ -72,7 +74,9 @@ def famille(force = False):
         items = get_famille(True)
         for key in items:
             item = items[key]
-            model = Famille(code = key, libelle = item['label'])
+            print(key, item)
+            model = Famille(code = key, libelle = key)
+            # model = Famille(code = key, libelle = item['label'])
             model.save()
 
 ##
@@ -165,7 +169,7 @@ def critere_comparison_algorithme(force = False):
     return 
 
 
-def init():
+def run():
     type_apprentissage()
     tache()
     famille()
@@ -178,7 +182,7 @@ def init():
     
     taxonomie_type_donnee()
     algorithme()
-    metrique_algorithme()
+    # metrique_algorithme()
     
     strategie_encodage()
     strategie_imputation()

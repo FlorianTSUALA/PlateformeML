@@ -45,11 +45,11 @@ class RModel_i:
 
 
 
-class RMFrammeClassification(RModel_i,PreprocessingData):
+class RMFrammeEstimator(RModel_i,PreprocessingData):
 
     def __init__(self, listeModel,dataset,target):
 
-        super().__init__(dataset,target)
+        super().__init__(dataset, target)
 
         train_set, test_set = self.train_test_set()
         self.models = listeModel
@@ -127,7 +127,7 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
     # optimisation du modèle le plus performant
     def optimisationHyperParam(self,model, scoring='f1', cv=10):
         print(self.X_test)
-        print(self.X_test)
+        print(self.y_test)
         print(self.target)
         #model_algo = self.best_model
         model_algo = model
@@ -205,10 +205,15 @@ class RMFrammeClassification(RModel_i,PreprocessingData):
         return precision_dico_models,models_fit,precision_,name_
 
 
-    def save_model(self,model,num):
-        model = model
-        #filename = 'model_final.sav'
-        filename = "C:/Users/USER/Documents/ML/PlateformeML/plateformeAutoML/media/models_save/model_final"+str(num)+".sav"
-        #"D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
-        pickle.dump(model, open(filename,'wb'))
-        return filename
+    def save_model(self,model,path,num):
+
+        try:
+            model = model
+            #filename = 'model_final.sav'
+            path = path
+            filename = path+"/"+str(num)+".sav"
+            #"D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
+            pickle.dump(model, open(filename,'wb'))
+            return filename
+        except:
+            return 0

@@ -13,6 +13,7 @@ import base64
 from .file import file_extention
 from web_admin.services import fetch_config as fetch
 
+from web_admin.enum import ENatureValeur
 
 def load_dataframe(path,sep=','):
     extention = file_extention(path)
@@ -31,13 +32,10 @@ def load_initial(path,sep=','):
     data = load_dataframe(path)
     mask = data.dtypes==object
     categorical = data.columns[mask].tolist()
-    print(categorical)
     if categorical:
-        print("crash")
         le = LabelEncoder()
         data[categorical] = data[categorical].apply(lambda x: le.fit_transform(x.astype(str)))
         data.to_csv(path, index=False)
-    print("Not crash")
     return data
 
 def return_cols(path):
@@ -65,7 +63,8 @@ def info_dataset(path):
     dropped_msg=""
     if empty_cols:
         dropped_msg = "Empty columns detected, dropped columns : "+str(empty_cols) 
-    features = dataframe.columns
+        print(dropped_msg)
+    #features = dataframe.columns
     #end empty_cols
 
     columns = dataframe.columns
@@ -77,10 +76,10 @@ def info_dataset(path):
         col_info['type'] = TDD_TYPE_KEY[str(dataframe[col_name].dtype)]
         # col_info["data"] = dataframe[col].to_json()
         # col_info["data"] = json.dumps(dataframe[col_name].values.tolist())
-        col_info['nature'] = 'CATEGORIEL'
+        col_info['nature'] =  ENatureValeur.QUALITATIF.value
         if dataframe[col_name].dtype in [ *TDD['ENTIER']['data'], *TDD['ENTIER']['data'], *TDD['DATE']['data'], *TDD['TIMEDELTA']['data'] ]:
             if len(dataframe[col_name].unique())  > ln(len(dataframe))**2/3:
-                col_info['nature'] = 'QUATITATIF'
+                col_info['nature'] = ENatureValeur.QUANTITATIF.value
         
         #TODO Make more controll
         #TODO Check to DB
@@ -99,29 +98,27 @@ def feateares_encoding(df, cols_info):
     categorical = df.columns[mask].tolist()
     print(categorical)
     if categorical:
-        print("crash")
         #Encoder foreach column
         le = LabelEncoder()
         df[categorical] = df[categorical].apply(lambda x: le.fit_transform(x.astype(str)))
         # df.to_csv(path, index=False)
-    print("Not crash")
     return df
 
 def hist_img(df, cols_info):
     images = {}
-    df = feateares_encoding(df, cols_info)
+    new_df = feateares_encoding(df.copy(), cols_info)
     #to integrate
-    empty_cols = [col for col in df.columns if df[col].isnull().all()]
-    df.drop(empty_cols, axis=1, inplace=True)
+    empty_cols = [col for col in new_df.columns if new_df[col].isnull().all()]
+    new_df.drop(empty_cols, axis=1, inplace=True)
     dropped_msg=""
 
     if empty_cols:
         dropped_msg = "Empty columns detected, dropped columns : %s "%str(empty_cols) 
-    features = df.columns
+    features = new_df.columns
     for i in range(len(features)):
         # plt.clf()
         s = io.BytesIO()
-        df[features[i]].hist()
+        new_df[features[i]].hist()
         # plt.savefig("static/images/figs/" + str(i), bbox_inches="tight", transparent=True)
         plt.savefig(s, format='png', bbox_inches="tight")
         plt.close()

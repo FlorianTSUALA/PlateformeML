@@ -23,7 +23,7 @@ LOGIN_URL = reverse_lazy("connexion")
 LOGIN_REDIRECT_URL = reverse_lazy("home")
 LOGOUT_REDIRECT_URL = reverse_lazy("connexion")
 USE_REMEMBER_ME = False
-
+SESSION_SAVE_EVERY_REQUEST = True
 #
 AUTH_USER_MODEL = 'web_admin.Compte'
 
@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-os6^4h@w))&r$a08%#vjc1&vp)d6tcwppu1t1((_+_i)v*284!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'liama.automl']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'laima.automl']
 
 
 # Application definition

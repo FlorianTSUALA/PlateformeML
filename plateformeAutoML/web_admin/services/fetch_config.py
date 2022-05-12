@@ -29,7 +29,7 @@ def get_tache_algorithme(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
     for key, value in collection.items():
-        if data.get(value['task'], None) is None:
+        if not data.get(value['task'], {}):
             data[value['task']] = list()      
         data[value['task']].append({'code':value['code'], 'label':value['label'], 'type_apprentissage': value['type_apprentissage']})
     if default:
@@ -42,7 +42,7 @@ def get_type_apprentissage_tache(default = False):
     data = dict()
     
     for key, value in collection.items():
-        if data.get(value['type_apprentissage'], None) is None:
+        if not data.get(value['type_apprentissage'], {}):
             data[value['type_apprentissage']] = set()
         data[value['type_apprentissage']].add(value['task'])
     for key, value in data.items():
@@ -60,9 +60,10 @@ def get_package_algorithme(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
     for key, value in collection.items():
-        if data.get(value['package'], None) is None:
+        print(key, value)
+        if not data.get(value['package'], {}):
             data[value['package']] = list()      
-        data[value['package']].append({key:value['code'], value:value['label']})
+        data[value['package']].append({'key':value['code'], 'value':value['label']})
     if default:
         return data
     else:
@@ -72,16 +73,22 @@ def get_package_metrique(default = False):
     collection  = METRICS
     data = dict()
     for key, value in collection.items():
-        if data.get(value['package'], None) is None:
+        print(key, value)
+        if not data.get(value['package'], {}):
             data[value['package']] = list()      
-        data[value['package']].append({key:value['code'], value:value['label']})
+        data[value['package']].append({'key':value['code'], 'value':value['label']})
     if default:
         return data
     else:
         return data.keys()
 
 def get_package(default = False):
-    data = get_package_metrique(default).extend(get_package_algorithme(default))
+    if default:
+        data = get_package_metrique(default)
+        data.update(get_package_algorithme(default))
+    else:
+        data = get_package_metrique(default)
+        data.extend(get_package_algorithme(default))
     #todo filter unique metric
     return data
 
@@ -90,7 +97,7 @@ def get_famille(default = False):
     collection  = ALGORITHME_SYSTEME
     data = dict()
     for key, value in collection.items():
-        if data.get(value['family'], None) is None:
+        if not data.get(value['family'], {}):
             data[value['family']] = list()      
         data[value['family']].append({'key':value['code'], 'value':value['label']})
     if default:

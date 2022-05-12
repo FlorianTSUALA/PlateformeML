@@ -1,11 +1,14 @@
 from django.db import models
 from .enum import ETypeDonnee, EEtatPublication, ENatureValeur, EEtatCompte
 from django.urls import reverse
-from web_admin.managers import CompteManager
+from web_admin.managers import CompteManager, ModelManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from django.utils.text import slugify
+
+#from django.contrib.postgres.fields import ArrayField
+
 
 class Compte(AbstractBaseUser, PermissionsMixin):
     code =  models.CharField(max_length=254, blank=True,null=True)
@@ -70,6 +73,7 @@ class JeuDonnees(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='', null=True)
     source =  models.CharField(max_length=254, blank=True,null=True)
     pourcentage_validation = models.DecimalField(default=0,  max_digits=3, decimal_places=2, blank=True,null=True)
+    pourcentage_entrainement = models.DecimalField(default=0,  max_digits=3, decimal_places=2, blank=True,null=True)
     pourcentage_test = models.DecimalField(default=0.3,  max_digits=3, decimal_places=2, blank=True,null=True)
     taille = models.IntegerField(default=0, blank=True,null=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
@@ -163,8 +167,8 @@ class AlgorithmeProjet(models.Model):
     metrique = models.ForeignKey(Metrique, on_delete=models.CASCADE, null=True)   
     # metriques = models.ManyToManyField(Metrique,through='MetriqueAlgorithmeProjet')
 
-    def __str__(self):
-        return self.libelle
+    """def __str__(self):
+        return self.alg"""
 
 class Modele(models.Model):
     code = models.CharField(max_length=254, blank=True,null=True)
@@ -173,6 +177,7 @@ class Modele(models.Model):
     rapport = models.TextField(max_length=254, blank=True,null=True)
     resume = models.TextField(max_length=254, blank=True,null=True)
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
+    jeuDonnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.resume
@@ -227,6 +232,9 @@ class Encodage(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='')
     strategie_encodages = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieEncodage')
 
+    objects = ModelManager()
+
+
     def __str__(self):
         return self.libelle
 
@@ -246,6 +254,8 @@ class Imputation(models.Model):
     libelle = models.CharField(max_length=254, blank=True,null=True)
     description  =  models.TextField(max_length=254, blank=True, default='')
     taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieImputation')
+
+    objects = ModelManager()
 
     def __str__(self):
         return self.libelle
@@ -268,6 +278,8 @@ class MiseEchelle(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='')
     taxionomie_type_donnes = models.ManyToManyField(TaxonomieTypeDonnee, through='StrategieMiseEchelle')
 
+    objects = ModelManager()
+
     def __str__(self):
         return self.libelle
 
@@ -284,17 +296,22 @@ class StrategieMiseEchelle(models.Model):
 
 class Colonne(models.Model):
     code = models.CharField(max_length=254, blank=True,null=True)
-    libelle = models.CharField(max_length=254, blank=True,null=True)
-    type_donnees = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
+    libelle = models.CharField(max_length=254, blank=True)
+    type_donnees = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL.value)
     est_categoriel = models.BooleanField(default=False)
     est_target  = models.BooleanField(default=False)
     est_selectionnee = models.BooleanField(default=True)
     pattern = models.CharField(max_length=254, blank=True,null=True)
-    valeurs = models.CharField(max_length=254, blank=True,null=True)
-    jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
+    # valeurs = ArrayField(models.CharField(max_length=100), null=True)
+    array_valeurs = list()
+    valeurs = models.CharField(max_length=10000, blank=True,null=True)
+    jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE, null=False, blank=False)
+
     encodage = models.ForeignKey(Encodage, on_delete=models.CASCADE, null=True)
     imputation = models.ForeignKey(Imputation, on_delete=models.CASCADE, null=True)
     normalisation = models.ForeignKey(MiseEchelle, on_delete=models.CASCADE, null=True)
+
+    objects = ModelManager()
 
     def __str__(self):
         return self.libelle
@@ -335,5 +352,14 @@ class Configuration():
     # def __str__(self):
     #     return self.description
 
-
+class TableModel:
+    class Meta:
+       managed = False
+       
+    def __init__(self,id,algo,code,precision,famille):
+        self.id = id
+        self.algo = algo
+        self.code = code
+        self.precision = precision
+        self.famille = famille
 # Create your models here.

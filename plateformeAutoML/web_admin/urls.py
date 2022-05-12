@@ -28,10 +28,10 @@ from web_admin.views import (
     #PROJET
     AccueilView, 
     # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
-    NouveauProjetView, 
+    EditProjet, 
     projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
     projet_info, upload_dataset, clean_session_projet_creation, info_preprocessing, 
-    selection_algorithme, get_algorithme_by_task, train_models,
+    selection_algorithme, get_algorithme_by_task, train_models, download_model, predict_model,predict_projet,
     #AUTRES
     FAQView, AProposView, 
     #ALGORITHME
@@ -85,8 +85,9 @@ urlpatterns = [
     
     #####################   CREATION
 
-    # path('nouveau-projet',  login_required(NouveauProjetView.as_view()), name='nouveau_projet'),
-    path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
+    # path('nouveau-projet',  login_required(EditProjet.as_view()), name='edit_projet'),
+    path('projet/<str:tag>',  EditProjet.as_view(), name='edit_projet'),
+    # path('nouveau-projet',  EditProjet.as_view(), name='edit_projet'),
     path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
     path('projet_info',  projet_info, name='projet_info'),
@@ -94,14 +95,20 @@ urlpatterns = [
     path('selection_algorithme',  selection_algorithme, name='selection_algorithme'),
     path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
     
-    path('projet_detail',  projet_detail, name='projet_detail'),
+    path('train_models/', train_models, name='train_models'),
+    path('predict_projet/<int:pk>', predict_projet, name='predict_projet'),
+
+    path('download_model/<int:pk>', download_model, name='download_model'),
+    path('predict_model/<int:pk>', predict_model, name='predict_model'),
+
+    path('projet_detail/<int:pk>',  projet_detail, name='projet_detail'),
     path('projet_update/<int:pk>',  projet_update, name='projet_update'),
     path('projet_delete/<int:pk>',  projet_delete, name='projet_delete'),
     path('list_projet/<str:filter>',  ListeProjetView.as_view(), name='projet_list'), #favoris, projets, publics, tous
 
 
     ####################################################################################################################################
-    #####################   AUTRES
+    #####################                                            AUTRES
     ####################################################################################################################################
 
     path('faq',  FAQView.as_view(), name='faq'),
@@ -124,7 +131,7 @@ urlpatterns = [
 
     #Paramtrage
         ####################################################################################################################################
-        #####################   DYNAMAIQUE
+        #####################   DYNAMIQUE
         ####################################################################################################################################
 
             ####################################################################################################################################
@@ -152,7 +159,7 @@ urlpatterns = [
 
 
         ####################################################################################################################################
-        #####################   DYNAMAIQUE
+        #####################   DYNAMIQUE
         ####################################################################################################################################
     # #algorithme
     path('parametrage/algorithme',  algorithme, name='algorithme'),
@@ -199,10 +206,6 @@ urlpatterns = [
     path('parametrage/taxonomie_type_donnee/create/',  taxonomie_type_donnee_create, name='taxonomie_type_donnee_create'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/update/',  taxonomie_type_donnee_update, name='taxonomie_type_donnee_update'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/delete/',  taxonomie_type_donnee_delete, name='taxonomie_type_donnee_delete'),
-    
-
-    #Train models
-    path('train_models/', train_models, name='train_models'),
 ]
 
 
