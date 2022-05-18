@@ -398,7 +398,6 @@ def projet_detail(request,pk):
     
     projet = Projet.objects.get(pk=pk)
 
-
     #modeles = model = Modele.objects.filter()
     modeles = ""
 
@@ -447,7 +446,7 @@ def train_models(request):
         #remove all other columns
         new_df = df[df.columns.intersection(selected_columns)]
 
-        metric = 'f1' #Pas utilisé
+        metric = 'f1' #Pas de modification 
 
         algorithms = AlgorithmeProjet.objects.filter(projet_id=projet_id)
 
