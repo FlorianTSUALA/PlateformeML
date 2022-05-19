@@ -1,6 +1,18 @@
-
 plateformeAutoML/web_admin/templates/partials/table_body/_entity.html
 plateformeAutoML/db.sqlite3
-plateformeAutoML/db.sqlite3
 plateformeAutoML/web_admin/views/_entity_view.py
-plateformeAutoML/web_admin/templates/pages/projets/source.pro
+plateformeAutoML/media/
+*.pyc
+*.sqlite3
+_documentation/Workflow/init_entit_technique.drawio
+_documentation/Workflow/init_entit_technique copy.drawio
+plateformeAutoML/db.sqlite3
+plateformeAutoML/db.sqlite3
+*.pro
+*.log
+*.pyc
+*.pyc
+*.pyc
+*.pyc
+*.pyc
+*.pyc

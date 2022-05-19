@@ -16,101 +16,53 @@ Including another URLconf
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
+
 from web_admin.views import (
-    #Authentification
-    login,
-    logout,
-    register,
-    liste,
-    update_user,
-    update_utilisateur,
-    delete_utilisateur,
-
-
-    #Accueil
+    #AUTHENTIFICATION
+    connexion, deconnexion, inscription, 
+    #PROFILE = COMPTE + UTILISATEUR
+    profile, profile_list,  profile_create, profile_update, profile_delete,
+    #ACCUEIL
     VitrineView,
+    #PROJET
     AccueilView, 
-    MesFavorisView, 
-    MesProjetsView, 
-    ProjetsPublicsView, 
-    
-    NouveauProjetView, 
-    save_info_projet,
-    # upload_dataset,
-    # clean_session_project_creation,
-
-    ConsulterProjetView, 
-    ModifierProjetView, 
-    ListeProjetView, 
-
-
-    # ProjetListView, 
-
+    # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
+    EditProjet, 
+    projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
+    projet_info, upload_dataset, clean_session_projet_creation, info_preprocessing, 
+    selection_algorithme, get_algorithme_by_task, train_models, download_model, predict_model,predict_projet,
     #AUTRES
-    FAQView, 
-    AProposView, 
-    
-    
-    #Utilisateurs
-    MonCompteView, 
-    ListUtilisateurView, 
-    CreateUtilisateurView,
-
-
+    FAQView, AProposView, 
     #ALGORITHME
-    algorithme,
-    algorithme_create,
-    algorithme_update,
-    algorithme_delete,
-
+    algorithme, algorithme_create, algorithme_update, algorithme_delete,
     #CRITERE_COMPARAISON
-    critere_comparaison,
-    critere_comparaison_create,
-    critere_comparaison_update,
-    critere_comparaison_delete,
-
+    critere_comparaison, critere_comparaison_create, critere_comparaison_update, critere_comparaison_delete, 
     #FAMILLE
-    famille,
-    famille_create,
-    famille_update,
-    famille_delete,
-
+    famille, famille_create, famille_update, famille_delete,
+    #METRIQUE
+    metrique, metrique_update,
     #PACKAGE
-    package,
-    package_create,
-    package_update,
-    package_delete,
-
+    package, package_create, package_update, package_delete,
     #TACHE
-    tache,
-    tache_create,
-    tache_update,
-    tache_delete,
-
+    tache, tache_create, tache_update, tache_delete,
     #TAXONOMIE TYPE DE DONNES
-    taxonomie_type_donnee, 
-    taxonomie_type_donnee_create,  
-    taxonomie_type_donnee_update,  
-    taxonomie_type_donnee_delete,
-
+    taxonomie_type_donnee, taxonomie_type_donnee_create, taxonomie_type_donnee_update, taxonomie_type_donnee_delete,
     #TYPE APPRENTISSAGE
-    type_apprentissage, 
-    type_apprentissage_create,  
-    type_apprentissage_update,  
-    type_apprentissage_delete,
-
+    type_apprentissage, type_apprentissage_create, type_apprentissage_update, type_apprentissage_delete,
+    #STATEGIE PRETRAITEMENT
+    strategie_pretraitement, strategie_pretraitement_update,
+    encodage, encodage_update, imputation, imputation_update, mise_echelle, mise_echelle_update,
+    strategie_encodage, strategie_encodage_update, strategie_imputation, strategie_imputation_update, strategie_mise_echelle, strategie_mise_echelle_update,
+    #INITIALISATION
+    initialisation,
 )
-
-# urlpatterns = [
-#     path('', views.index, name='index'),
-#     path('parametre/algorithmes/', views.AlgorithmeListView.as_view(), name='algorithmes'),
-#     path('parametre/algorithme/<int:pk>', views.AlgorithmeDetailView.as_view(), name='algorithme-detail'),
-# ]
 
 urlpatterns = [
     #Authentification
-    path('login',  login, name='login'),
-    path('register',  register, name='register'),
+    path('connexion',  connexion, name='connexion'),
+    path('inscription',  inscription, name='inscription'),
+    path('deconnexion',  deconnexion, name='deconnexion'),
 
     #Vitrine
     path('presentation',  VitrineView.as_view(), name='vitrine'),
@@ -118,40 +70,97 @@ urlpatterns = [
     #Accueil
     path('',  AccueilView.as_view(), name='home'),
     path('',  AccueilView.as_view(), name='accueil'),
-    path('mes-favoris',  MesFavorisView.as_view(), name='mes_favoris'),
-    path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
-    path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
+
+    ####################################################################################################################################
+    #####################   DYNAMAIQUE
+    ####################################################################################################################################
+
+    #####################   CONSULTATION
     
-    path('nouveau-projet',  NouveauProjetView.as_view(), name='nouveau_projet'),
-    # path('clean_session_project_creation',  clean_session_project_creation, name='clean_session_project_creation'),
-    # path('upload_dataset',  upload_dataset, name='upload_dataset'),
+    # path('mes-favoris',  MesFavorisView.as_view(), name='mes_favoris'),
+    # path('mes-projets',  MesProjetsView.as_view(), name='mes_projets'),
+    # path('projets-publics',  ProjetsPublicsView.as_view(), name='projets_publics'),
     
-    path('consulter-projet',  ConsulterProjetView.as_view(), name='consulter_projet'),
-    path('modifier-projet',  ModifierProjetView.as_view(), name='modifier_projet'),
-    path('liste-projet/<str:filter>',  ListeProjetView.as_view(), name='liste_projet'),
-    #Autres
+
+    
+    #####################   CREATION
+
+    # path('nouveau-projet',  login_required(EditProjet.as_view()), name='edit_projet'),
+    path('projet/<str:tag>',  EditProjet.as_view(), name='edit_projet'),
+    # path('nouveau-projet',  EditProjet.as_view(), name='edit_projet'),
+    path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
+    path('upload_dataset',  upload_dataset, name='upload_dataset'),
+    path('projet_info',  projet_info, name='projet_info'),
+    path('info_preprocessing',  info_preprocessing, name='info_preprocessing'),
+    path('selection_algorithme',  selection_algorithme, name='selection_algorithme'),
+    path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
+    
+    path('train_models/', train_models, name='train_models'),
+    path('predict_projet/<int:pk>', predict_projet, name='predict_projet'),
+
+    path('download_model/<int:pk>', download_model, name='download_model'),
+    path('predict_model/<int:pk>', predict_model, name='predict_model'),
+
+    path('projet_detail/<int:pk>',  projet_detail, name='projet_detail'),
+    path('projet_update/<int:pk>',  projet_update, name='projet_update'),
+    path('projet_delete/<int:pk>',  projet_delete, name='projet_delete'),
+    path('list_projet/<str:filter>',  ListeProjetView.as_view(), name='projet_list'), #favoris, projets, publics, tous
+
+
+    ####################################################################################################################################
+    #####################                                            AUTRES
+    ####################################################################################################################################
+
     path('faq',  FAQView.as_view(), name='faq'),
     path('a-propos',  AProposView.as_view(), name='apropos'),
 
-    #Utilisateurs
-    path('utilisateur/mon-compte',  MonCompteView.as_view(), name='mon_compte'),
-    path('utilisateur/list', liste, name='utilisateur_list'),
-    path('utilisateur/list/archives',  ListUtilisateurView.as_view(), name='utilisateur_list_archives'),
-    path('utilisateur/list/attente_validation',  ListUtilisateurView.as_view(), name='utilisateur_list_attente_validation'),
-    path('utilisateur/create',  register, name='utilisateur_create'),
-    path('utilisateur/enregistrement_update',  update_utilisateur, name='enregistrement_update'),
-    path('utilisateur_update/<str:pk>', update_user, name='utilisateur_update'),
-    path('utilisateur_delete/<int:pk>', delete_utilisateur, name='utilisateur_delete'),
+
+    ####################################################################################################################################
+    #####################   PROFILE = COMPTE + UTILISATEUR
+    ####################################################################################################################################
+    
+    path('profile/list/<str:filter>', profile_list, name='profile_list'),
+    #TODO Archive, Validation : post
+    # path('profile/list/archives',  ProfileListView.as_view(), name='profile_list_archives'),
+    # path('profile/list/attente_validation',  ProfileListView.as_view(), name='profile_list_attente_validation'),
+    
+    path('profile',  profile, name='profile'),
+    # path('profile/create',  profile_create, name='profile_create'),
+    path('profile/update', profile_update, name='profile_update'),
+    path('profile/delete/<int:pk>', profile_delete, name='profile_delete'),
 
     #Paramtrage
-    # path('projet/',  ProjetListView.as_view(), name='projet'),
-    
-    # #famille
-    # path('parametrage/famille',  famille, name='famille_list'),
-    # path('parametrage/famille/create/',  famille_create, name='famille_create'),
-    # path('parametrage/famille/update/',  famille_update, name='famille_update'),
-    # path('parametrage/famille/delete/',  famille_delete, name='famille_delete'),
+        ####################################################################################################################################
+        #####################   DYNAMIQUE
+        ####################################################################################################################################
 
+            ####################################################################################################################################
+            #####################   STRATEGIE : IMPUATION, MORMALISATIOIN, ENCODAGE
+            ####################################################################################################################################
+            path('parametrage/stategie/pretraitement',  strategie_pretraitement, name='strategie_pretraitement'),
+            path('parametrage/stategie/pretraitement/<int:pk>/update/',  strategie_pretraitement_update, name='strategie_pretraitement_update'),
+           
+            path('parametrage/stategie/encodage',  strategie_encodage, name='strategie_encodage'),
+            path('parametrage/stategie/encodage/<int:pk>/update/',  strategie_encodage_update, name='strategie_encodage_update'),
+            path('parametrage/stategie/mise_echelle',  strategie_mise_echelle, name='strategie_mise_echelle'),
+            path('parametrage/stategie/mise_echelle/<int:pk>/update/',  strategie_mise_echelle_update, name='strategie_mise_echelle_update'),
+            path('parametrage/stategie/imputation',  strategie_imputation, name='strategie_imputation'),
+            path('parametrage/stategie/imputation/<int:pk>/update/',  strategie_imputation_update, name='strategie_imputation_update'),
+           
+            path('parametrage/encodage',  encodage, name='encodage'),
+            path('parametrage/encodage/<int:pk>/update/',  encodage_update, name='encodage_update'),
+            path('parametrage/mise_echelle',  mise_echelle, name='mise_echelle'),
+            path('parametrage/mise_echelle/<int:pk>/update/',  mise_echelle_update, name='mise_echelle_update'),
+            path('parametrage/imputation',  imputation, name='imputation'),
+            path('parametrage/imputation/<int:pk>/update/',  imputation_update, name='imputation_update'),
+        
+            #INITIALISATION
+            path('parametrage/initialisation',  initialisation, name='initialisation'),
+
+
+        ####################################################################################################################################
+        #####################   DYNAMIQUE
+        ####################################################################################################################################
     # #algorithme
     path('parametrage/algorithme',  algorithme, name='algorithme'),
     path('parametrage/algorithme/create/',  algorithme_create, name='algorithme_create'),
@@ -159,10 +168,8 @@ urlpatterns = [
     path('parametrage/algorithme/<int:pk>/delete/',  algorithme_delete, name='algorithme_delete'),
 
     #Metrique
-    path('parametrage/metrique',  famille, name='metrique'),
-    path('parametrage/metrique/create/',  famille_create, name='metrique_create'),
-    path('parametrage/metrique/<int:pk>/update/',  famille_update, name='metrique_update'),
-    path('parametrage/metrique/<int:pk>/delete/',  famille_delete, name='metrique_delete'),
+    path('parametrage/metrique',  metrique, name='metrique'),
+    path('parametrage/metrique/<int:pk>/update/',  metrique_update, name='metrique_update'),
 
     #CritereCompraison
     path('parametrage/critere_comparaison/',  critere_comparaison, name='critere_comparaison'),
@@ -199,22 +206,6 @@ urlpatterns = [
     path('parametrage/taxonomie_type_donnee/create/',  taxonomie_type_donnee_create, name='taxonomie_type_donnee_create'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/update/',  taxonomie_type_donnee_update, name='taxonomie_type_donnee_update'),
     path('parametrage/taxonomie_type_donnee/<int:pk>/delete/',  taxonomie_type_donnee_delete, name='taxonomie_type_donnee_delete'),
-
-    #Valeurs Manquante
-    path('parametrage/valeur_manquante',  famille, name='valeur_manquante'),
-    path('parametrage/valeur_manquante/create/',  famille_create, name='valeur_manquante_create'),
-    path('parametrage/valeur_manquante/<int:pk>/update/',  famille_update, name='valeur_manquante_update'),
-    path('parametrage/valeur_manquante/<int:pk>/delete/',  famille_delete, name='valeur_manquante_delete'),
-    #Encodage
-    path('parametrage/encodage',  famille, name='encodage'),
-    path('parametrage/encodage/create/',  famille_create, name='encodage_create'),
-    path('parametrage/encodage/<int:pk>/update/',  famille_update, name='encodage_update'),
-    path('parametrage/encodage/<int:pk>/delete/',  famille_delete, name='encodage_delete'),
-    #Mise Echelle
-    path('parametrage/mise_echelle',  famille, name='mise_echelle'),
-    path('parametrage/mise_echelle/create/',  famille_create, name='mise_echelle_create'),
-    path('parametrage/mise_echelle/<int:pk>/update/',  famille_update, name='mise_echelle_update'),
-    path('parametrage/mise_echelle/<int:pk>/delete/',  famille_delete, name='mise_echelle_delete'),
 ]
 
 

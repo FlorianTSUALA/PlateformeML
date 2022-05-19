@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -22,8 +22,9 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from web_admin.models import Compte, Utilisateur
 from django.conf import settings
+from web_admin.services import init_config as init
 
-def login(request):
+def connexion(request):
     redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME, reverse('home')))
     print(redirect_to)
     if request.user.is_authenticated:
@@ -44,8 +45,7 @@ def login(request):
         dk = hashlib.pbkdf2_hmac('sha256', str.encode(password), b'salt', 10000)
         password = binascii.hexlify(dk)
 
-        print("User Active State : ", compte.is_active)
-        print(str(password) ,"  ", str(compte.password))
+        # print("User Active State : ", compte.is_active)
         if str(password) == str(compte.password):
             if  compte.is_active:
                 # The default Django's "remember me" lifetime is 2 weeks and can be changed by modifying
@@ -54,6 +54,13 @@ def login(request):
                     if not remember_me:
                         request.session.set_expiry(0)
                 auth_login(request, compte)
+                # --------------------------
+                #         INIT DATA        #
+                # --------------------------
+                init.run()
+                # --------------------------
+                #         INIT DATA        #
+                # --------------------------
                 return redirect(redirect_to)
             else:
                 pass
@@ -66,13 +73,12 @@ def login(request):
 
     return render(request, 'login.html')
 
-def logout(request):
+def deconnexion(request):
     if not request.user.is_authenticated:
         auth_logout(request)
     return redirect(settings.LOGIN_URL)
 
-
-def registers(request):
+def inscription(request):
     print('registration')
     if request.method == "POST":
         login = request.POST.get('login')

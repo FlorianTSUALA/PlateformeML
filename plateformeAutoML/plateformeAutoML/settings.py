@@ -19,11 +19,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 #Authentification
-LOGIN_URL = reverse_lazy("login")
+LOGIN_URL = reverse_lazy("connexion")
 LOGIN_REDIRECT_URL = reverse_lazy("home")
-LOGOUT_REDIRECT_URL = reverse_lazy("login")
+LOGOUT_REDIRECT_URL = reverse_lazy("connexion")
 USE_REMEMBER_ME = False
-
+SESSION_SAVE_EVERY_REQUEST = True
 #
 AUTH_USER_MODEL = 'web_admin.Compte'
 
@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-os6^4h@w))&r$a08%#vjc1&vp)d6tcwppu1t1((_+_i)v*284!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'laima.automl']
 
 
 # Application definition
@@ -97,6 +97,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    #On Docker ENV
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.environ.get('POSTGRES_NAME'),
+    #     'USER': os.environ.get('POSTGRES_USER'),
+    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+    #     'HOST': 'db',
+    #     'PORT': 5432,
+    # }
 }
 
 
@@ -140,6 +149,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static', ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# os.path.join(BASE_DIR, 'static/images/upload')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

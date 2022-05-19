@@ -1,0 +1,224 @@
+
+<script>
+
+  
+
+  class Model {
+    constructor(table_id, form_id, url, prefix_url_create, prefix_url_update, prefix_url_delete) {
+
+      this.form = $(`#${form_id}`)
+      this.table = $(`#${table_id}`)
+      
+      this.base_url
+      this.url_create = this.base_url + prefix_url_create
+      this.url_update = this.base_url + prefix_url_update
+      this.url_delete = this.base_url + prefix_url_delete
+
+      this.table.on('click', '.delete', this.delete_item)
+      this.table.on('click', '.update', this.fill_form)
+      this.table.on('submit', `#${form.id}`, this.save_form)
+      this.model_data = init_table
+      this.
+      model_data.on('order.dt search.dt', this.order_index).draw()
+
+        //CREATE
+    $("#modal-gestionnaire").on("submit", ".js-gestionnaire-create-form", save_form);
+    $(".js-create-entity").click(load_form);
+
+    $("#chat-circle, #chat-box-toggle, #chat-popup").click(function () {load_form(this); });
+
+    //UPDATE
+    table.on("click", ".js-update-gestionnaire", load_form);
+    $("#modal-gestionnaire").on(
+      "submit",
+      ".js-gestionnaire-update-form",
+      save_form
+    );
+
+    //DELETE
+    table.on("click", ".js-delete-gestionnaire", load_form);
+
+    $("#modal-gestionnaire").on(
+      "submit",
+      ".js-gestionnaire-delete-form",
+      save_form
+    );
+
+    }
+
+    reset_form = () => this.form.reset()
+
+   
+
+    auto_index(){
+        this.model_data
+          .column(0, { search: "applied", order: "applied" })
+          .nodes()
+          .each(function (cell, i) {
+            cell.innerHTML = i + 1
+          })
+    }
+
+    init_table (){
+      this.model_data = this.table.DataTable({
+        lengthChange: false,
+        processing: true,
+        serverSide: false,
+        order: [],
+        ajax: {
+          url: this.base_url,
+          type: "GET",
+          cache: true,
+          dataType: "json",
+          dataSrc: function (d) {
+            return d['data'];
+          },
+        },
+        language: lang_fr,
+        columns: [
+          { data: null },
+          { data: "libelle", searchable: true },
+          { data: "description", searchable: true },
+          {
+            mRender: function (data, type, row) {
+              let id = row["idmag"];
+              var bindHtml = '<div class=" " role="group" aria-label=" ">';
+              bindHtml +=
+                '<a href="./RayonsMagasinView.php?id=' +
+                id +
+                '" style="text-decoration: none; color: black;"><i title="Lister les... rayons de ce magasin" class="fa fa-low-vision" aria-hidden="true"></i></a>';
+              bindHtml +=
+                '<a name="update" title="Modifier ce magasin" class="update" id="' +
+                id +
+                '" style="margin: 0 0 0 20px; text-decoration: none; color: black;"><i class="bi bi-pencil-square"></i></a>';
+              bindHtml +=
+                '<a name="delete" title="Supprimer ce magasin" class="delete" id="' +
+                id +
+                '" style="margin: 0 0 0 20px; text-decoration: none; color: black;"><i class="bi bi-trash"></i></a></div>';
+              return bindHtml;
+            },
+          },
+        ],
+        columnDefs: [ { searchable: false, orderable: false, targets: 0, }, ],
+        pageLength: 10,
+      });
+    }
+
+    save() {
+
+        event.preventDefault();
+        $("#save").attr("disabled", "disabled");
+        var formData = $(this).serialize();
+        if ($("#action").val() == "addApplication") {
+          $.ajax({
+            url: BASE_URL,
+            method: "POST",
+            data: formData,
+            success: function (data) {
+              $("#form_model")[0].reset();
+              $("#modal_model").modal("hide");
+              $("#save").attr("disabled", false);
+              model_data.ajax.reload();
+              displaySuccessMessage("Ajout effectué avec succès");
+            },
+          });
+        } else {
+          var idmag = $("input[name='id']").val();
+          let data = {
+            codemag: $("#codemag").val(),
+            desigmag: $("#desigmag").val(),
+          };
+
+          $.ajax({
+            url: BASE_URL + idmag,
+            method: "PUT",
+            data: JSON.stringify(data),
+            headers: {
+              "content-type": "text/plain;charset=UTF-8",
+            },
+            success: function (data) {
+              $("#form_model")[0].reset();
+              $("#modal_model").modal("hide");
+              $("#save").attr("disabled", false);
+              model_data.ajax.reload();
+              displaySuccessMessage("Mise à jour effectué avec succès");
+            },
+          });
+        }
+    }
+    
+
+
+  }
+
+</script>
+
+<script>
+
+
+  class ProjetInfo {
+    constructor(btn_save, btn_reset, form_id) {
+
+      this.form_id = form_id
+      this.btn_save = $(`#${btn_save}`)
+      this.btn_reset = $(`#${btn_reset}`)
+      
+      $('body').on('click', this.btn_save, save)
+      $('body').on('click', this.btn_reset, reset)
+
+      this.notify = new Notification()
+    }
+  
+    save() {
+      let data = {
+        'title' : $('input[name="formName"]').val().trim(),
+        'title' : $('input[name="formName"]').val().trim(),
+        'title' : $('input[name="formName"]').val().trim(),
+        'title' : $('input[name="formName"]').val().trim(),
+      }
+
+      $.ajax({
+        url: "{% url 'save_info_projet' %}",
+        data: data,
+        type: 'POST',
+        dataType: 'json',
+        success: function (data) {
+          if (data.statut) {
+            alert(data.msg)
+          }
+          else {
+            alert('Erreur inconnue')
+          }
+        },
+        error: function (data) {
+          alert(data)
+        }
+      })
+
+    }
+  
+    reset() {
+      console.log(this) 
+      $(`#${this.form_id}`).trigger('reset');
+    }
+
+    update(){
+
+    }
+
+  }
+  
+  
+  
+  $(function () {
+
+        /* INIT */
+        $('#entity-table').DataTable({
+            autoWidth: false,
+            lengthChange: false,
+            "bPaginate": false,
+            language: lang_fr,
+        })
+  });
+</script>
+

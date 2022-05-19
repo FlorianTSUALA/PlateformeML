@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from web_admin.models import Algorithme
 from web_admin.forms import AlgorithmeForm
+from web_admin.services import init_config as init
 # Create your views here.
 
 def get_metadata(key = None):
@@ -13,6 +14,11 @@ def get_metadata(key = None):
     genre = 'M'
 
     data = {
+        'can_init': True,
+        'can_add': False,
+        'can_edit': True,
+        'can_delete': False,
+
         'page_title': 'AutoML - Plateforme de Machine Learning Automaisé',
         'table_title': 'Liste des algoirhtmes du Machine Learning',
         'section_title': 'Parametrage',
@@ -51,13 +57,17 @@ def get_metadata(key = None):
 
     if key is None:
         return data
-    return data.get(key, 'ok')
+    return data.get(key, None)
 
 def algorithme(request):
     
     items = Algorithme.objects.all()
-    
+    if len(items) == 0:
+        init.algorithme()
+        items = Algorithme.objects.all()
+        print("init algorithme done")
     context = get_metadata()
+    # print(items)
     context['data'] = items
     
     return render(request, 'pages/parametrage/entity.html', context)

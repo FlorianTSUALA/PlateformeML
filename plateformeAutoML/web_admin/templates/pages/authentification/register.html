@@ -23,7 +23,7 @@
             <div class="card-body p-4 p-sm-5">
               <h5 class="card-title">Creation d'un compte</h5>
               <!-- <p class="card-text mb-5">See your growth and get consulting support!</p> -->
-              <form class="form-body" method="post" action="{% url 'register' %}">
+              <form class="form-body" method="post" action="{% url 'inscription' %}">
                 {% csrf_token %}
                  {% comment %} <div class="d-grid">
                   <a class="btn btn-white radius-30" href="javascript:;"><span class="d-flex justify-content-center align-items-center">
@@ -343,7 +343,7 @@
                       </div>
                     </div>
                     <div class="col-12">
-                      <p class="mb-0">Avez vous dejà un compte? <a href="{% url 'login' %}">connectez vous ici</a></p>
+                      <p class="mb-0">Avez vous dejà un compte? <a href="{% url 'connexion' %}">connectez vous ici</a></p>
                     </div>
                 </div>
               </form>

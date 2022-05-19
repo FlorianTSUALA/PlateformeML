@@ -1,0 +1,66 @@
+<script> 
+	var TACHE_ALGORITHMES = {{ tache_algorithmes|safe }} 
+	var METRIQUES = {{ metriques|safe }} 
+	var TYPE_APPRPENTISSAGE_TACHES = {{ type_apprentissage_taches|safe }} 
+
+	$('#btn_save_selection_algorithm').on('click', (event) => {
+		let data = {}
+		{% comment %} let collection = $('#select-algorithme').select2('val') {% endcomment %}
+		{% comment %} for (key in collection){
+			data[key] = collection[key]
+		} {% endcomment %}
+		{% comment %} console.log(data) {% endcomment %}
+		Request.post("{% url 'selection_algorithme' %}", {	'algo' : $('#select-algorithme').select2('val'), 'tache': $('#select-tache').val(), 'target': $('#select-variable').val(), 'metrique': $('#select-metrique').val() }, function (data){
+			Notification.talk('success', data.transaction.message)
+		})
+	})
+
+	$('#btn_reset_selection_algorithm').on('click', (event) => {
+		Request.post("{% url 'selection_algorithme' %}", {	'projet_id' : $('#projet_id').val() }, function (data){
+			console.log(data)
+			$('#select-type_apprentissage').val(data.type_apprentissage).trigger('change')
+			$('#select-tache').val(data.tache).trigger('change')
+			$('#select-metrique').val(data.metrique).trigger('change')
+			$('#select-algorithme').val(data.algorithme).trigger('change')
+			Notification.talk('success', data.transaction.message)
+		})
+	 })
+
+	$( document ).ready(function() {
+		$("#select-type_apprentissage").val($("#select-type_apprentissage option:first").val())
+		$('#select-type_apprentissage').trigger("change")
+
+		$('#select-type_apprentissage').on('change', function () {
+			$('#select-tache').empty().trigger("change")
+			let collection = TYPE_APPRPENTISSAGE_TACHES[$(this).val()]
+			for(let key in collection){
+				let data = collection[key]
+				$('#select-tache').append(new Option(data, data, false, false))//.trigger('change');
+			}
+			$('#select-tache').val($("#select-tache option:first").val()).trigger("change")
+		})
+
+		$('#select-tache').on('change', function () {
+			let tache = $(this).val()
+			$('#select-algorithme').empty().trigger("change")
+			$('#select-metrique').empty().trigger("change")
+			let collection = TACHE_ALGORITHMES[tache]
+			for(let key in collection){
+				let item = collection[key]
+				if(item.type_apprentissage == $('#select-type_apprentissage').val())
+				{
+					$('#select-algorithme').append(new Option(item.label, item.code, false, false))//.trigger('change');
+				}
+			}
+			for(let key in METRIQUES){
+				let item = METRIQUES[key]
+				if(item.task == tache)
+				{
+					$('#select-metrique').append(new Option(item.label, item.code, false, false))//.trigger('change');
+				}
+			}
+			$('#select-metrique').val($("#select-metrique option:first").val()).trigger("change")
+		})
+	})
+
+</script>

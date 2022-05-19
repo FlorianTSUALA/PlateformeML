@@ -1,0 +1,362 @@
+{% load static %}
+{% comment %} load settinf constant in template max_length {% endcomment %}
+<script type="text/javascript">
+
+	
+	class FileUpload {
+		constructor(input) {
+			this.input = input
+			this.max_length = 1024 * 1024 * 10; // 10 mb
+		}
+	
+		upload() {
+			this.create_progress_bar();
+			this.initFileUpload();
+		}
+		
+		initFileUpload() {
+			this.file = this.input.files[0];
+			this.upload_file(0, null);
+		}
+
+		upload_file(start, path) {
+			var end;
+			var self = this;
+			var chemin = path;
+			var formData = new FormData();
+			var nextChunk = start + this.max_length + 1;
+			var currentChunk = this.file.slice(start, nextChunk);
+			var uploadedChunk = start + currentChunk.size
+			if (uploadedChunk >= this.file.size) {
+				end = 1;
+			} else {
+				end = 0;
+			}
+			formData.append('file', currentChunk);
+			formData.append('filename', this.file.name);
+			formData.append('end', end);
+			formData.append('path', chemin);
+			formData.append('nextSlice', nextChunk);
+			{% comment %} $('.filename').text(this.file.name) {% endcomment %}
+			$('.textbox').text("Veuillez patienter, fichier en cours d'envoie...")//todo add loading bar
+			$.ajaxSetup({
+			// make sure to send the header
+				headers: {
+					"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+				}
+			});
+
+			$.ajax({
+				xhr: function () {
+					var xhr = new XMLHttpRequest();
+					xhr.upload.addEventListener('progress', function (e) {
+						if (e.lengthComputable) {
+							if (self.file.size < self.max_length) {
+								var percent = Math.round((e.loaded / e.total) * 100);
+							} else {
+								var percent = Math.round((uploadedChunk / self.file.size) * 100);
+							}
+							$('.progress-bar').css('width', percent + '%')
+							$('.progress-bar').text(percent + '%')
+						}
+					});
+					return xhr;
+				},
+	
+				url: "{% url 'upload_dataset' %}",
+				type: 'POST',
+				dataType: 'json',
+				cache: false,
+				processData: false,
+				contentType: false,
+				data: formData,
+				error: function (xhr) {
+					console.log('BAD')
+					Notification.talk('error', 'Erreur survenue lors du téléversement, veuillez reessayer!!!')
+				},
+				success: function (res) {
+					if (nextChunk < self.file.size) {
+						// upload file in chunks
+						chemin = res.data.chemin
+						self.upload_file(nextChunk, chemin)
+					} else {
+						let df = JSON.parse(res.data.df)
+						FileUpload.init_table(df['data'], df['columns'], res.data.cols_info)
+						$('.textbox').text(res.transaction.message)
+
+						$('#histogrammes').html(res.data.img_block)
+
+						$('#select-variable').empty().trigger("change")
+						let collection = df['columns']
+						$('#select-variable').append(new Option('non défini', 'non défini', false, true))
+						for (var j = 0; j < collection.length; j++) {
+							$('#select-variable').append(new Option(collection[j], collection[j], false, false))
+						}
+						Notification.talk(res.transaction.code, res.transaction.message)
+					}
+				}
+			});
+
+		};
+
+		create_progress_bar() {
+			var progress = `<div class="file-icon">
+								<i class="fa fa-file-o" aria-hidden="true"></i>
+							</div>
+							<div class="file-details">
+								{% comment %} <p class="filename"></p> {% endcomment %}
+								<small class="textbox"></small>
+								<div class="progress" style="margin-top: 5px;">
+									<div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+									</div>
+								</div>
+							</div>`
+			document.getElementById('uploaded_files').innerHTML = progress
+		}
+
+		static init_table(data, columns, preprocessing){
+			 if (window.table !== null) {
+				window.table.destroy();
+				window.table = null;
+				$("#dataset tbody").empty();
+			  }
+							
+				const header = $('#dataset #filters');
+				const footer = $('#dataset tfoot');
+			  	header.empty();
+			  	footer.empty();
+
+				let tr = document.createElement('tr'); //column
+
+				for (var j = 0; j < columns.length; j++) {
+					let th = document.createElement('th'); //column
+					let text = document.createTextNode(columns[j]); //cell
+					th.appendChild(text);
+					tr.appendChild(th);
+					header.append(th.cloneNode(true));
+				}
+				footer.append(tr);
+               
+				window.table = $('#dataset').DataTable({
+					dom: 'lBfrtip<"actions">',
+					buttons: [
+						{
+							extend: 'copy',
+							text: window.copyButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+						{
+							extend: 'csv',
+							text: window.csvButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+						{
+							extend: 'excel',
+							text: window.excelButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+						{
+							extend: 'colvis',
+							text: window.colvisButtonTrans,
+							exportOptions: {
+								columns: ':visible'
+							}
+						},
+					],
+					{% comment %} responsive: true, {% endcomment %}
+					"autoWidth": true,
+                    "scrollCollapse": true,
+                    "scrollX": true,
+					ordering: false,
+					initComplete: function () {
+						let cols_name = columns
+						this.api().columns().every(function (index) {
+							var column = this;
+							var select = $(`<br><select id="col-tdd-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+
+							{% for key, value in taxonomie_type_donnee %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+						
+				
+						});
+						this.api().columns().every(function (index) {
+							var column = this;
+				
+							var select = $(`<br><select id="col-ndo-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+							
+							{% for key, value in nature_valeur %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+				
+						});
+						this.api().columns().every(function (index) {
+							var column = this;
+				
+							var select = $(`<br><select id="col-tim-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+
+							{% for key, value in imputer %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+	
+				
+						});
+						this.api().columns().every(function (index) {
+							var column = this;
+				
+							var select = $(`<br><select id="col-tme-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+
+							{% for key, value in scaller %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+				
+						});
+
+						this.api().columns().every(function (index) {
+							var column = this;
+				
+							var select = $(`<br><select id="col-ten-${cols_name[index]}" class="form-control-xs" style="width:110px";"><option value="None"></option></select>`)
+								.appendTo($("#filters").find("th").eq(column.index()))
+								.on('change', function () {
+									{% comment %} var val = $.fn.dataTable.util.escapeRegex($(this).val()); {% endcomment %}
+								});
+							{% for key, value in encoder %}
+							$(select).append('<option value="{{key}}"> {{value|safe}} </option>')
+							{% endfor %}
+				
+						});
+					},
+					data: data,
+					{% comment %} columns: columns {% endcomment %}
+				});
+				
+				console.log(preprocessing)
+				for (const [key, value] of Object.entries(preprocessing)) {
+					$('#col-tdd-'+key).val(value['type']).change()
+					$('#col-ndo-'+key).val(value['nature']).change()
+					$('#col-tim-'+key).val(value['imputer']).change()
+					$('#col-tme-'+key).val(value['scaller']).change()
+					$('#col-ten-'+key).val(value['encoder']).change()
+				}
+				window.columns = columns
+				window.table.columns.adjust().draw(); // Redraw the DataTable
+		}
+
+		static save_info_preprocessing(){
+			let collection = window.columns
+			if (collection === null)
+				return
+			let preprocessing = []			 
+			for (const key in collection) {
+				let item = collection[key]
+				preprocessing.push({
+					'column': item,
+					'type': $('#col-tdd-'+item).val(),
+					'nature': $('#col-ndo-'+item).val(),
+					'imputer': $('#col-tim-'+item).val(),
+					'scaller': $('#col-tme-'+item).val(),
+					'encoder': $('#col-ten-'+item).val(),
+				});
+			}
+			let selected = [];
+			$("input:checkbox[name=target]:checked").each(function(){ selected.push($(this).val()) });
+			Request.post("{% url 'info_preprocessing' %}", JSON.stringify({'preprocessing': preprocessing, 'selected': selected}), function(response){
+				console.log(response)
+				Notification.talk(response.transaction.code, response.transaction.message)
+			})
+		}
+
+		static get_algorithme_by_task(){
+			if (window.columns === null)
+				return; 
+			processing = {}			 
+
+			console.log(response)
+			Notification.talk('success', 'Opération effectuée avec success')
+		}
+	
+	}
+	var table = null;
+		
+	(function ($) {
+
+		$('#submit_upload_file').on('click', (event) => {
+			event.preventDefault();
+			var uploader = new FileUpload(document.querySelector('#file2upload'))
+			uploader.upload()
+		});
+
+		$('#btn_save_info_preprocessing').on('click', (event) => { FileUpload.save_info_preprocessing() })
+	
+
+		 $('#select-target').on('change', function(e){ 
+			let task = $(this).trim(source.val())
+			if (task == '0')
+				return false
+			//todel
+			Request.post("{% url 'get_algorithme_by_task' %}", task, function(response){
+				target = $('#select-algorithmes')
+				$(target).empty()
+
+				{% comment %} 
+					if(typeof(_data[val]) != "undefined"){
+						var options = (typeof(_data[val]) != "undefined")? _data[val] : {};
+						$('<option>-- Select --</option>').appendTo(target);
+						$.each( options , function(value, index) {
+							$('<option value="' + value + '">' + index + '</option>').appendTo(target)
+						});
+					} 
+				{% endcomment %}
+
+			})
+
+		})
+
+		 $('#btn_submit_form_info_projet').on('click', function(e){ 
+			Request.post_form_file("{% url 'projet_info' %}", 'form_info_projet', function (response){
+				$('#projet_id').val(response.data.projet_id)
+				Notification.talk(response.transaction.code, response.transaction.message);
+			})
+		})
+		 {% comment %} $('#btn_start_training').on('click', function(e){ 
+			Request.post("{% url 'projet_info' %}", 'form_info_projet', function (response){
+				$('#projet_id').val(response.data.projet_id)
+				Notification.talk(response.transaction.code, response.transaction.message);
+			})
+		}) {% endcomment %}
+
+		 $('#btn_reset_form_info_projet').on('click', function(e){ 
+			Request.get("{% url 'projet_info' %}",  function (response){
+				console.log(response)
+				$('#projet_id').val(response.data.projet_id)
+				Notification.talk(response.transaction.code, response.transaction.message);
+			})
+		})
+
+		 Notification.talk('info', 'Bienvenue à section de creation de projet !!!');
+
+	})(jQuery)
+	
+</script>

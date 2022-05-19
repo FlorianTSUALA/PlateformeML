@@ -7,11 +7,19 @@ class ENoNameChoice(Enum):
     
     @classmethod
     def choices(cls):
-        return [(key.value, key.name) for key in cls]
+        return [(key.value, key.name.lower().replace('_', ' ')) for key in cls]
 
 class ETypeDonnee(ENoNameChoice):
     ENTIER = 'ENTIER'
     DECIMAL = 'DECIMAL'
+    REEL = 'REEL'
+    CAHINE_CARACTERE = 'CAHINE_CARACTERE'
+    INTERVALLE = 'INTERVALLE'
+
+class EDype(ENoNameChoice):
+    ENTIER = 'ENTIER'
+    DECIMAL = 'DECIMAL'
+    RELL = 'RELL'
     CAHINE_CARACTERE = 'CAHINE_CARACTERE'
     INTERVALLE = 'INTERVALLE'
 
@@ -20,10 +28,10 @@ class EEtatPublication(ENoNameChoice):
     PUBLIC = 'PUBLIC'
     PRIVE = 'PRIVE'
 
-class ETypeValeur(ENoNameChoice):
-    QUALITATIF = 'QUALITATIF'
-    QUANTITATIF = 'QUANTITATIF'
-    NUMERIC = 'NUMERIC'
+class ENatureValeur(ENoNameChoice):
+    QUALITATIF = 'CATEGORIEL' #QUALITATIF DISCRET OU AUTRE...
+    QUANTITATIF = 'QUANTITATIF' #DISCRET | CONTINUE 
+    # NUMERIC = 'NUMERIC'
 
 class EEtatCompte(ENoNameChoice):
     ARCHIVE = 'ARCHIVE'

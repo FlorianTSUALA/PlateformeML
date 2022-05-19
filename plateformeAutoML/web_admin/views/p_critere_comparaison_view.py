@@ -13,6 +13,11 @@ def get_metadata(key = None):
     genre = 'M'
 
     data = {
+        'can_init': True,
+        'can_add': True,
+        'can_edit': True,
+        'can_delete': True,
+
         'page_title': 'AutoML - Plateforme de Machine Learning Automaisé',
         'table_title': 'Liste des criteres comparaisons du Machine Learning',
         'section_title': 'Parametrage',
@@ -48,7 +53,7 @@ def get_metadata(key = None):
 
     if key is None:
         return data
-    return data.get(key, 'ok')
+    return data.get(key, None)
 
 def critere_comparaison(request):
     
