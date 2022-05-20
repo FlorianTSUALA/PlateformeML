@@ -25,6 +25,7 @@ from web_admin.views import (
     profile, profile_list,  profile_create, profile_update, profile_delete,
     #ACCUEIL
     VitrineView,
+    groupe_algorithme,
     #PROJET
     AccueilView, 
     # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
@@ -65,7 +66,9 @@ urlpatterns = [
     path('deconnexion',  deconnexion, name='deconnexion'),
 
     #Vitrine
+    # path('presentation',  VitrineView.as_view(), name='vitrine'),
     path('presentation',  VitrineView.as_view(), name='vitrine'),
+    path('groupe_algorithme',  groupe_algorithme, name='groupe_algorithme'),
 
     #Accueil
     path('',  AccueilView.as_view(), name='home'),
@@ -101,7 +104,7 @@ urlpatterns = [
     path('download_model/<int:pk>', download_model, name='download_model'),
     path('predict_model/<int:pk>', predict_model, name='predict_model'),
 
-    path('projet_detail',  projet_detail, name='projet_detail'),
+    path('projet_detail/<int:pk>',  projet_detail, name='projet_detail'),
     path('projet_update/<int:pk>',  projet_update, name='projet_update'),
     path('projet_delete/<int:pk>',  projet_delete, name='projet_delete'),
     path('list_projet/<str:filter>',  ListeProjetView.as_view(), name='projet_list'), #favoris, projets, publics, tous
