@@ -206,7 +206,7 @@ class PreprocessingData(Acquisision):
         return resultat.fit_transform(X_train, y_train)
 
 ##===================CLASSE ABSTRAITE DES FONCTIONS APPLICABLES SUR  UN MODEL====================#
-class RModel_i:
+class IModel:
     @abstractmethod
     def evaluerModel(self):
         pass
@@ -237,7 +237,7 @@ class RModel_i:
 
 
 
-class RMFrammeEstimator(RModel_i,PreprocessingData):
+class RMFrammeEstimator(IModel,PreprocessingData):
 
     def __init__(self, listeModel,dataset,target):
 

@@ -14,7 +14,7 @@ import  seaborn as sns
 ##===================BIBLIO CLASSE ABSTRAITE
 from abc import ABC, abstractmethod
 
-class RModel_i:
+class IModel:
     @abstractmethod
     def evaluerModel(self):
         pass
@@ -44,8 +44,31 @@ class RModel_i:
         pass
 
 
+    @classmethod
+    def save_model(cls,model,path,num):
+        try:
+            filename = path+"/"+str(num)+".sav"
+            pickle.dump(model, open(filename,'wb'))
+            return filename
+        except Exception as e:
+            print('Failled to save model')
+            print('-'*60)
+            print(e)
+            print('-'*60)
+            return 0
+    
+    @classmethod
+    def load_model(cls,filename):
+        try:
+            return pickle.load(open(filename, 'rb'))
+        except Exception as e:
+            print('Failled to load model')
+            print('-'*60)
+            print(e)
+            print('-'*60)
+            return 0
 
-class RMFrammeEstimator(RModel_i,PreprocessingData):
+class RMFrammeEstimator(IModel,PreprocessingData):
 
     def __init__(self, listeModel,dataset,target):
 
@@ -204,16 +227,3 @@ class RMFrammeEstimator(RModel_i,PreprocessingData):
         #result = self.compareModels(precision_dico_models)
         return precision_dico_models,models_fit,precision_,name_
 
-
-    def save_model(self,model,path,num):
-
-        try:
-            model = model
-            #filename = 'model_final.sav'
-            path = path
-            filename = path+"/"+str(num)+".sav"
-            #"D:/STAGE_ING3_EDEN_TECHNOLOGIE/APPLICATION/RMFRAMEWORK/analysis/media/base_coinnaissance/model_final"+str(num)+".sav"
-            pickle.dump(model, open(filename,'wb'))
-            return filename
-        except:
-            return 0
