@@ -215,7 +215,7 @@ class CritereComparaisonAlgorithme(models.Model):
     def __str__(self):
         return f'{self.libelle} : [{self.min}, {self.max}]'
 
-# à revoir 
+#à revoir 
 
 
 class TaxonomieTypeDonnee(models.Model):

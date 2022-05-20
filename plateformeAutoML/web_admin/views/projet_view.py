@@ -399,6 +399,24 @@ def projet_detail(request,pk):
     projet = Projet.objects.get(pk=pk)
 
 
+    algorithme_pro = AlgorithmeProjet.objects.filter(projet=projet.pk)
+    print("---------------------------")
+    print(algorithme_pro)
+
+    models_projet = []
+
+    for algo in list(algorithme_pro):
+        print("-----------------",algo.pk)
+        model_courent = Modele.objects.get(algorithme_projet = algo)
+
+        print("--------ccc-------",model_courent)
+
+        models_projet.append(model_courent)
+    
+    
+
+        #print("xxxxxxxxxxxxxxxxxxx",model_courent.precision,model_courent.algorithme_projet.code)
+
     #modeles = model = Modele.objects.filter()
     modeles = ""
 
@@ -407,7 +425,7 @@ def projet_detail(request,pk):
     context['section_title'] = 'Projets'
     context['section_item_title'] = 'Consultation projet'
     context['projet'] = projet
-    context['modeles'] = modeles
+    context['modeles'] = models_projet
     return render(request, template_name, context=context)
 
 
