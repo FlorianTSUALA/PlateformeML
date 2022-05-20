@@ -3,14 +3,14 @@ from select import select
 from statistics import mode
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
-from django.core import serializers
-from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
+from django.views.generic import TemplateView, View
+from django.http import  JsonResponse
 from django.conf import settings
 import time, os, json
 from django.template.loader import render_to_string
 from matplotlib.pyplot import axis
 import pandas as pd
+import traceback
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -24,8 +24,9 @@ from web_admin.services import fetch_config as fetch
 from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import *
 from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import estimator
 from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork.pretraitement import  PreprocessingData
-from sklearn.preprocessing import StandardScaler,OneHotEncoder,LabelEncoder
 from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import ALGORITHME_SYSTEME
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork.model import IModel
+
 from sklearn.pipeline import make_pipeline
 
 
@@ -265,17 +266,15 @@ def selection_algorithme(request):
         data['algorithmes'] = set()
         for item in items:
             data['algorithmes'].add(item.algorithme.code)
-        data['metrique'] = algorithme_projet.metrique.code 
+        data['metrique'] = items[0].metrique.code 
         return JsonResponse({'data': json.dumps(data), 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Chargement des informations sur le choix des algorithmes'}})
 
 def upload_dataset(request):
-    ts = time.gmtime()
-    ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
     if request.method == 'POST':  
         fichier = request.FILES['file'].read()
         nom_fichier = request.POST['filename']
         ext = file_extention(nom_fichier)
-        nom_fichier = str(nom_fichier).replace(ext, '') + ts + ext
+        nom_fichier = str(nom_fichier).replace(ext, '') + time.strftime("%H_%M_%S", time.gmtime()) + ext
         chemin = request.POST['path']
         end = request.POST['end']
         nextSlice = request.POST['nextSlice']
@@ -283,7 +282,7 @@ def upload_dataset(request):
             return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete invalide'}})
         else:
             if chemin == 'null':
-                path = 'media/' + nom_fichier
+                path = getattr(settings, 'MEDIA_URL', 0) + 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + nom_fichier
                 with open(path, 'wb+') as destination: 
                     destination.write(fichier)
                 _fichier = Fichier()
@@ -301,7 +300,7 @@ def upload_dataset(request):
                     filename = Fichier.objects.get(pk=old_file_id).nom
 
                     media_root = getattr(settings, 'MEDIA_ROOT', 0)
-                    path_file = os.path.join(media_root, filename)
+                    path_file = os.path.join(media_root, 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/'+ filename)
                     if os.path.isfile(path_file):
                         os.remove(path_file)
                     # request.session['dataset']['fichier_id'] = _fichier.pk
@@ -325,10 +324,11 @@ def upload_dataset(request):
                 else:
                     res = JsonResponse({'data':{'chemin': nom_fichier}, 'transaction': {'code': 'success', 'titre':'En cours !!!', 'message': 'Chargment en cours'}})
             else:
-                print('---------')
-                print('---------')
-                print('---------')
-                path = 'media/' + chemin
+                print('---------'+chemin)
+                print('---------'+chemin)
+                print('---------'+chemin)
+                media_root = getattr(settings, 'MEDIA_ROOT', 0)
+                path = os.path.join(media_root, 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + chemin)
                 model_id = Fichier.objects.get(chemin=chemin)
                 if model_id.nom == nom_fichier:
                     if not model_id.eof:
@@ -420,9 +420,7 @@ def train_models(request):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
         if not request.session.get('dataset', {}):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
-        print("save model OK..................")
         df = pd.read_json(request.session['dataset']['df'])
-        print("save model OK..................",df)
 
         projet_id = request.session.get('projet').get('projet_id', 0)
         jeu_donnees = JeuDonnees.objects.get(projet_id=projet_id)
@@ -435,19 +433,15 @@ def train_models(request):
         target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
         colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
 
-        selected_columns = [item.libelle for item in list(colonnes)]
+        selected_cols = [item.libelle for item in list(colonnes)]
         #remove all other columns
-        new_df = df[df.columns.intersection(selected_columns)]
+        new_df = df[df.columns.intersection(selected_cols)]
 
         metric = 'f1' #Pas utilisé
 
         algorithms = AlgorithmeProjet.objects.filter(projet_id=projet_id)
 
         training_algorithms_pipeline = {}
-        """pipeline_pretraitement = PreprocessingData(
-                new_df, target, jeu_donnees.pourcentage_test, jeu_donnees.pourcentage_entrainement, strategy_val_manquante_num = imputation_valeur_num, methode_normalisation=technique_normalisation, 
-                strategy_val_manquante_cat=imputation_valeur_cat, methode_encodage=technique_encodage, *colonnes
-        )"""
         pipeline_pretraitement = PreprocessingData(new_df, target.libelle, jeu_donnees.pourcentage_test, jeu_donnees.pourcentage_entrainement,*colonnes)
         preprocessor = pipeline_pretraitement.pipelinePreprocessing()
 
@@ -463,30 +457,9 @@ def train_models(request):
 
             estimateur = estimator.Estimator(training_algorithms_pipeline,new_df, target.libelle)
         
-            ts = time.gmtime()
-            ts = time.strftime("__%Y_%m_%d__%H_%M_%S", ts)
-
-            #nom_fichier = str(nom_fichier).replace(ext, '') + ts + ext
-
-            import os
-            BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-            print("le repertoire de base du projet est " , BASE_DIR)
-
-            path = str(BASE_DIR) + "\..\media\models_projets" 
-
-            print("le repertoire BON REPERTOIRE EST  " , path)
-
-            #path = "C:/Users/USER/Documents/ML/PlateformeML/plateformeAutoML/media/models_save"
-            #projet_id_algo_day
-            """with open(path, 'wb+') as destination: 
-                destination.write(fichier)"""
-
         print(training_algorithms_pipeline)
        
         #Entrainement des modèles sans optimisation
-        #performences_models, best_model, model_, precision_ = classement.executer()
-       
         base_model = ''
 
         #ENTRAINEMENT ET OPTIMISATION AVEC LES DONNEES CHARGEES ET LES ALGORITHMES SELECTIONNES
@@ -497,138 +470,110 @@ def train_models(request):
                 base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=metric, cv=10)
                 dico_infos_train[algo.algorithme.libelle] = {
                     'model_training' : base_model,
-                    'precision' : round(precision,3),
-                    'algo': algo
+                    'precision' : round(precision, 3),
+                    'algorithme': algo
                 }
-        except:
-            print("ERREUR lors l'entrainement des  modeles")
+        except Exception as e: 
+            print(e)
+            print('BEGIN', '-'*60)
+            traceback.print_exc()
+            print('END', '-'*60)
+            print("ERREUR LORS L'ENTRAINEMENT DES  MODELES")
 
         print("-----------------------",dico_infos_train)        
+
+        media_root = getattr(settings, 'MEDIA_ROOT', 0)
+        path = os.path.join(media_root, 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()))
+        print("REPERTOIRE : " , path)
+
         liste_models = []
-        for index, algo in  enumerate(dico_infos_train):
-            libele_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['label']
-            code_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['code']
-            famille_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algo'].algorithme.code]['family']
-            algo_projet = dico_infos_train[algo]['algo']
-            
-            model = Modele(code=code_algo, chemin=" ",precision = round(precision*100,3),rapport = "",resume="", algorithme_projet = algo_projet)
-            model.jeuDonnees = jeu_donnees
-            model.save()
-            chemin = estimateur.save_model(dico_infos_train[algo]['model_training'], path,model.pk)
-            model.chemin = chemin
-          
+        for algo in dico_infos_train:
+            code_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algorithme'].algorithme.code]['code']
+            algo_projet = dico_infos_train[algo]['algorithme']
+            model = Modele( code=code_algo, precision=round(precision*100,3), rapport='', resume='', jeu_donnees=jeu_donnees, 
+                            algorithme_projet=algo_projet, chemin=IModel.save_model(dico_infos_train[algo]['model_training'], path,model.pk) )
             model.save()
             liste_models.append(model)
         
-        print("valeurs de retour Here ...")
         print(liste_models)
         context = {
-            'infos_modeles_train':liste_models
+            'infos_modeles_train': liste_models
         }
+        return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+
         return render(request, 'pages/projets/creation_projet.html', context=context)
 
-import pickle
+
 def predict_projet(request,pk):
 
     model = Modele.objects.get(pk = pk)
+    trained_model = IModel.load_model(model.chemin)
+
     jeu_donnees = JeuDonnees.objects.get(pk=model.jeuDonnees.pk)
     target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
-    #colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
-    colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
-    selected_columns = [item.libelle for item in list(colonnes)]
+    selected_cols = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
 
-    features = []
-    for col in colonnes:
-        if col.pk !=target.pk:
-            features.append(col)
-            #print(type(col.valeurs))
-
-    #
-    new_cols = []
-    for col in colonnes:
-        if col.pk !=target.pk:
-            #print(col.libelle,"------>TYPE",col.est_categoriel,"-----ccccccccccccccc--->",col.valeurs)
-            col.array_valeurs = col.valeurs.split(',')
-            #print("----------------------",col.valeurs,dir())
-            print(col.array_valeurs[0])
-            new_cols.append(col)
-    #colonnes = new_cols
-
+    selected_cols_without_target = []
+    for col in selected_cols: col.array_valeurs = col.valeurs.split(','); selected_cols_without_target.append(col) if col.pk !=target.pk else print('', end='')
+    context = { 'features' : selected_cols_without_target }
+    
     if request.method == "POST":
+        data = request.POST
         data_input = []
-        datas = request.POST
         colonne_list = []
-        for col in colonnes:
-            x = datas[col.libelle]
+        for col in selected_cols:
             colonne_list.append(col.libelle)
-            #print("xxxxxxxxytpexxxxxxxx",type(x))
-            """if col.est_categoriel in ['float64','int64','int32','float32']:
-                print("valeurrrrrrrrrrrrrrrrrrrrrr",col.nom_colonne,col.type_colonne)"""
-            print(x)
-            data_input.append(x)
-        print("Les données entrées:",data_input)
+            data_input.append(data.get(col.lobelle, 'non défini'))
 
-        print(model)
-        #model = Model.objects.get(id=id)
-        filename = model.chemin
-        loaded_model = pickle.load(open(filename, 'rb'))
-        #data_input.append('No')
-        #data_input = data_input
+
+        print("Les données entrées:", data_input)
         data_input = [data_input]
         print("data reshape",data_input)
-        #print(loaded_model)
+        df = pd.DataFrame(np.array(data_input), columns=colonne_list)
+        prediction = trained_model.predict(df)
+        # resultat2  = (trained_model.predict_proba(df) * 100)[:,1][0]
+        print('predict_model : ' , prediction)
+        context['resultat'] = prediction[0]
 
-        #cols = ['gender', 'SeniorCitizen', 'tenure', 'ServiceCount', 'Contract',
-        #'PaperlessBilling', 'MonthlyCharges', 'TotalCharges']
-
-        cols = colonne_list
-        #cols = list_cat
-        #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",cols)
-
-        #valeur = [['Male', 1.0, 100.0, 7.0, 'Month-to-month', 'Yes', 155.0, 155.0]]
-
-        #print(valeur)
-        print(data_input)
-        #val =  [1, 0.0, 100.0, 7.0, 3.0, 4.0]
-        #x =  [['Female','0',8,6,'Month-to-month','Yes',99.65,820.5]]
-        test_set = data_input
-        print("------------",test_set)
-        df2 = pd.DataFrame(np.array(test_set),columns=cols)
-
-        print(df2)
-        resultat = loaded_model.predict(df2)
-        resultat2  = (loaded_model.predict_proba(df2) * 100)[:,1][0]
-        print(resultat,resultat2)
-        print(colonnes)
-        context = {
-            'features' : new_cols,
-            #'colonnes': list(colonnes),
-            'resultat': resultat[0],
-        }
-        return render(request, 'pages/projets/predict_projet.html', context)
-
-    context = {
-    'features' : new_cols
-    }
     return render(request, 'pages/projets/predict_projet.html', context=context)
-
 
 def predict_model(request, pk):
     print('prediction...')
+    model = Modele.objects.get(pk = pk)
+    trained_model = IModel.load_model(model.chemin)
+
+    jeu_donnees = JeuDonnees.objects.get(pk=model.jeuDonnees.pk)
+    target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
+    selected_cols = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
+
+    selected_cols_without_target = []
+    for col in selected_cols: col.array_valeurs = col.valeurs.split(','); selected_cols_without_target.append(col) if col.pk !=target.pk else print('', end='')
+    context = { 'features' : selected_cols_without_target }
+
     if request.method == "POST":
         print('POST')
-        jeu_donnees = None
-        # return render(request, 'pages/projets/fragments/block/')
         if not request.session.get('projet', {}):
             return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
-       # context = {'images': hist_img(df, cols_info).items()}
-        context = {}
-        return JsonResponse({
-                                'data':{'img_block': render_to_string('pages/projets/fragment/block/histogramme.html', context=context, request=request )}, 
-                                'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}
-                            })
-    else:
-        return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
+
+        data = request.POST
+        data_input = []
+        colonne_list = []
+        for col in selected_cols:
+            colonne_list.append(col.libelle)
+            data_input.append(data.get(col.lobelle, 'non défini'))
+
+        print("Les données entrées:", data_input)
+        data_input = [data_input]
+        print("data reshape",data_input)
+        df = pd.DataFrame(np.array(data_input), columns=colonne_list)
+        prediction = trained_model.predict(df)
+        # resultat2  = (trained_model.predict_proba(df) * 100)[:,1][0]
+        print('predict_model : ' , prediction)
+        context['resultat'] = prediction[0]
+
+    return JsonResponse({   'data':{'prediction': render_to_string('pages/projets/fragment/block/model_predict.html', context=context, request=request )}, 
+                            'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'},
+                        })
 
 def download_model(request, pk):
     if pk != '':
