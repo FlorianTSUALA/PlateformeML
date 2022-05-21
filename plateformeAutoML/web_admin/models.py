@@ -48,7 +48,7 @@ class Projet(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='')
     mots_cles  =  models.TextField(max_length=254, blank=True, default='')
     metrique =  models.CharField(max_length=254, blank=True,null=True) #to del
-    image = models.ImageField(upload_to="projet/image/%Y/%m/%d")
+    image = models.ImageField(upload_to="projet/images/%Y/%m/%d")
     # type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     statut = models.CharField(max_length=50, choices=EEtatPublication.choices(), default=EEtatPublication.PRIVE)
     nombre_modele = models.IntegerField(default=0, blank=True,null=True)
@@ -177,7 +177,7 @@ class Modele(models.Model):
     rapport = models.TextField(max_length=254, blank=True,null=True)
     resume = models.TextField(max_length=254, blank=True,null=True)
     algorithme_projet = models.ForeignKey(AlgorithmeProjet, on_delete=models.CASCADE)
-    jeuDonnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
+    jeu_donnees = models.ForeignKey(JeuDonnees, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.resume
@@ -215,7 +215,7 @@ class CritereComparaisonAlgorithme(models.Model):
     def __str__(self):
         return f'{self.libelle} : [{self.min}, {self.max}]'
 
-# à revoir 
+#à revoir 
 
 
 class TaxonomieTypeDonnee(models.Model):

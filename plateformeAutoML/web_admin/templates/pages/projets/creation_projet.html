@@ -291,54 +291,41 @@
 			</form>
 			<!--/row-->
 		</div>
-		<div id="step-06" class="page-section-stepper container py-2">
-			<h2 class="font-weight-light text-center text-muted py-3">Resultats d'entrainements </h2>
-			<div class="col-lg-12 mx-auto">
-				<div class="card">
-					<div class="card-header py-3 bg-transparent"> 
-						<div class="d-sm-flex align-items-center">
-					</div>
-					<div class="card row">
-						<div class="card-body">
-							<div class="d-flex align-items-center">
-							   <h5 class="mb-0">Resumé de l'entrainement</h5>
-								<form class="ms-auto position-relative">
-								  <div class="position-absolute top-50 translate-middle-y search-icon px-3"><i class="bi bi-search"></i></div>
-								  <input class="form-control ps-5" type="text" placeholder="search">
-								</form>
-							</div>
-							<div class="table-responsive mt-3">
-							  <table class="table align-middle mb-0">
-								<thead class="table-light">
-								 <tr>
-								   <th>#ID</th>
-								   <th>code</th>
-								   <th>Algorithme</th>
-								   <th>Precision</th>
-								   <th>chemin</th>
-								   <th>Actions</th>
-								 </tr>
-								 </thead>
-								 <tbody id="info_models">
-									{% for model in infos_modeles_train %}
-									<tr>
-										<td>{{model.pk}}</td>
-										<td>{{model.code}}</td>
-										<td>{{model.algorithme_projet.algorithme.libelle}} | {{model.algorithme_projet.metrique.libelle}}</td>
-										<td>{{model.precision}}</td>
-										<td>{{model.chemin}}</td>
-										<td><a href="{% url 'predict_projet' model.pk %}" class="btn btn-success btn-sm">Tester le Model</a></td>
-									</tr>
-									{% endfor %}
-								  </tbody>
-								</table>
-							</div>
-						  </div>
-					</div>
-				</div>
+	
+	<div class="card row">
+			<div class="d-flex align-items-center">
+				<h5 class="mb-0">Resumé de l'entrainement</h5>
+				<form class="ms-auto position-relative">
+					<div class="position-absolute top-50 translate-middle-y search-icon px-3"><i class="bi bi-search"></i></div>
+					<input class="form-control ps-5" type="text" placeholder="search">
+				</form>
 			</div>
-			
-			<!--/row-->
+			<div class="table-responsive mt-3">
+				<table class="table align-middle mb-0">
+				<thead class="table-light">
+					<tr>
+					<th>#ID</th>
+					<th>code</th>
+					<th>Algorithme</th>
+					<th>Precision</th>
+					<th>chemin</th>
+					<th>Actions</th>
+					</tr>
+					</thead>
+					<tbody id="info_models">
+					{% for model in infos_modeles_train %}
+					<tr>
+						<td>{{model.pk}}</td>
+						<td>{{model.code}}</td>
+						<td>{{model.algorithme_projet.algorithme.libelle}} | {{model.algorithme_projet.metrique.libelle}}</td>
+						<td>{{model.precision}}</td>
+						<td>{{model.chemin}}</td>
+						<td><a href="{% url 'predict_projet' model.pk %}" class="btn btn-success btn-sm">Tester le Model</a></td>
+					</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div id="step-07" class="page-section-stepper container py-2">
 			<h2 class="font-weight-light text-center text-muted py-3">Prédiction d'un modele</h2>
