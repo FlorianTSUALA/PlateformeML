@@ -53,25 +53,24 @@ def liste_projet(request):
         projets = paginator.page(1)
     except EmptyPage:
         projets = paginator.page(paginator.num_pages)
-    return render(request, 'pages/vitrine.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'projets','section_item_title' : 'Listes des projets','projets' :  projets})
+    return render(request, 'pages/vitrine1.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'projets','section_item_title' : 'Listes des projets','projets' :  projets})
 
 
 class VitrineView(TemplateView):
-    pass
-    # template_name = 'pages/vitrine.html'
-    # def get_context_data(self, **kwargs):
+    template_name = 'pages/vitrine1.html'
+    def get_context_data(self, **kwargs):
         
-    #     projets = Projet.objects.all().order_by('-id')
-    #     algorithmes = Algorithme.objects.all().order_by('-id')
+        projets = Projet.objects.all().order_by('-id')
+        algorithmes = Algorithme.objects.all().order_by('-id')
         
 
-    #     context = super().get_context_data(**kwargs)
-    #     context['has_white_text'] = False
-    #     context['section_title'] = 'Projets'
-    #     context['section_item_title'] = 'Listes des projets'
-    #     context['projets'] = projets
-    #     context['algorithmes'] = algorithmes
-    #     return context
+        context = super().get_context_data(**kwargs)
+        context['has_white_text'] = False
+        context['section_title'] = 'Projets'
+        context['section_item_title'] = 'Listes des projets'
+        context['projets'] = projets
+        context['algorithmes'] = algorithmes
+        return context
 
 def search_projets(request):
     if request.method == 'POST':
@@ -97,7 +96,7 @@ def groupe_algorithme(request):
         for p in projets:
             print(p.algorithme.code)
        
-        return render(request, 'pages/vitrine.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'Projets','section_item_title' : 'Listes des projets','projets' :  projets})  
+        return render(request, 'pages/vitrine1.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'Projets','section_item_title' : 'Listes des projets','projets' :  projets})  
 
 # def groupe_algorithme(request,**kwargs):
 #     template_name = 'pages/vitrine.html'

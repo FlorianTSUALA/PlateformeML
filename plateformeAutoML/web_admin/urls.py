@@ -67,7 +67,7 @@ urlpatterns = [
     path('deconnexion',  deconnexion, name='deconnexion'),
 
     #Vitrine
-    # path('presentation',  VitrineView.as_view(), name='vitrine'),
+    # path('presentations',  VitrineView.as_view(), name='vitrine'),
    
     # path('presentation',  VitrineView.as_view(), name='vitrine'),
     path('presentation',  liste_projet, name='vitrine'),
