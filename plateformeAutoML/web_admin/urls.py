@@ -17,6 +17,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 from web_admin.views import (
     #AUTHENTIFICATION
@@ -25,7 +26,7 @@ from web_admin.views import (
     profile, profile_list,  profile_create, profile_update, profile_delete,
     #ACCUEIL
     VitrineView,
-    groupe_algorithme,
+    groupe_algorithme,search_projets,liste_projet,
     #PROJET
     AccueilView, 
     # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
@@ -66,9 +67,12 @@ urlpatterns = [
     path('deconnexion',  deconnexion, name='deconnexion'),
 
     #Vitrine
+    # path('presentations',  VitrineView.as_view(), name='vitrine'),
+   
     # path('presentation',  VitrineView.as_view(), name='vitrine'),
-    path('presentation',  VitrineView.as_view(), name='vitrine'),
+    path('presentation',  liste_projet, name='vitrine'),
     path('groupe_algorithme',  groupe_algorithme, name='groupe_algorithme'),
+    path('search_projets',  csrf_exempt(search_projets), name='search_projets'),
 
     #Accueil
     path('',  AccueilView.as_view(), name='home'),
