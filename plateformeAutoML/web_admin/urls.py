@@ -29,10 +29,10 @@ from web_admin.views import (
     #PROJET
     AccueilView, 
     # MesFavorisView, MesProjetsView, ProjetsPublicsView, 
-    EditProjet, 
+    ProjetWizard, 
     projet_detail, projet_update, projet_delete, projet_edit, ListeProjetView, 
     projet_info, upload_dataset, clean_session_projet_creation, info_preprocessing, 
-    selection_algorithme, get_algorithme_by_task, train_models, download_model, predict_model,predict_projet,
+    selection_algorithme, get_algorithme_by_task, train_models, download_model, predict_model,
     #AUTRES
     FAQView, AProposView, 
     #ALGORITHME
@@ -88,9 +88,9 @@ urlpatterns = [
     
     #####################   CREATION
 
-    # path('nouveau-projet',  login_required(EditProjet.as_view()), name='edit_projet'),
-    path('projet/<str:tag>',  EditProjet.as_view(), name='edit_projet'),
-    # path('nouveau-projet',  EditProjet.as_view(), name='edit_projet'),
+    # path('nouveau-projet',  login_required(ProjetWizard.as_view()), name='edit_projet'),
+    path('projet/<str:tag>',  ProjetWizard.as_view(), name='edit_projet'),
+    # path('nouveau-projet',  ProjetWizard.as_view(), name='edit_projet'),
     path('clean_session/projet_creation',  clean_session_projet_creation, name='clean_session_projet_creation'),
     path('upload_dataset',  upload_dataset, name='upload_dataset'),
     path('projet_info',  projet_info, name='projet_info'),
@@ -99,7 +99,7 @@ urlpatterns = [
     path('get_algorithme_by_task',  get_algorithme_by_task, name='get_algorithme_by_task'),
     
     path('train_models/', train_models, name='train_models'),
-    path('predict_projet/<int:pk>', predict_projet, name='predict_projet'),
+    path('predict_model', predict_model, name='predict_model'),
 
     path('download_model/<int:pk>', download_model, name='download_model'),
     path('predict_model/<int:pk>', predict_model, name='predict_model'),

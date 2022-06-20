@@ -19,3 +19,4 @@ plateformeAutoML/db.sqlite3
 *.pyc
 plateformeAutoML/db.sqlite3
 plateformeAutoML/db.sqlite3
+*.pyc

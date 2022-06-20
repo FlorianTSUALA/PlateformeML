@@ -1,10 +1,9 @@
 {% for model in infos_modeles_train %}
     <tr>
         <td>{{model.pk}}</td>
-        <td>{{model.code}}</td>
         <td>{{model.algorithme_projet.algorithme.libelle}} | {{model.algorithme_projet.metrique.libelle}}</td>
         <td>{{model.precision}}</td>
-        <td>{{model.chemin}}</td>
-        <td><a href="{% url 'predict_projet' model.pk %}" class="btn btn-success btn-sm">Tester le Model</a></td>
+        {% comment %} <td>{{model.chemin}}</td> {% endcomment %}
+        <td><a target="_blank" href="{% url 'download_model' model.pk %}" class="btn btn-success btn-sm">Télécharger </a></td>
     </tr>
 {% endfor %}

@@ -1,5 +1,6 @@
 ##===================CLASSE ABSTRAITE DES FONCTIONS APPLICABLES SUR  UN MODEL====================#
 import pickle
+from pathlib import Path
 
 from .pretraitement import *
 
@@ -45,9 +46,10 @@ class IModel:
 
 
     @classmethod
-    def save_model(cls,model,path,num):
+    def save_model(cls,model, path,num):
         try:
             filename = path+"/"+str(num)+".sav"
+            Path(filename).parent.mkdir(exist_ok=True, parents=True)
             pickle.dump(model, open(filename,'wb'))
             return filename
         except Exception as e:

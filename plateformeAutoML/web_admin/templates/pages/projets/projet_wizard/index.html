@@ -1,0 +1,168 @@
+{% extends 'layouts/base_with_breadcrumb.html' %}
+{% load static %}
+
+{% block title %} AutoML - Plateforme du Machine Learning', Automaisé {% endblock %}
+
+{% block custom_style %} 
+	<link href="{% static 'template/assets/plugins/smart-wizard/css/smart_wizard_all.min.css' %}" rel="stylesheet" />  
+	<link href="{% static 'template/assets/plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'template/assets/plugins/input-tags/css/tagsinput.css' %}" rel="stylesheet" />
+	<link href="{% static 'template/assets/plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'template/assets/plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />  
+	<style>
+		.form-control-xs {
+			height: calc(1em + .375rem + 2px) !important;
+			padding: .125rem .25rem !important;
+			font-size: .75rem !important;
+			line-height: 1.5;
+			border-radius: .2rem;
+		}
+	</style>
+{% endblock %} 
+
+{% block content %} 
+<div class="card">
+	{% comment %} <div class="card-header">{{ section_item_title }}</div> {% endcomment %}
+	<div class="card-body">
+		{% comment %} <br>
+		<p>
+			<label>Theme:</label>
+			<select id="theme_selector">
+				<option value="default">Default</option>
+				<option value="arrows" >Arrows</option>
+				<option value="dots" selected="">Dots</option>
+				<option value="dark">Dark</option>
+			</select>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="checkbox" id="is_justified" value="1" checked="">
+			<label for="is_justified">Justified</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			<label>Animation:</label>
+			<select id="animation">
+				<option value="none">None</option>
+				<option value="fade">Fade</option>
+				<option value="slide-horizontal" selected="">Slide Horizontal</option>
+				<option value="slide-vertical">Slide Vertical</option>
+				<option value="slide-swing">Slide Swing</option>
+			</select>&nbsp;&nbsp;&nbsp;&nbsp;
+			<label>Go To:</label>
+			<select id="got_to_step">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+			</select>&nbsp;&nbsp;&nbsp;&nbsp;
+			<label>External Buttons:</label>
+			
+			<button class="btn btn-secondary disabled" id="prev-btn" type="button">Go Previous</button>
+			<button class="btn btn-secondary" id="next-btn" type="button">Go Next</button>
+			<button class="btn btn-danger" id="reset-btn" type="button">Reset Wizard</button>
+		</p>
+		<br> {% endcomment %}
+		<!-- SmartWizard html -->
+		<div id="smartwizard" class="sw sw-theme-arrows sw-justified">
+			<ul class="nav">
+				<li class="nav-item">
+					<a class="nav-link inactive active" href="#step-1">	<strong>Etape 1</strong> 
+						<br> Informations générales</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link inactive" href="#step-2">	<strong>Etape 2</strong> 
+						<br> Acquisition & Prétraitement des données</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link inactive" href="#step-3">	<strong>Etape 3</strong> 
+						<br> Choix des algorithmes</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link inactive" href="#step-4">	<strong>Etape 4</strong> 
+						<br> Entrainement</a>
+				</li>
+				{% comment %} <li class="nav-item">
+					<a class="nav-link inactive" href="#step-5">	<strong>Etape 5</strong> 
+						<br> Resumé de l'entrainement</a>
+				</li> {% endcomment %}
+				<li class="nav-item">
+					<a class="nav-link inactive" href="#step-6">	<strong>Etape 5</strong> 
+						<br> Prédiction d'un modele</a>
+				</li>
+			</ul>
+			{% comment %} <div class="toolbar toolbar-top" role="toolbar" style="text-align: right;">
+				<button class="btn sw-btn-prev disabled" type="button">Prec.</button>
+				<button class="btn sw-btn-next" type="button">Suiv.</button>
+				<button class="btn btn-info">Terminer</button>
+				<button class="btn btn-danger">Annuler</button>
+			</div> {% endcomment %}
+			<div class="tab-content" style="height: 124.6px;">
+				<div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1" style="position: static; left: auto; width: 1575px; display: block;">
+					{% include './fragments/01_information_generale.html' %}
+				</div>
+				<div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2" style="display: none;">
+					{% include './fragments/02_acquisition_pretraitement_donnees.html' %}
+				</div>
+				<div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3" style="display: none;">
+					{% include './fragments/03_choix_algorithme.html' %}
+				</div>
+				<div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4" style="display: none;">
+					{% include './fragments/04_entrainement.html' %}
+				</div>
+				{% comment %} <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5" style="display: none;">
+					{% include './fragments/05_resume_entrainement.html' %}
+				</div> {% endcomment %}
+				<div id="step-6" class="tab-pane" role="tabpanel" aria-labelledby="step-6" style="display: none;">
+					{% include './fragments/06_prediction_modele.html' %}
+				</div>
+			</div>
+			{% comment %} <div class="toolbar toolbar-bottom" role="toolbar" style="text-align: right;">
+				<button class="btn sw-btn-prev disabled" type="button">Prec.</button>
+				<button class="btn sw-btn-next" type="button">Suiv.</button>
+				<button class="btn btn-info">Terminer</button>
+				<button class="btn btn-danger">Annuler</button>
+			</div> {% endcomment %}
+		</div>
+	</div>
+</div>
+{% comment %} <div class="">
+	<div class="">
+		{% include './fragments/01_information_generale.html' %}
+		{% include './fragments/02_acquisition_pretraitement_donnees.html' %}
+		{% include './fragments/03_choix_algorithme.html' %}
+		{% include './fragments/04_entrainement.html' %}
+		{% include './fragments/05_resume_entrainement.html' %}
+		{% include './fragments/06_prediction_modele.html' %}
+    </div>
+    <div id="script"></div> {% endcomment %}
+{% endblock %}
+
+{% block custom_javascript %}
+
+
+<script src="{% static 'template/assets/plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/apexcharts-bundle/js/apexcharts.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/input-tags/js/tagsinput.js' %}"></script>
+
+<script src="{% static 'template/assets/plugins/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'template/assets/plugins/smart-wizard/js/jquery.smartWizard.min.js' %}"></script>
+
+<script src="{% static 'template/assets/js/form-select2.js' %}"></script>
+	
+{% comment %} {% include './scripts/menu.html' %} {% endcomment %}
+<script>
+    $(window).bind('beforeunload', function(e){
+		e = e || window.event;
+		response = Request.post("{% url 'clean_session_projet_creation' %}", {})
+		console.log(response)
+		// For IE and Firefox prior to version 4  
+		if (e) {
+			e.returnValue = 'Sure?';
+		}
+		return e.returnValue;
+	})
+</script>
+{% include './scripts/info_algo.html' %}
+{% include './scripts/info_dataset.html' %}
+{% include './scripts/info_projet.html' %}
+{% include './scripts/wizard.html' %}
+
+<div id="test"></div>
+
+{% endblock %}

@@ -1,0 +1,552 @@
+from pyexpat import model
+from select import select
+from statistics import mode
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, View
+from django.http import  JsonResponse
+from django.conf import settings
+import time, os, json
+from django.template.loader import render_to_string
+from matplotlib.pyplot import axis
+import pandas as pd
+import traceback
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from pathlib import Path
+from django.shortcuts import get_object_or_404
+import mimetypes
+from django.http import HttpResponse
+from web_admin.utils.file import *
+from web_admin.enum import EEtatPublication, ENatureValeur
+from web_admin.models import Algorithme, Projet, Fichier, Metrique, AlgorithmeProjet,Modele,JeuDonnees, Colonne, Imputation, MiseEchelle, Encodage, TableModel
+from web_admin.utils.dataset import info_dataset, hist_img, load_dataframe
+from web_admin.services import fetch_config as fetch
+
+#IMPORT BIBLIOTHEQUE OF ML
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import *
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork import estimator
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork.pretraitement import  PreprocessingData
+from core_automl.bibliotheque.RMFrameClasse.ressources.algorithme import ALGORITHME_SYSTEME
+from core_automl.bibliotheque.RMFrameClasse.refractoryFramwork.model import IModel
+
+from sklearn.pipeline import make_pipeline
+
+
+ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+def clean_session_projet_creation(request):
+    if request.method == "POST":
+        del request.session['projet'] #.clear()
+        if request.get('dataset', {}):
+            Fichier.objects.all().delete()
+            del request.session['dataset']#.clear()
+        request.session.modified = True
+        return JsonResponse({'data':{}, 'transaction': {'code': 'info', 'titre':'Bye !!!', 'message': 'End of session in this page'}})
+
+class LoginRequiredMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+class ProjetWizard(LoginRequiredMixin, View):
+
+    def find_longest_word(self, mylist):
+    	return max(mylist, key=len)
+
+    def add_space(self, word, max):
+        word = word.ljust(max, ' ')
+        return word
+
+    def padding(self, mydict, max):
+        new_dict = { k:self.add_space(v, max) for k, v in mydict.items() }
+        return new_dict.items()
+
+    def get(self, request, *args, **kwargs):
+        print('TAG : %s'%kwargs.get('tag', "-------------"))
+        clean_session_projet_creation(request)
+        size = max( len(self.find_longest_word(fetch.get_nature_valeur())), len(self.find_longest_word(fetch.get_taxonomie_type_donnee())), 
+                    len(self.find_longest_word(fetch.get_encodage())),len(self.find_longest_word(fetch.get_mise_echelle())), 
+                    len(self.find_longest_word(fetch.get_imputation())))
+
+        models = {
+            'random Forest': {
+                'code' : 'xxxxx',
+                'precision' : 67,
+                'famille_algorithme' : 'Lineaire'
+            },
+            'regression Logistique': {
+                'code' : 'xxxxx',
+                'precision' : 37,
+                'famille_algorithme' : 'Lineaire'
+            },
+            'Support vector machine': {
+                'code' : 'xxxxx',
+                'precision' : 69,
+                'famille_algorithme' : 'Lineaire'
+            },
+            'Arbre binaire': {
+                'code' : 'xxxxx',
+                'precision' : 96,
+                'famille_algorithme' : 'Nom Lineaire'
+            },
+        }
+
+        liste_models = []
+
+        for i in range(0,10):
+            model = TableModel(i,'algo_'+str(i),'code_'+str(i), 10*i+50,'famille_'+str(i))
+            liste_models.append(model)
+
+        context = {
+            'projet_active': True,
+            'section_title': 'Projets',
+            'section_item_title': 'Creation d\'un projet',
+            'algorithmes': fetch.get_algorithme(),
+            'taches': fetch.get_tache_algorithme(),
+            # 'taches': fetch.get_tache(True),
+            'type_apprentissages': fetch.get_type_apprentissage_tache(),
+            'metriques': json.dumps(fetch.get_metrique(True)),
+            'tache_algorithmes': json.dumps(fetch.get_tache_algorithme(True)),
+            'type_apprentissage_taches': json.dumps(fetch.get_type_apprentissage_tache(True)),
+            'nature_valeur': self.padding(fetch.get_nature_valeur(), size),
+            'taxonomie_type_donnee': self.padding(fetch.get_taxonomie_type_donnee(), size),
+            'encoder': self.padding(fetch.get_encodage(), size),
+            'scaller': self.padding(fetch.get_mise_echelle(), size),
+            'imputer': self.padding(fetch.get_imputation(), size),
+            'status': EEtatPublication.choices(),
+            'models':liste_models
+        }
+        return render(request, 'pages/projets/projet_wizard/index.html', context=context)
+
+def get_algorithme_by_task(request):
+    data = dict()
+    if request.method == 'POST':
+        task = request.POST.get('task', 'SUPERVISED')
+        if task is not None:
+            data = fetch.get_allgorithme_by_task(task)
+        return JsonResponse({'data': data, 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+    return JsonResponse({'data': data, 'transaction': {'code': 503, 'titre':'Oups !!!', 'message': 'Page non autorisée'}})
+
+def projet_info(request):
+    if request.method == "POST":
+        data = {
+            'titre': request.POST.get('titre'),
+            'description': request.POST.get('description'),
+            'mots_cles': request.POST.get('mots_cles'),
+            'statut': request.POST.get('statut'),
+            'image': request.FILES.get('image'),
+            'utilisateur_id': request.user.utilisateur.pk,
+        }
+
+        projet = None
+        projet_id = request.POST.get('projet_id', '0')
+
+        if projet_id == '0':
+            print('create')
+            projet = Projet(
+                        titre = data['titre'],
+                        description = data['description'],
+                        mots_cles = data['mots_cles'],
+                        image = data['image'],
+                        statut = data['statut'],
+                        utilisateur_id = data['utilisateur_id'],
+                    )
+            projet.save()
+        else:
+            print('update')
+            projet = Projet.objects.get(pk=projet_id)
+            projet.titre = data['titre']
+            projet.description = data['description']
+            projet.mots_cles = data['mots_cles']
+            projet.image = data['image']
+            projet.statut = data['statut']
+            projet.utilisateur_id = data['utilisateur_id']
+            projet.save()
+        projet_id = projet.pk
+
+        if request.session.get('projet', None) is None:
+            request.session['projet'] = dict()
+        request.session['projet']['projet_id'] = projet_id
+        return JsonResponse({'data':{'projet_id': projet_id,}, 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+    else:
+        projet_session = request.session.get('projet', None)
+        if projet_session is not None:
+            projet = Project.objects.get(pk=projet_session.get('projet_id', 0))
+            return JsonResponse({'data':json.dumps(projet), 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}})
+
+def info_preprocessing(request):
+    print('info_preprocessing')
+    if request.method == "POST":
+        print('POST')
+        preprocessing = json.loads((list(request.POST.keys())[0]))['preprocessing']
+        selected = json.loads((list(request.POST.keys())[0]))['selected']
+
+        jeu_donnees = None
+        if not request.session.get('projet', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        if not request.session.get('dataset', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
+
+        projet_id = request.session.get('projet').get('projet_id', 0)
+        jeu_donnees, created = JeuDonnees.objects.get_or_create(projet_id=projet_id)
+        file_id = request.session.get('dataset').get('fichier_id', 0)
+        # print(file_id)
+        _fichier = Fichier.objects.get(pk=file_id)
+        jeu_donnees.fichier = _fichier.chemin
+        jeu_donnees.save()
+        Colonne.objects.filter(jeu_donnees=jeu_donnees).delete()
+        df = pd.read_json(request.session['dataset']['df'])
+        # print(preprocessing)
+        for item in preprocessing:
+            #item['nature'] not found skip : colvis
+            valeurs = ''
+            # print('item : ', item)
+            if item['nature'] == ENatureValeur.QUALITATIF.value:
+                _valeurs = df[item['column']].unique()
+                valeurs = ','.join(map(str, _valeurs))
+                #valeurs.append(map(str, _valeurs))
+                # print(_valeurs, valeurs)
+
+            colonne = Colonne()
+            colonne.libelle=item['column']
+            type_donnees=item['type']
+            colonne.est_categoriel=(item['nature'] == ENatureValeur.QUALITATIF.value)
+            colonne.est_target=False
+            colonne.est_selectionnee=(item['column'] in selected)
+            colonne.pattern=''
+            colonne.valeurs=valeurs
+            colonne.jeu_donnees=jeu_donnees
+            colonne.encodage=Encodage.objects.get_or_none(code=item['encoder'])
+            colonne.imputation=Imputation.objects.get_or_none(code=item['imputer'])
+            colonne.normalisation=MiseEchelle.objects.get_or_none(code=item['scaller'])
+            colonne.save()
+            # print(colonne.pk)
+
+        cols_info = request.session['dataset']['cols_info'] #todo check db info
+       # context = {'images': hist_img(df, cols_info).items()}
+        context = {}
+        return JsonResponse({
+                                'data':{'img_block': render_to_string('pages/projets/projet_wizard/fragments/block/histogramme.html', context=context, request=request )}, 
+                                'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Information enregistrée avec success'}
+                            })
+    else:
+        return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
+
+def selection_algorithme(request):
+    if request.method == "POST":
+        jeu_donnees = None
+        if request.session.get('projet', None) is None:
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        projet_id = request.session.get('projet').get('projet_id')
+
+        #--------Begin Save target
+        jeu_donnees, created = JeuDonnees.objects.get_or_create(projet_id=projet_id)
+        target = request.POST.get('target', 'non défini')
+        if target != 'non défini':
+            colonne = Colonne.objects.get(jeu_donnees=jeu_donnees, libelle=target)
+            colonne.est_target = True
+            colonne.save()
+        #--------End Save target
+        
+        algos = request.POST.getlist('algo[]')
+        _metrique = request.POST.get('metrique')
+        #to_review
+        metrique = Metrique.objects.get(code=_metrique)
+        #todo get default metrique from task if doesn't exist
+        tache = request.POST.get('tache')
+
+        AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet', {}).get('projet_id', 0)).delete()
+        for item in algos:
+            algorithme = Algorithme.objects.get(code=item)
+            AlgorithmeProjet.objects.create(projet_id=request.session.get('projet', {}).get('projet_id', 0), algorithme=algorithme, metrique=metrique)
+        return JsonResponse({'data':'', 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Algorithmes enregistrés avec success'}})
+    else:
+        items = AlgorithmeProjet.objects.filter(projet_id=request.session.get('projet', {}).get('projet_id', 0))
+        data = dict()
+        data['algorithmes'] = set()
+        for item in items:
+            data['algorithmes'].add(item.algorithme.code)
+        data['metrique'] = items[0].metrique.code 
+        return JsonResponse({'data': json.dumps(data), 'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Chargement des informations sur le choix des algorithmes'}})
+
+def upload_dataset(request):
+    if request.method == 'POST':  
+        fichier = request.FILES['file'].read()
+        nom_fichier = request.POST['filename']
+        # ext = file_extention(nom_fichier)
+        # nom_fichier = str(nom_fichier).replace(ext, '') + ext
+        # nom_fichier = str(nom_fichier).replace(ext, '') + time.strftime("%H_%M_%S", time.gmtime()) + ext
+        chemin = request.POST['path']
+        print(' PATH : '+request.POST['path'])
+
+        end = request.POST['end']
+        nextSlice = request.POST['nextSlice']
+        if fichier=="" or nom_fichier=="" or chemin=="" or end=="" or nextSlice=="":
+            return JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete invalide'}})
+        else:
+            if chemin == 'null':
+                path = getattr(settings, 'MEDIA_URL', 0) + 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + nom_fichier
+                Path(path).parent.mkdir(exist_ok=True, parents=True)
+                with open(path, 'wb+') as destination: 
+                    destination.write(fichier)
+                _fichier = Fichier()
+                _fichier.chemin = path 
+                _fichier.eof = end
+                _fichier.nom = nom_fichier
+                _fichier.save()
+                # print('dataset : ', request.session.get('dataset'))
+                if not request.session.get('dataset', {}):
+                    request.session['dataset'] = dict()
+                old_file_id = request.session.get('dataset').get('fichier_id', 0)
+                # print(old_file_id, nom_fichier)
+                if old_file_id:
+                    #to_review
+                    try:
+                        _file = Fichier.objects.get(pk=old_file_id)
+                        media_root = getattr(settings, 'MEDIA_ROOT', 0)
+                        path_file =  _file.chemin
+                        # os.path.join(media_root, 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/'+ filename)
+                        if os.path.isfile(path_file):
+                            os.remove(path_file)
+                        # request.session['dataset']['fichier_id'] = _fichier.pk
+                        Fichier.objects.get(pk=old_file_id).delete()
+                    except Fichier.DoesNotExist:
+                        _file = None
+                        
+                request.session['dataset']['fichier_id'] = _fichier.pk
+                request.session.modified = True
+                # print(request.session['dataset']['fichier_id'])
+                
+                if int(end):
+                    cols_info, df = info_dataset(path)
+                    context = {'images':  hist_img(df, cols_info).items()}
+                    request.session['dataset']['df'] = df.to_json()
+                    request.session['dataset']['cols_info'] = cols_info
+
+                    res = JsonResponse({'data':{
+                        'cols_info': cols_info, 
+                        'df': df.to_json(orient="split"), 
+                        'chemin': chemin,
+                        'img_block': render_to_string('pages/projets/projet_wizard/fragments/block/histogramme.html', context, request=request),
+                    }, 'transaction': {'code': 'success', 'titre':'Cool !!!', 'message': 'Chargment effectué avec success'}})
+                else:
+                    res = JsonResponse({'data':{'chemin': nom_fichier}, 'transaction': {'code': 'success', 'titre':'En cours !!!', 'message': 'Chargment en cours'}})
+            else:
+                print('---------'+chemin)
+                media_root = getattr(settings, 'MEDIA_ROOT', 0)
+                # path = os.path.join(media_root, 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + chemin)
+                path = getattr(settings, 'MEDIA_URL', 0) + 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + chemin
+                tmp_fichier = Fichier.objects.get(chemin=path)
+                tmp_fichier = Fichier() if tmp_fichier is None else tmp_fichier 
+                if tmp_fichier.nom == nom_fichier:
+                    if not tmp_fichier.eof:
+                        Path(path).parent.mkdir(exist_ok=True, parents=True)
+                        with open(path, 'ab+') as destination: 
+                            destination.write(fichier)
+                        if int(end):
+                            tmp_fichier.eof = int(end)
+                            tmp_fichier.save()
+
+                            cols_info, df = info_dataset(tmp_fichier.chemin)
+                            context = {'images':  hist_img(df, cols_info).items()}
+                            request.session['ddataset']['df'] = df.to_json()
+                            request.session['ddataset']['cols_info'] = cols_info
+
+                            res = JsonResponse({'data':{
+                                                        'cols_info': cols_info, 
+                                                        'df': df.to_json(orient="split"), 
+                                                        'chemin': chemin,
+                                                        'img_block': render_to_string('pages/projets/projet_wizard/fragments/block/histogramme.html', context, request=request),
+                            }, 'transaction': {'code': 'success', 'titre':'Cool !!!', 'message': 'Chargment effectué avec success'}})
+                        else:
+                            res = JsonResponse({'data':{'chemin': tmp_fichier.chemin}, 'transaction': {'code': 'success', 'titre':'En cours !!!', 'message': 'Chargment en cours'}})
+                    else:
+                        res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'EOF trouvé. Requeste invalide'}})
+                else:
+                    res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Aucun fichier existant dans ce fichier'}})
+    else:
+        res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
+    return res
+
+def train_models(request):
+    if request.method == "POST":
+        jeu_donnees = None
+        if not request.session.get('projet', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+        if not request.session.get('dataset', {}):
+            return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord Charger un jeu de données'}})
+        df = pd.read_json(request.session['dataset']['df'])
+
+        projet_id = request.session.get('projet').get('projet_id', 0)
+        jeu_donnees = JeuDonnees.objects.get(projet_id=projet_id)
+        jeu_donnees.pourcentage_validation = request.POST.get('p_val', 0)
+        jeu_donnees.pourcentage_test = request.POST.get('p_test', 0.3)
+        jeu_donnees.pourcentage_entrainement = request.POST.get('p_train', 0.7)
+        jeu_donnees.taille = len(df)
+        r = jeu_donnees.save()
+        
+        target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
+        colonnes = Colonne.objects.filter(jeu_donnees=jeu_donnees, est_selectionnee=True)
+
+        selected_cols = [item.libelle for item in list(colonnes)]
+        #remove all other columns
+        new_df = df[df.columns.intersection(selected_cols)]
+
+        metric = 'f1' #Pas de modification 
+
+        algorithms = AlgorithmeProjet.objects.filter(projet_id=projet_id)
+
+        training_algorithms_pipeline = {}
+        pipeline_pretraitement = PreprocessingData(new_df, target.libelle, jeu_donnees.pourcentage_test, jeu_donnees.pourcentage_entrainement,*colonnes)
+        preprocessor = pipeline_pretraitement.pipelinePreprocessing()
+
+        #Affichage des données Prétraitées 
+        print("---####################DONNEES PRETAITEES-----------")
+        print(pipeline_pretraitement.transform())
+
+        for algorithm in list(algorithms):
+            initialisation_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['init']
+            hyperparametre_algo = ALGORITHME_SYSTEME[algorithm.algorithme.code]['hyperparametre']
+            pipeline_algo = make_pipeline(preprocessor, initialisation_algo)
+            training_algorithms_pipeline[algorithm.algorithme.code] = [pipeline_algo,hyperparametre_algo]
+
+            estimateur = estimator.Estimator(training_algorithms_pipeline,new_df, target.libelle)
+        
+        print(training_algorithms_pipeline)
+       
+        #Entrainement des modèles sans optimisation
+        base_model = ''
+
+        #ENTRAINEMENT ET OPTIMISATION AVEC LES DONNEES CHARGEES ET LES ALGORITHMES SELECTIONNES
+        
+        try:
+            dico_infos_train = {}
+            for algo in list(algorithms):
+                base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=metric, cv=10)
+                # base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=algo.metrique, cv=10)
+                dico_infos_train[algo.algorithme.libelle] = {
+                    'model_training' : base_model,
+                    'precision' : round(precision, 3),
+                    'algorithme': algo
+                }
+            statut = {'code': 'success', 'titre':'Génial !!!', 'message': 'Entrainement realisé avec success'}
+        except Exception as e: 
+            print(e)
+            print('BEGIN', '-'*60)
+            traceback.print_exc()
+            print('END', '-'*60)
+            print("ERREUR LORS L'ENTRAINEMENT DES  MODELES")
+            statut = {'code': 'success', 'titre':'Oupss !!!', 'message': "Erreur lors de l'entrainement du modele"}
+        print("-----------------------",dico_infos_train)        
+
+        media_root = getattr(settings, 'MEDIA_ROOT', 0)
+        path = os.path.join(media_root, 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()))
+        print(path)
+        path = getattr(settings, 'MEDIA_URL', 0) + 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) 
+        print(path)
+        
+        Path(path).parent.mkdir(exist_ok=True, parents=True)
+        print("REPERTOIRE : " , path)
+
+        liste_models = []
+        for algo in dico_infos_train:
+            code_algo = ALGORITHME_SYSTEME[dico_infos_train[algo]['algorithme'].algorithme.code]['code']
+            algo_projet = dico_infos_train[algo]['algorithme']
+            print(algo)
+            model = Modele( code=code_algo, precision=round(precision*100,3), rapport='', resume='', jeu_donnees=jeu_donnees, algorithme_projet=algo_projet,  )
+            model.save()
+            chemin=IModel.save_model(dico_infos_train[algo]['model_training'], path, model.pk)
+            model.chemin = chemin
+            model.save()
+            liste_models.append(model)
+        
+        print(liste_models)
+
+        ...
+        target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
+        selected_cols = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
+
+        selected_cols_without_target = []
+        for col in selected_cols: col.array_valeurs = col.valeurs.split(','); selected_cols_without_target.append(col) if col.pk !=target.pk else print('', end='')
+        ...
+        return JsonResponse(
+            {   
+                'data':{
+                    'body_table_result_training': render_to_string('pages/projets/projet_wizard/fragments/block/list_model.html', context={'infos_modeles_train': liste_models}, request=request ),
+                    'block_prediction_input': render_to_string('pages/projets/projet_wizard/fragments/block/model_predict_form.html', context={'infos_modeles_train': liste_models,  'features' : selected_cols_without_target}, request=request ),
+                }, 
+                'transaction': statut,
+            }
+        )
+    # return JsonResponse({'data':{}, 'transaction': {'code': 'success', 'titre':'Oups', 'message': 'Veuillez d\'abord enregistrer les informations du projet'}})
+
+def predict_model(request):
+    print(request.POST)
+    pk = request.POST.get('algo_prediction')
+    model = Modele.objects.get(pk = pk)
+    trained_model = IModel.load_model(model.chemin)
+
+    jeu_donnees = JeuDonnees.objects.get(pk=model.jeu_donnees.pk)
+    target = Colonne.objects.get_or_none(jeu_donnees=jeu_donnees, est_target=True)
+    selected_cols = Colonne.objects.filter(jeu_donnees=jeu_donnees ,est_selectionnee=True, est_target=False).order_by('id')
+
+    selected_cols_without_target = []
+    for col in selected_cols: col.array_valeurs = col.valeurs.split(','); selected_cols_without_target.append(col) if col.pk !=target.pk else print('', end='')
+    context = { 'features' : selected_cols_without_target }
+    
+    if request.method == "POST":
+        data = request.POST
+        data_input = []
+        colonne_list = []
+        for col in selected_cols:
+            colonne_list.append(col.libelle)
+            data_input.append(data.get(col.libelle, 'non défini'))
+
+        print("Les données entrées:", data_input)
+        data_input = [data_input]
+        print("data reshape",data_input)
+        df = pd.DataFrame(np.array(data_input), columns=colonne_list)
+        prediction = trained_model.predict(df)
+        # resultat2  = (trained_model.predict_proba(df) * 100)[:,1][0]
+        print('predict_model : ' , prediction)
+        context['resultat'] = prediction[0]
+        print(prediction)
+
+        return JsonResponse(
+                {   
+                    'data':{
+                        'block_prediction_output': render_to_string('pages/projets/projet_wizard/fragments/block/model_predict_resullt.html', context=context, request=request ),
+                    }, 
+                    'transaction': {'code': 'success', 'titre':'Génial !!!', 'message': 'Inference realisée avec success'},
+                }
+            )
+
+def download_model(request, pk):
+    if pk != '':
+        model = Modele.objects.get(pk=pk)
+        filepath = model.chemin
+        filename = model.algorithme_projet.algorithme.libelle + '.sav'
+
+        # path = getattr(settings, 'MEDIA_URL', 0) + 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + nom_fichier
+
+        # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # Define the full file path
+        # filepath = BASE_DIR + '/filedownload/Files/' + filename
+
+        # Open the file for reading content
+        path = open(filepath, 'rb')
+        # Set the mime type
+        mime_type, _ = mimetypes.guess_type(filepath)
+        # Set the return value of the HttpResponse
+        response = HttpResponse(path, content_type=mime_type)
+        # Set the HTTP header for sending to browser
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        # Return the response value
+        return response
+    else:
+        # Load the template
+        print('hello')

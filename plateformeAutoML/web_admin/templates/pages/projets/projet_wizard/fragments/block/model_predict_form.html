@@ -1,0 +1,42 @@
+<div class="p-4 border rounded">
+    <form id="form_prediction_model" action="{% url 'predict_model' %}" class="row g-3" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12">
+                <label for="algo_prediction" class="form-label">Modèle</label>
+                <select id="algo_prediction"  name="algo_prediction" class='form-select'>
+                    {% for model in infos_modeles_train %}
+                    <option  value="{{model.pk}}">{{model.algorithme_projet.algorithme.libelle}}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">Selectionnez un modele.</div>
+            </div>
+            {% for colonne in features %}
+                {% if colonne.est_categoriel == True %}
+                    <div class="col-md-12 mt-3">
+                        <label for="not_defined" class="form-label">{{colonne.libelle}}</label>
+                        <select class="form-select" name="{{colonne.libelle}}">
+                            {% for val in colonne.array_valeurs %}
+                                <option>{{val}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Faite un choix de {{colonne.libelle}}</div>
+                    </div>
+                {% endif %}
+                {% if colonne.est_categoriel == False %}
+                    <div class="col-md-12 mt-3">
+                        <label for="validationCustom03"  class="form-label">{{colonne.libelle}}</label>
+                        <input type="number" name="{{colonne.libelle}}" class="form-control"  required="">
+                        <div class="invalid-feedback">Définissez une valeur.</div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="prediction_model" class="form-label">&nbsp;&nbsp;&nbsp;</label>
+                    <input type="submit" class="form-control btn btn-primary" value="Prédiction" id="prediction_model" >
+                </div>
+            </div>
+    </form>
+</div>

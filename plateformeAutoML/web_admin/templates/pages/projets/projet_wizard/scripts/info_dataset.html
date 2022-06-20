@@ -107,7 +107,9 @@
 								{% comment %} <p class="filename"></p> {% endcomment %}
 								<small class="textbox"></small>
 								<div class="progress" style="margin-top: 5px;">
-									<div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+									<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+									<small class="justify-content-center d-flex position-absolute w-100">Veuillez patienter...</small>
+									{% comment %} <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> {% endcomment %}
 									</div>
 								</div>
 							</div>`
@@ -308,7 +310,12 @@
 			uploader.upload()
 		});
 
-		$('#btn_save_info_preprocessing').on('click', (event) => { FileUpload.save_info_preprocessing() })
+		$('#btn_save_info_preprocessing').on('click', (event) => { 
+			FileUpload.save_info_preprocessing()
+			$('#smartwizard').smartWizard("prev");
+			$('#smartwizard').smartWizard("next");
+		 
+		})
 	
 
 		 $('#select-target').on('change', function(e){ 
@@ -340,14 +347,48 @@
 				Notification.talk(response.transaction.code, response.transaction.message);
 			})
 		})
-		 {% comment %} $('#btn_start_training').on('click', function(e){ 
-			Request.post("{% url 'projet_info' %}", 'form_info_projet', function (response){
-				$('#projet_id').val(response.data.projet_id)
+		
+		$('body').on('submit', '#form_train_models', function(e){ 
+			e.preventDefault()
+			console.log('tranning')
+			$('#progress_training').show()
+			$('#block_preview_result').hide()
+
+			Request.post("{% url 'train_models' %}", 'form_train_models', function (response){
+				$('#progress_training').hide()
+				$('#block_preview_result').show()
+
+				$('#smartwizard').smartWizard("prev");
+				$('#body_table_result_training').html(response.data.body_table_result_training);
+				$('#block_prediction_input').html(response.data.block_prediction_input);
+				$('#smartwizard').smartWizard("next");
 				Notification.talk(response.transaction.code, response.transaction.message);
 			})
-		}) {% endcomment %}
 
-		 $('#btn_reset_form_info_projet').on('click', function(e){ 
+			return false
+		}) 
+		
+		
+		$('body').on('submit', '#form_prediction_model', function(e){ 
+			console.log("inference")
+			var form = $(this);
+			$.ajax({
+				url: form.attr("action"),
+				data: form.serialize(),
+				type: form.attr("method"),
+				dataType: 'json',
+				success: function (response) {
+					$('#smartwizard').smartWizard("prev");
+					$('#block_prediction_output').html(response.data.block_prediction_output)
+					$('#smartwizard').smartWizard("next");
+					Notification.talk(response.transaction.code, response.transaction.message);
+					
+				}
+			});
+			return false;
+		}) 
+
+		$('#btn_reset_form_info_projet').on('click', function(e){ 
 			Request.get("{% url 'projet_info' %}",  function (response){
 				console.log(response)
 				$('#projet_id').val(response.data.projet_id)

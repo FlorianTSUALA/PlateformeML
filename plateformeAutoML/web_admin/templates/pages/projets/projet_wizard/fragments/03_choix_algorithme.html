@@ -1,0 +1,62 @@
+{% comment %} <div id="step-03" class="page-section-stepper container py-2"> {% endcomment %}
+    <h2 class="font-weight-light text-center text-muted py-3">Choix des algorithmes</h2>
+    <div class="row">
+        <div class="col-lg-12 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="p-4  rounded">
+                        <form class="row g-3 needs-validation" novalidate="">
+                            <div class="col-md-3">
+                                <label for="select-variable" class="form-label">Varaible cible</label>
+                                <select id="select-variable"  class='form-select'>
+                                    <option selected="" disabled="" value="0">Non défini</option>
+                                </select>
+                                <div class="invalid-feedback">Selectionnez une varaible cible.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="select-type_apprentissage" class="form-label">Apprentissage</label>
+                                <select id="select-type_apprentissage"  class='form-select'>
+                                    <option selected="" disabled="" value="">...</option>
+                                    {% for item in type_apprentissages %}
+                                    <option  value="{{item}}">{{item}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Selectionnez une taches.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="select-tache" class="form-label">Tâche</label>
+                                <select id="select-tache"  name="tache" class='form-select'>
+                                
+                                </select>
+                                <div class="invalid-feedback">Selectionnez une taches.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="select-metrique" class="form-label">Metrique</label>
+                                <select id="select-metrique"  name="metrique" class='form-select'>
+                                    
+                                </select>
+                                <div class="invalid-feedback">Selectionnez une metriques.</div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="select-algorithme" class="form-label">Algorithme(s)</label>
+                                <select class="multiple-select" name="algorithme" data-placeholder="Choose anything" multiple="multiple" required="" id="select-algorithme" required="">
+                                </select>
+                                <div class="invalid-feedback">Selectionnez un ou plusieurs algorithmes.</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer py-3 bg-transparent"> 
+                <div class="d-sm-flex align-items-center">
+                    <div class="ms-auto">
+                        <button type="button" class="btn btn-warning prev-btn">Revenir</button>
+                        {% comment %} <button type="button" id="btn_reset_selection_algorithm"  class="btn btn-secondary">Annuller</button> {% endcomment %}
+                        <button type="button" id="btn_save_selection_algorithm" class="btn btn-primary">Mettre à jour</button>
+                        <button type="button" class="btn btn-warning next-btn">Poursuivre</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% comment %} </div> {% endcomment %}

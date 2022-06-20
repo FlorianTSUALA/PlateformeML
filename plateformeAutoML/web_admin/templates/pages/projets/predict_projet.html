@@ -84,34 +84,33 @@
 
     {% if resultat %}
 
-    <div class="card text-white bg-success mb-3">
+        <div class="card text-white bg-success mb-3">
         <div class="card-body">
-
-        <div id="step-01" class="page-section-stepper container py-2">
-            <div id="step-07" class="page-section-stepper container py-2">
-                <h2 class="font-weight-light text-center text-muted py-3">Résultat de la prédiction </h2>
-                <div class="row">
-                    <div class="col-lg-12 mx-auto">
-                        <div class="card">
-                            
-                            <div class="card-body">
-                                <div class="p-4 border rounded">
-                                    <table class="table">
-                                        <tbody>
-                                          <tr>
-                                            <th scope="row">Classe d'affectation</th>
-                                            <td>{{resultat}}</td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
+            <div id="step-01" class="page-section-stepper container py-2">
+                <div id="step-07" class="page-section-stepper container py-2">
+                    <h2 class="font-weight-light text-center text-muted py-3">Résultat de la prédiction </h2>
+                    <div class="row">
+                        <div class="col-lg-12 mx-auto">
+                            <div class="card">
+                                
+                                <div class="card-body">
+                                    <div class="p-4 border rounded">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr>
+                                                <th scope="row">Classe d'affectation</th>
+                                                <td>{{resultat}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!--/row-->
                 </div>
-                <!--/row-->
             </div>
-        </div>
         </div>
     {% endif %}
 </div>
