@@ -48,7 +48,7 @@ class Projet(models.Model):
     description  =  models.TextField(max_length=254, blank=True, default='')
     mots_cles  =  models.TextField(max_length=254, blank=True, default='')
     metrique =  models.CharField(max_length=254, blank=True,null=True) #to del
-    image = models.ImageField(upload_to="projet/images/%Y/%m/%d")
+    image = models.ImageField(upload_to="projet/image/%Y/%m/%d")
     # type = models.CharField(max_length=50, choices=ETypeDonnee.choices(), default=ETypeDonnee.DECIMAL)
     statut = models.CharField(max_length=50, choices=EEtatPublication.choices(), default=EEtatPublication.PRIVE)
     nombre_modele = models.IntegerField(default=0, blank=True,null=True)
@@ -339,7 +339,7 @@ class Valeur(models.Model):
 
 class Fichier(models.Model):
     code = models.CharField(max_length=254, blank=True,null=True)
-    chemin = models.CharField(unique=True, max_length=100)
+    chemin = models.CharField(max_length=100)
     nom = models.CharField(max_length=50)
     eof = models.BooleanField()
 

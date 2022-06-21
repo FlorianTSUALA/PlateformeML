@@ -4,7 +4,7 @@ from web_admin.models import Algorithme
 from django.views.generic import TemplateView, View, DeleteView, ListView, UpdateView
 from django.core import serializers
 from django.http import JsonResponse
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pyexpat import model
 from select import select
 from statistics import mode
@@ -41,12 +41,28 @@ ALLOWED_EXTENSIONS = set(["npy", "csv", "xls", "xlsx"])
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+
+def liste_projet(request):
+    projets = Projet.objects.all().order_by('-id')
+    algorithmes = Algorithme.objects.all().order_by('-id')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(projets, 10)
+    try:
+        projets = paginator.page(page)
+    except PageNotAnInteger:
+        projets = paginator.page(1)
+    except EmptyPage:
+        projets = paginator.page(paginator.num_pages)
+    return render(request, 'pages/vitrine1.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'projets','section_item_title' : 'Listes des projets','projets' :  projets})
+
+
 class VitrineView(TemplateView):
-    template_name = 'pages/vitrine.html'
+    template_name = 'pages/vitrine1.html'
     def get_context_data(self, **kwargs):
         
         projets = Projet.objects.all().order_by('-id')
         algorithmes = Algorithme.objects.all().order_by('-id')
+        
 
         context = super().get_context_data(**kwargs)
         context['has_white_text'] = False
@@ -56,7 +72,16 @@ class VitrineView(TemplateView):
         context['algorithmes'] = algorithmes
         return context
 
-
+def search_projets(request):
+    if request.method == 'POST':
+        search_str = json.loads(request.body).get('searchText')
+        print(search_str)
+        print(len(Projet.objects.filter(titre__istartswith = search_str)))
+        projets = Projet.objects.filter(titre__istartswith = search_str)
+        data = projets.values()
+        print(data)
+        return JsonResponse(list(data),safe=False)
+        
 
 def groupe_algorithme(request):
     if request.method == "POST":
@@ -71,7 +96,7 @@ def groupe_algorithme(request):
         for p in projets:
             print(p.algorithme.code)
        
-        return render(request, 'pages/vitrine.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'Projets','section_item_title' : 'Listes des projets','projets' :  projets})  
+        return render(request, 'pages/vitrine1.html',{'algorithmes' : algorithmes,'has_white_text': False,'section_title' : 'Projets','section_item_title' : 'Listes des projets','projets' :  projets})  
 
 # def groupe_algorithme(request,**kwargs):
 #     template_name = 'pages/vitrine.html'

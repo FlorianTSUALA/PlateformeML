@@ -1,4 +1,5 @@
 from .projet_view import *
+from .projet_creation_view import *
 from .common_view import *
 from .profile_view import *
 from .authentification_view import *
