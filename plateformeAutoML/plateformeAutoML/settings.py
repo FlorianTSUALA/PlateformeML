@@ -154,10 +154,29 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 UPLOAD_FOLDER = '/media/datasets'
-MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024 #16M
 SEND_FILE_MAX_AGE_DEFAULT = 0
 
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 500 * 1024 * 1024 * 1024 #500 MB
+"""
+Valeur par défaut : 2621440 (c-à-d. 2.5 Mio).
+https://docs.djangoproject.com/fr/4.0/ref/settings/#std-setting-DATA_UPLOAD_MAX_MEMORY_SIZE
+La taille maximale en octets d’un corps de requête avant qu’il ne provoque une exception SuspiciousOperation (RequestDataTooBig). 
+Le contrôle est effectué lors de l’accès à request.body ou à request.POST et 
+est calculé par rapport à la taille totale de la requête sans les données d’envoi de fichiers (uploads). 
+Vous pouvez le définir à None pour désactiver le contrôle. Les applications susceptibles de recevoir des envois 
+de formulaires inhabituellement volumineux devraient ajuster ce réglage.
+La quantité de données de requête est corrélée à la quantité de mémoire nécessaire pour traiter la requête et remplir 
+les dictionnaires GET et POST. Les grosses requêtes pourraient être utilisées comme vecteur d’attaque par déni de service 
+si elles n’étaient pas contrôlées. Comme les serveurs Web n’effectuent en principe pas d’inspection approfondie des requêtes, 
+il n’est pas possible de procéder à ce genre de contrôle à leur niveau.
+"""
+FILE_UPLOAD_MAX_MEMORY_SIZE = 500 * 1024 * 1024 #500 MB
+"""
+Valeur par défaut : 2621440 (c-à-d. 2.5 Mio).
+La taille maximale (en octets) d’un téléversement avant qu’il ne soit déporté sur le système de fichiers. Voir Gestion des fichiers pour plus de détails.
+"""
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
