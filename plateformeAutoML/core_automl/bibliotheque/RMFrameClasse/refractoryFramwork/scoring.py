@@ -3,8 +3,6 @@ from .model import *
 
 import pickle
 
-
-
 class Scoring(RMFrammeEstimator):
 
     def __init__(self, listeModel,dataset,target):

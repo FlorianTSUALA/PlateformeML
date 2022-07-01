@@ -55,10 +55,9 @@ def projet_delete(request, pk):
 def projet_edit(request):
     return
 
-
 def projet_detail(request,pk):
     template_name = 'pages/projets/projet_detail.html'
-    
+   
     projet = Projet.objects.get(pk=pk)
 
     algorithme_pro = AlgorithmeProjet.objects.filter(projet=projet.pk)
