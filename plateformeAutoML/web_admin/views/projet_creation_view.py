@@ -372,6 +372,7 @@ def upload_dataset(request):
         res = JsonResponse({'data':{}, 'transaction': {'code': 'error', 'titre':'Oups !!!', 'message': 'Requete non autorisée'}})
     return res
 
+
 def train_models(request):
     if request.method == "POST":
         jeu_donnees = None
@@ -414,7 +415,7 @@ def train_models(request):
             pipeline_algo = make_pipeline(preprocessor, initialisation_algo)
             training_algorithms_pipeline[algorithm.algorithme.code] = [pipeline_algo,hyperparametre_algo]
 
-            estimateur = estimator.Estimator(training_algorithms_pipeline,new_df, target.libelle)
+            estimateur = estimator.Estimator(training_algorithms_pipeline, new_df, target.libelle)
         
         print(training_algorithms_pipeline)
        
@@ -530,13 +531,6 @@ def download_model(request, pk):
         model = Modele.objects.get(pk=pk)
         filepath = model.chemin
         filename = model.algorithme_projet.algorithme.libelle + '.sav'
-
-        # path = getattr(settings, 'MEDIA_URL', 0) + 'projet/dataset/' + time.strftime("%Y/%m/%d", time.gmtime()) + '/' + nom_fichier
-
-        # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        # Define the full file path
-        # filepath = BASE_DIR + '/filedownload/Files/' + filename
-
         # Open the file for reading content
         path = open(filepath, 'rb')
         # Set the mime type

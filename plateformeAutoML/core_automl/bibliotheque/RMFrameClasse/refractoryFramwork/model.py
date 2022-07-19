@@ -88,13 +88,26 @@ class RMFrammeEstimator(IModel,PreprocessingData):
 
 
     # PROCEDURE D'EVALUATION DES DIFFERRENTS MODELS
+def feateares_encoding(df):
+    """ Encodes data and returns new data """
+    mask = df.dtypes==object
+    #get_categorical()
+    categorical = df.columns[mask].tolist()
+    print(categorical)
+    if categorical:
+        #Encoder foreach column
+        le = LabelEncoder()
+        df[categorical] = df[categorical].apply(lambda x: le.fit_transform(x.astype(str)))
+        # df.to_csv(path, index=False)
+    return df
+
 
     # mesure = ['f1','precision','recall']
     def evaluerModel(self,model):
         base_model = model.fit(self.X_train, self.y_train)
         print("les données de test ::::::::::::::::::::",self.X_test)
         print("les données de test ::::::::::::::::::::",self.X_test.dtypes)
-        y_pred = model.predict(self.X_test)
+        y_pred = model.pred-ict(self.X_test)
         precision = accuracy_score(self.y_test, y_pred)
         return base_model,precision
 

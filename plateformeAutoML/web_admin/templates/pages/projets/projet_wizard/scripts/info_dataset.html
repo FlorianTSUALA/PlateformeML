@@ -93,6 +93,9 @@
 							$('#select-variable').append(new Option(collection[j], collection[j], false, false))
 						}
 						Notification.talk(res.transaction.code, res.transaction.message)
+
+						$('#smartwizard').smartWizard("prev");
+						$('#smartwizard').smartWizard("next");
 					}
 				}
 			});
@@ -129,7 +132,6 @@
 			  	footer.empty();
 
 				let tr = document.createElement('tr'); //column
-
 				for (var j = 0; j < columns.length; j++) {
 					let th = document.createElement('th'); //column
 					let text = document.createTextNode(columns[j]); //cell
@@ -264,6 +266,8 @@
 				}
 				window.columns = columns
 				window.table.columns.adjust().draw(); // Redraw the DataTable
+				window.table.draw(1); // Redraw the DataTable
+				window.table.draw(0); // Redraw the DataTable
 		}
 
 		static save_info_preprocessing(){
@@ -312,8 +316,8 @@
 
 		$('#btn_save_info_preprocessing').on('click', (event) => { 
 			FileUpload.save_info_preprocessing()
-			$('#smartwizard').smartWizard("prev");
-			$('#smartwizard').smartWizard("next");
+			//$('#smartwizard').smartWizard("prev");
+			//$('#smartwizard').smartWizard("next");
 		 
 		})
 	
