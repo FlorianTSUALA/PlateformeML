@@ -141,7 +141,6 @@ def projet_info(request):
             'image': request.FILES.get('image'),
             'utilisateur_id': request.user.utilisateur.pk,
         }
-
         projet = None
         projet_id = request.POST.get('projet_id', '0')
 
@@ -426,9 +425,9 @@ def train_models(request):
         
         try:
             dico_infos_train = {}
-            for algo in list(algorithms):
+            for algo in list(algorithms): 
                 base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=metric, cv=10)
-                # base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=algo.metrique, cv=10)
+                #base_model,precision = estimateur.optimisationHyperParam(ALGORITHME_SYSTEME[algo.algorithme.code]['code'],scoring=algo.metrique, cv=10)
                 dico_infos_train[algo.algorithme.libelle] = {
                     'model_training' : base_model,
                     'precision' : round(precision, 3),

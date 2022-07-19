@@ -26,6 +26,7 @@ USE_REMEMBER_ME = False
 SESSION_SAVE_EVERY_REQUEST = True
 #
 AUTH_USER_MODEL = 'web_admin.Compte'
+# test tes
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
